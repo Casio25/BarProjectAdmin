@@ -4,7 +4,7 @@ import { useLocale } from 'next-intl'
 import { notFound } from 'next/navigation'
 import Header from './components/header'
 import './globals.css'
-import SingInPage from './signIn/page'
+import SingInPage from './signin/page'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -25,6 +25,7 @@ if (!locales.includes(locale as any)) notFound();
   return (
     <html lang={locale}>
       <body className={inter.className}>
+        <Header/>
         {children}
         </body>
     </html>

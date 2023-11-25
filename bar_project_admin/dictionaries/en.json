@@ -3,10 +3,19 @@
         "name": "name",
         "email": "email"
     },
-    "home": {
+    "Home": {
         "title": "About Us"
     },
     "Index": {
         "title": "Hello world!"
+    },
+    "SignIn": {
+        "title": "Sign in form",
+        "signUp button": "First time here? Let's Sign up"
+    },
+    "Header": {
+        "home link": "Home",
+        "signIn link": "Sign in"
     }
+
 }

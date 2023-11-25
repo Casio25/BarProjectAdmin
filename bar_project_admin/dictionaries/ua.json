@@ -3,10 +3,18 @@
         "name": "Ім'я",
         "email": "Електрона пошта"
     },
-    "home": {
+    "Home": {
         "title": "Про нас"
     },
     "Index": {
         "title": "Привіт!"
+    },
+    "SignIn": {
+        "title": "Увійти",
+        "signup button": "Перший раз тут? Давайте зареєструємось"
+    },
+    "Header": {
+        "home link": "Головна",
+        "signIn link": "Увійти"
     }
 }
