@@ -1,0 +1,12 @@
+{
+    "form":{
+        "name": "name",
+        "email": "email"
+    },
+    "home": {
+        "title": "About Us"
+    },
+    "Index": {
+        "title": "Hello world!"
+    }
+}
