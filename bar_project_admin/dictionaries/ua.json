@@ -1,7 +1,7 @@
 {
     "form": {
         "name": "Ім'я",
-        "email": "Електрона пошта"
+        "email": "Електронна пошта"
     },
     "Home": {
         "title": "Про нас"
@@ -11,7 +11,10 @@
     },
     "SignIn": {
         "title": "Увійти",
-        "signup button": "Перший раз тут? Давайте зареєструємось"
+        "signup button": "Перший раз тут? Давайте зареєструємось",
+        "login button": "Увійти",
+        "email placeholder": "Електронна пошта",
+        "password placeholder": "Пароль"
     },
     "Header": {
         "home link": "Головна",

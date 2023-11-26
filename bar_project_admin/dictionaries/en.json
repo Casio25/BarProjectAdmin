@@ -11,7 +11,10 @@
     },
     "SignIn": {
         "title": "Sign in form",
-        "signUp button": "First time here? Let's Sign up"
+        "signUp button": "First time here? Let's Sign up",
+        "login button": "Log in",
+        "email placeholder": "Email",
+        "password placeholder": "Password"
     },
     "Header": {
         "home link": "Home",

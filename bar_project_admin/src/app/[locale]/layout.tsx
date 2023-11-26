@@ -4,7 +4,8 @@ import { useLocale } from 'next-intl'
 import { notFound } from 'next/navigation'
 import Header from './components/header'
 import './globals.css'
-import SingInPage from './signin/page'
+
+import { NextUIProvider } from "@nextui-org/react";
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -28,6 +29,6 @@ if (!locales.includes(locale as any)) notFound();
         <Header/>
         {children}
         </body>
-    </html>
+    </html> 
   )
 }
