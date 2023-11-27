@@ -3,16 +3,9 @@ import { useTranslations } from 'next-intl';
 import React from 'react'
 import { SignInForm } from '../components/signInForm';
 
-interface IParams {
-  params: {
-  email: string,
-  password: string
-  loginButton: string,
-  signupButton: string
-  }
-}
 
-const SingInPage = ({params}: IParams) => {
+
+const SingInPage = () => {
   const t = useTranslations("SignIn")
   return (
     <div className="min-h-screen flex items-center justify-center bg-teal-400">
