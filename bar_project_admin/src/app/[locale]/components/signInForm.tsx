@@ -1,5 +1,5 @@
 "use client"
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { InputAdornment, IconButton, TextField, Button} from "@mui/material";
 import { Schema, Visibility, VisibilityOff } from "@mui/icons-material";
 import EmailIcon from '@mui/icons-material/Email';
@@ -30,7 +30,11 @@ export const SignInForm: React.FC<SignInFormProps> = ({
     const [passwordError, setPasswordError] = useState('')
     const [passwordShown, setPasswordShown] = useState(false);
     const updateEmail = LoginStore(state=>state.updateEmail)
-    const email = LoginStore(state => state.email)
+    const updateEmailError = LoginStore(state=>state.updateEmailError)
+    const updatePasswordError = LoginStore(state=>state.updatePasswordError)
+    const storedEmail = LoginStore(state => state.email)
+    const storedEmailError = LoginStore(state => state.emailError)
+
 
     const togglePassword = () => {
         setPasswordShown(!passwordShown);
@@ -40,7 +44,18 @@ export const SignInForm: React.FC<SignInFormProps> = ({
         try {
             const result = SignInSchema.safeParse(formData)
             if (!result.success) {
-                console.log(result.error.issues);
+                const validationError = result.error.format()
+                validationError.password !== undefined
+                 ? updatePasswordError(validationError.password._errors[0])
+                  : updatePasswordError("")
+                console.log("Password validation error: ", validationError.password?._errors[0]);
+                validationError.email !== undefined
+                 ? updateEmailError(validationError.email._errors[0])
+                 : updateEmailError("")
+                console.log("Email validation error: ", validationError.email?._errors[0])
+                useEffect(() => {
+                    console.log("Stored email error: ", storedEmailError);
+                }, [storedEmailError]);
             }
         }catch (error){
             console.log(error)
