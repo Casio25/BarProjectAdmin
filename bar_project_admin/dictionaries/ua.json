@@ -14,7 +14,8 @@
         "signup button": "Перший раз тут? Давайте зареєструємось",
         "login button": "Увійти",
         "email placeholder": "Електронна пошта",
-        "password placeholder": "Пароль"
+        "password placeholder": "Пароль",
+        "or": "або"
     },
     "Header": {
         "home link": "Головна",
