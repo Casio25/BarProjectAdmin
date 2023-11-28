@@ -10,12 +10,21 @@
         "title": "Hello world!"
     },
     "SignIn": {
-        "title": "Sign in form",
+        "login title": "Sign in form",
         "signup button": "First time here? Let's Sign up",
         "login button": "Log in",
         "email placeholder": "Email",
         "password placeholder": "Password",
         "or": "or"
+    },
+    "Register": {
+        "signup title": "Sign up",
+        "register button": "Register",
+        "first name placeholder": "First Name",
+        "second name placeholder": "Second Name",
+        "email placeholder": "Email",
+        "password placeholder": "Password",
+        "confirm password placeholder": "Confirm password"
     },
     "Header": {
         "home link": "Home",

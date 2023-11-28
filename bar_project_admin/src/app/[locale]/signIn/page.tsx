@@ -10,7 +10,7 @@ const SingInPage = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-teal-400">
       <div className='w-full flex flex-col items-center max-w-md p-6 bg-purple-100 rounded-lg shadow-lg'>
-        <h2 className='text-center font-semibold text-lg'>{t("title")}</h2>
+        <h2 className='text-center font-semibold text-lg'>{t("login title")}</h2>
         <SignInForm
           emailPlaceholder={t("email placeholder")}
           passwordPlaceholder={t("password placeholder")}

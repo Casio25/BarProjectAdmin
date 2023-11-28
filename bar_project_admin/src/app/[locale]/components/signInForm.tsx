@@ -6,16 +6,11 @@ import EmailIcon from '@mui/icons-material/Email';
 import LockIcon from '@mui/icons-material/Lock';
 import {LoginStore} from "../store/LoginStore"
 import {SignInSchema} from "../validation/SignIn";
+import { SignInFormProps } from "../interface/SignInInterface";
 import { Form, Field } from 'vee-validate';
 import {z} from "zod"
+import { Link } from "@/navigation";
 
-interface SignInFormProps {
-    emailPlaceholder: string;
-    passwordPlaceholder: string;
-    loginButton: string;
-    signupButton: string
-    or: string
-}
 
 export const SignInForm: React.FC<SignInFormProps> = ({
     emailPlaceholder,
@@ -100,7 +95,9 @@ export const SignInForm: React.FC<SignInFormProps> = ({
                 <p className="mt-4 text-red-600">{passwordError}</p>
                 <button type="button" onClick={()=> validateData(formData)} className='w-80 mt-8  py-2 text-center font-semibold text-lg bg-cyan-300 hover:bg-cyan-500 active:bg-cyan-700 rounded-xl'>{loginButton}</button>
                 <p className='py-2'>{or}</p>
-                <button type="button" className='w-80  py-2 text-center  text-lg bg-cyan-300 hover:bg-cyan-500 active:bg-cyan-700 rounded-xl'>{signupButton}</button>
+                <Link href="./signup">
+                    <button type="button" className='w-80  py-2 text-center  text-lg bg-cyan-300 hover:bg-cyan-500 active:bg-cyan-700 rounded-xl'>{signupButton}</button>
+                </Link>
             </div>
         </form>
     );

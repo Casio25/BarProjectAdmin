@@ -10,12 +10,22 @@
         "title": "Привіт!"
     },
     "SignIn": {
-        "title": "Увійти",
+        "login title": "Увійти",
         "signup button": "Перший раз тут? Давайте зареєструємось",
         "login button": "Увійти",
         "email placeholder": "Електронна пошта",
         "password placeholder": "Пароль",
         "or": "або"
+    },
+    "Register": {
+        "signup title": "Зареєструватись",
+        "register button": "Зареєструватись",
+        "first name placeholder": "Ім'я",
+        "second name placeholder": "Прізвище",
+        "email placeholder": "Електронна пошта",
+        "password placeholder": "Пароль",
+        "confirm password placeholder": "Підтвердити пароль"
+
     },
     "Header": {
         "home link": "Головна",

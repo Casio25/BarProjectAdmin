@@ -12,6 +12,7 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",
+    "allowSyntheticDefaultImports": true, // added to fix jsx ts problem
     "incremental": true,
     "plugins": [
       {
@@ -19,7 +20,10 @@
       }
     ],
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "react": [
+        "./node_modules/@types/react"
+      ] // added to fix jsx ts problem
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
