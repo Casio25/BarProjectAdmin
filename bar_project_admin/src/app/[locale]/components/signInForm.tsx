@@ -46,16 +46,14 @@ export const SignInForm: React.FC<SignInFormProps> = ({
             if (!result.success) {
                 const validationError = result.error.format()
                 validationError.password !== undefined
-                 ? updatePasswordError(validationError.password._errors[0])
-                  : updatePasswordError("")
-                console.log("Password validation error: ", validationError.password?._errors[0]);
+                 ? setPasswordError(validationError.password._errors[0])
+                 : setPasswordError("")
                 validationError.email !== undefined
-                 ? updateEmailError(validationError.email._errors[0])
-                 : updateEmailError("")
-                console.log("Email validation error: ", validationError.email?._errors[0])
-                useEffect(() => {
-                    console.log("Stored email error: ", storedEmailError);
-                }, [storedEmailError]);
+                 ? setEmailError(validationError.email._errors[0])
+                 : setEmailError("")
+            }else{
+                setEmailError("")
+                setPasswordError("")
             }
         }catch (error){
             console.log(error)
@@ -68,7 +66,7 @@ export const SignInForm: React.FC<SignInFormProps> = ({
                 <TextField
                     style={{ margin: '1rem 0', height: '2.5rem', padding: '0.5rem 1rem', width: '100%' }}
                     className="my-5 h-10 px-2 rounded-lg border border-slate-600 w-full"
-                    placeholder={emailPlaceholder}
+                    placeholder={emailError == "" ? emailPlaceholder: emailError}
                     onChange={(e)=> setFormData({...formData, email: e.target.value})}
                     InputProps={{startAdornment: (
                         <InputAdornment position="start">
@@ -76,6 +74,7 @@ export const SignInForm: React.FC<SignInFormProps> = ({
                         </InputAdornment>
                     )}}
                 />
+                <p className="mt-4 text-red-600">{emailError}</p>
                 <TextField
                     style={{ margin: '1rem 0', height: '2.5rem', padding: '0.5rem 1rem', width: '100%' }}
                     className="my-5 h-10 px-2 rounded-lg border border-slate-600 w-full"
@@ -98,6 +97,7 @@ export const SignInForm: React.FC<SignInFormProps> = ({
                     }
                 }
                 />
+                <p className="mt-4 text-red-600">{passwordError}</p>
                 <button type="button" onClick={()=> validateData(formData)} className='w-80 mt-8  py-2 text-center font-semibold text-lg bg-cyan-300 hover:bg-cyan-500 active:bg-cyan-700 rounded-xl'>{loginButton}</button>
                 <p className='py-2'>{or}</p>
                 <button type="button" className='w-80  py-2 text-center  text-lg bg-cyan-300 hover:bg-cyan-500 active:bg-cyan-700 rounded-xl'>{signupButton}</button>
