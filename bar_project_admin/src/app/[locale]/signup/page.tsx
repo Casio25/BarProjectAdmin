@@ -8,8 +8,8 @@ import { SignUpForm } from '../components/signUpForm';
 const SingInPage = () => {
     const t = useTranslations("Register")
     return (
-        <div className="min-h-screen flex items-center justify-center bg-teal-400">
-            <div className='w-full flex flex-col items-center max-w-md p-6 bg-purple-100 rounded-lg shadow-lg'>
+        <div className="min-h-screen flex items-center justify-center bg-violet-500">
+            <div className='w-full flex flex-col items-center max-w-md p-6 bg-white rounded-lg shadow-lg'>
                 <h2 className='text-center font-semibold text-lg'>{t("signup title")}</h2>
                 <SignUpForm
                     firstNamePlaceholder={t("first name placeholder")}

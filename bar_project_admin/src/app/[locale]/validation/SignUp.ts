@@ -3,6 +3,7 @@ const isEmailLike = (value: string) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(value);
 };
+
 export const SignUpSchema = z.object({
     firstName: z.string().min(2).max(20),
     secondName: z.string().min(2).max(20),
@@ -10,6 +11,7 @@ export const SignUpSchema = z.object({
     password: z.string().min(8).max(20),
     confirmPassword: z.string().min(8).max(20)
 }).superRefine(({confirmPassword, password, firstName, secondName}, ctx)=>{
+
     if(confirmPassword !== password){
         ctx.addIssue({
             code: "custom",

@@ -7,10 +7,14 @@ const Header = () => {
   const t = useTranslations("Header")
 
   return (
-    <div>
-      <Link href="/">{t('home link')}</Link>
-      <Link href="/signin">{t('signIn link')}</Link>
-      <ChangeLanguage/>
+    <div className='flex p-2'>
+      <div className='space-x-2'>
+        <Link href="/">{t('home link')}</Link>
+        <Link href="/signin">{t('signIn link')}</Link>
+      </div>
+      <div className='ml-auto'>
+        <ChangeLanguage />
+      </div>
     </div>
   )
 }

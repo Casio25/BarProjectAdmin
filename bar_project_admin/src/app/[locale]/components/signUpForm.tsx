@@ -1,12 +1,18 @@
 "use client"
 import React, { useState, useEffect } from "react";
-import { InputAdornment, IconButton, TextField, Button } from "@mui/material";
+import { InputAdornment, IconButton, TextField, Button, Checkbox } from "@mui/material";
 import {Visibility, VisibilityOff } from "@mui/icons-material";
 import EmailIcon from '@mui/icons-material/Email';
 import LockIcon from '@mui/icons-material/Lock';
 import { LoginStore } from "../store/LoginStore"
 import { SignUpSchema } from "../validation/SignUp";
 import { z } from "zod";
+// Password Strength Imports
+import {passwordStrength} from "check-password-strength";
+import {Input} from "@nextui-org/react";
+import {PasswordStrengthBar} from "../components/passwordStrengthBar"
+
+type Strength = 0 | 1 | 2 | 3;
 
 interface SignUpFormProps {
     firstNamePlaceholder: string;
@@ -33,16 +39,27 @@ export const SignUpForm: React.FC<SignUpFormProps> = ({
     const [passwordError, setPasswordError] = useState('')
     const [confirmPasswordError, setConfirmPasswordError] = useState('')
     const [passwordShown, setPasswordShown] = useState(false);
+    //password strength usestates
+    const [passwordStrengthBar, setPasswordStrengthBar] = useState<Strength>(0)
+    const [inputedPassword, setInputedPassword] = useState("");
+    const passwordSecurityLevel = passwordStrength(inputedPassword).value
+
     const updateEmail = LoginStore(state => state.updateEmail)
     const updateEmailError = LoginStore(state => state.updateEmailError)
     const updatePasswordError = LoginStore(state => state.updatePasswordError)
     const storedEmail = LoginStore(state => state.email)
     const storedEmailError = LoginStore(state => state.emailError)
 
+    useEffect(() => {
+        setPasswordStrengthBar(passwordStrength(inputedPassword).id as Strength)
+    }, [passwordSecurityLevel, inputedPassword])
+
 
     const togglePassword = () => {
         setPasswordShown(!passwordShown);
     };
+
+    
 
     const validateData = (e: Schema) => {
         try {
@@ -79,7 +96,7 @@ export const SignUpForm: React.FC<SignUpFormProps> = ({
 
     return (
         <form>
-            <div className="w-full flex flex-col items-center max-w-md p-6 bg-purple-100 rounded-lg shadow-lg'">
+            <div className="w-full flex flex-col items-center max-w-md p-6 rounded-lg shadow-lg'">
                 <TextField
                     style={{ margin: '1rem 0', height: '2.5rem', padding: '0.5rem 1rem', width: '100%' }}
                     className="my-5 h-10 px-2 rounded-lg border border-slate-600 w-full"
@@ -100,7 +117,10 @@ export const SignUpForm: React.FC<SignUpFormProps> = ({
                     style={{ margin: '1rem 0', height: '2.5rem', padding: '0.5rem 1rem', width: '100%' }}
                     className="my-5 h-10 px-2 rounded-lg border border-slate-600 w-full"
                     placeholder={emailError == "" ? emailPlaceholder : emailError}
-                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    onChange={(e) => {
+                        setFormData({ ...formData, email: e.target.value });
+                        
+                    }}
                     InputProps={{
                         startAdornment: (
                             <InputAdornment position="start">
@@ -114,7 +134,11 @@ export const SignUpForm: React.FC<SignUpFormProps> = ({
                     style={{ margin: '1rem 0', height: '2.5rem', padding: '0.5rem 1rem', width: '100%' }}
                     className="my-5 h-10 px-2 rounded-lg border border-slate-600 w-full"
                     placeholder={passwordError == '' ? passwordPlaceholder : passwordError}
-                    onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                    onChange={(e) => {
+                        setFormData({ ...formData, password: e.target.value });
+                        setInputedPassword(e.target.value)
+                        
+                    }}
                     type={passwordShown ? "text" : "password"}
                     InputProps={{
                         endAdornment: (
@@ -132,6 +156,13 @@ export const SignUpForm: React.FC<SignUpFormProps> = ({
                     }
                     }
                 />
+                {
+                    inputedPassword ?
+                    <div>
+                        <PasswordStrengthBar strength={passwordStrengthBar}/>
+                    </div>
+                    : <div>Obama</div>
+                }
                 <p className="mt-4 text-red-600">{passwordError}</p>
                 <TextField
                     style={{ margin: '1rem 0', height: '2.5rem', padding: '0.5rem 1rem', width: '100%' }}

@@ -7,7 +7,6 @@ import LockIcon from '@mui/icons-material/Lock';
 import {LoginStore} from "../store/LoginStore"
 import {SignInSchema} from "../validation/SignIn";
 import { SignInFormProps } from "../interface/SignInInterface";
-import { Form, Field } from 'vee-validate';
 import {z} from "zod"
 import { Link } from "@/navigation";
 
@@ -57,7 +56,7 @@ export const SignInForm: React.FC<SignInFormProps> = ({
 
     return (
         <form>
-            <div className="w-full flex flex-col items-center max-w-md p-6 bg-purple-100 rounded-lg shadow-lg'">
+            <div className="w-full flex flex-col items-center max-w-md p-6 rounded-lg shadow-lg'">
                 <TextField
                     style={{ margin: '1rem 0', height: '2.5rem', padding: '0.5rem 1rem', width: '100%' }}
                     className="my-5 h-10 px-2 rounded-lg border border-slate-600 w-full"
