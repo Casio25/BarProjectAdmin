@@ -18,6 +18,7 @@ const SingInPage = () => {
                     passwordPlaceholder={t("password placeholder")}
                     confirmPasswordPlaceholder={t("confirm password placeholder")}
                     registerButton={t("register button")}
+                    passwordRecommendation={t("password recommendation")}
                 />
             </div>
         </div>

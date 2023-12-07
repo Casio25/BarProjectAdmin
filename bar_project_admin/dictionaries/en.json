@@ -24,7 +24,8 @@
         "second name placeholder": "Second Name",
         "email placeholder": "Email",
         "password placeholder": "Password",
-        "confirm password placeholder": "Confirm password"
+        "confirm password placeholder": "Confirm password",
+        "password recommendation": "Password Recommendations:\n - Your password should be at least 8 characters long.\n- Include a mix of uppercase and lowercase letters.\n- Add at least one numeric digit.\n- Add at least one special character."
     },
     "Header": {
         "home link": "Home",

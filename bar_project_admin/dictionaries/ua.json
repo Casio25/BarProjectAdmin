@@ -24,7 +24,8 @@
         "second name placeholder": "Прізвище",
         "email placeholder": "Електронна пошта",
         "password placeholder": "Пароль",
-        "confirm password placeholder": "Підтвердити пароль"
+        "confirm password placeholder": "Підтвердити пароль",
+        "password recommendation": "Рекомендації щодо пароля:\n - Ваш пароль повинен містити принаймні 8 символів.\n- Використовуйте комбінацію прописних і строчних літер.\n- Додайте принаймні одну цифру.\n- Додайте принаймні один спеціальний символ."
 
     },
     "Header": {
