@@ -25,7 +25,10 @@
         "email placeholder": "Email",
         "password placeholder": "Password",
         "confirm password placeholder": "Confirm password",
-        "password recommendation": "Password Recommendations:\n - Your password should be at least 8 characters long.\n- Include a mix of uppercase and lowercase letters.\n- Add at least one numeric digit.\n- Add at least one special character."
+        "password recommendation": "Password Recommendations:\n - Your password should be at least 8 characters long.\n- Include a mix of uppercase and lowercase letters.\n- Add at least one numeric digit.\n- Add at least one special character.",
+        "registration status": "You have successfully registered and will now be redirected to the 'Login' page.",
+        "registration error": "Something went wrond",
+        "registration error (user already exists)": "User with this email already exists"
     },
     "Header": {
         "home link": "Home",

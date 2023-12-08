@@ -19,6 +19,10 @@ const SingInPage = () => {
                     confirmPasswordPlaceholder={t("confirm password placeholder")}
                     registerButton={t("register button")}
                     passwordRecommendation={t("password recommendation")}
+                    registrationStatusSuccess={t("registation status")}
+                    registrationErrorUnknown={t("registration error")}
+                    registrationErrorUserAlreadyExists={t("registration error (user already exists)")}
+
                 />
             </div>
         </div>

@@ -7,10 +7,12 @@ import LockIcon from '@mui/icons-material/Lock';
 import { LoginStore } from "../store/LoginStore"
 import { SignUpSchema } from "../validation/SignUp";
 import { z } from "zod";
+import { useRouter } from "next/navigation";
 // Password Strength Imports
 import { passwordStrength } from "check-password-strength";
 import { Input } from "@nextui-org/react";
 import { PasswordStrengthBar } from "../components/passwordStrengthBar"
+import {signUpAction } from "../actions/signupAction"
 
 type Strength = 0 | 1 | 2 | 3;
 
@@ -22,6 +24,9 @@ interface SignUpFormProps {
     confirmPasswordPlaceholder: string;
     registerButton: string
     passwordRecommendation: string
+    registrationStatusSuccess: string
+    registrationErrorUnknown: string
+    registrationErrorUserAlreadyExists: string
 }
 
 export const SignUpForm: React.FC<SignUpFormProps> = ({
@@ -31,7 +36,10 @@ export const SignUpForm: React.FC<SignUpFormProps> = ({
     passwordPlaceholder,
     confirmPasswordPlaceholder,
     registerButton,
-    passwordRecommendation
+    passwordRecommendation,
+    registrationStatusSuccess,
+    registrationErrorUnknown,
+    registrationErrorUserAlreadyExists,
 }) => {
     type Schema = z.infer<typeof SignUpSchema>
     const [formData, setFormData] = useState<Schema>({} as Schema)
@@ -41,6 +49,8 @@ export const SignUpForm: React.FC<SignUpFormProps> = ({
     const [passwordError, setPasswordError] = useState('')
     const [confirmPasswordError, setConfirmPasswordError] = useState('')
     const [passwordShown, setPasswordShown] = useState(false);
+    const [registrationError, setRegistrationError] = useState("")
+    const [registrationStatus, setRegistrationStatus] = useState("")
     //password strength usestates
     const [passwordStrengthBar, setPasswordStrengthBar] = useState<Strength>(0)
     const [inputedPassword, setInputedPassword] = useState("");
@@ -51,6 +61,9 @@ export const SignUpForm: React.FC<SignUpFormProps> = ({
     const updatePasswordError = LoginStore(state => state.updatePasswordError)
     const storedEmail = LoginStore(state => state.email)
     const storedEmailError = LoginStore(state => state.emailError)
+
+
+    const router = useRouter()
 
     useEffect(() => {
         setPasswordStrengthBar(passwordStrength(inputedPassword).id as Strength)
@@ -63,7 +76,7 @@ export const SignUpForm: React.FC<SignUpFormProps> = ({
 
 
 
-    const validateData = (e: Schema) => {
+    const validateData = async (e: Schema) => {
         try {
             const result = SignUpSchema.safeParse(formData)
             if (!result.success) {
@@ -91,7 +104,26 @@ export const SignUpForm: React.FC<SignUpFormProps> = ({
                 setConfirmPasswordError("")
                 setFirstNameError("")
                 setSecondNameError("")
-                console.log("success")
+                const response = await signUpAction(formData)
+                
+                if (response.error){
+                    console.log(response.error)
+                    switch(response.error){
+                        case ("User already exists"):
+                        setRegistrationError(registrationErrorUserAlreadyExists)
+                        break
+                        default:
+                        setRegistrationError(registrationErrorUnknown)
+                    }
+                    
+                }else{
+                    setRegistrationError("")
+                    setRegistrationStatus(registrationStatusSuccess)
+                    setTimeout(() => {
+                        router.push("/signin");
+                    }, 3000);
+
+                }
             }
         } catch (error) {
             console.log(error)
@@ -104,7 +136,7 @@ export const SignUpForm: React.FC<SignUpFormProps> = ({
                 <TextField
                     style={{ margin: '1rem 0', height: '2.5rem', padding: '0.5rem 1rem', width: '100%' }}
                     className="my-5 h-10 px-2 rounded-lg border border-slate-600 w-full"
-                    placeholder={firstNameError == "" ? firstNamePlaceholder : firstNameError}
+                    placeholder={firstNamePlaceholder}
                     onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
 
                 />
@@ -112,7 +144,7 @@ export const SignUpForm: React.FC<SignUpFormProps> = ({
                 <TextField
                     style={{ margin: '1rem 0', height: '2.5rem', padding: '0.5rem 1rem', width: '100%' }}
                     className="my-5 h-10 px-2 rounded-lg border border-slate-600 w-full"
-                    placeholder={secondNameError == "" ? secondNamePlaceholder : secondNameError}
+                    placeholder={ secondNamePlaceholder }
                     onChange={(e) => setFormData({ ...formData, secondName: e.target.value })}
 
                 />
@@ -120,7 +152,7 @@ export const SignUpForm: React.FC<SignUpFormProps> = ({
                 <TextField
                     style={{ margin: '1rem 0', height: '2.5rem', padding: '0.5rem 1rem', width: '100%' }}
                     className="my-5 h-10 px-2 rounded-lg border border-slate-600 w-full"
-                    placeholder={emailError == "" ? emailPlaceholder : emailError}
+                    placeholder={ emailPlaceholder}
                     onChange={(e) => {
                         setFormData({ ...formData, email: e.target.value });
 
@@ -137,7 +169,7 @@ export const SignUpForm: React.FC<SignUpFormProps> = ({
                 <TextField
                     style={{ margin: '1rem 0', height: '2.5rem', padding: '0.5rem 1rem', width: '100%' }}
                     className="my-5 h-10 px-2 rounded-lg border border-slate-600 w-full"
-                    placeholder={passwordError == '' ? passwordPlaceholder : passwordError}
+                    placeholder={passwordPlaceholder }
                     onChange={(e) => {
                         setFormData({ ...formData, password: e.target.value });
                         setInputedPassword(e.target.value)
@@ -187,7 +219,7 @@ export const SignUpForm: React.FC<SignUpFormProps> = ({
                 <TextField
                     style={{ margin: '1rem 0', height: '2.5rem', padding: '0.5rem 1rem', width: '100%' }}
                     className="my-5 h-10 px-2 rounded-lg border border-slate-600 w-full"
-                    placeholder={passwordError == '' ? confirmPasswordPlaceholder : passwordError}
+                    placeholder={confirmPasswordPlaceholder}
                     onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
                     type={passwordShown ? "text" : "password"}
                     InputProps={{
@@ -207,6 +239,8 @@ export const SignUpForm: React.FC<SignUpFormProps> = ({
                     }
                 />
                 <p className="mt-4 text-red-600">{confirmPasswordError}</p>
+                <p className="mt-4 text-red-600 text-lg">{registrationError}</p>
+                
                 <button type="button" onClick={() => validateData(formData)} className='w-80 mt-8  py-2 text-center font-semibold text-lg bg-cyan-300 hover:bg-cyan-500 active:bg-cyan-700 rounded-xl'>{registerButton}</button>
 
             </div>
