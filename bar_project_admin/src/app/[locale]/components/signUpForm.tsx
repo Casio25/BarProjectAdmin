@@ -7,7 +7,7 @@ import LockIcon from '@mui/icons-material/Lock';
 import { LoginStore } from "../store/LoginStore"
 import { SignUpSchema } from "../validation/SignUp";
 import { z } from "zod";
-import { useRouter } from "next/navigation";
+import { useRouter, redirect } from "@/navigation";
 // Password Strength Imports
 import { passwordStrength } from "check-password-strength";
 import { Input } from "@nextui-org/react";
@@ -22,6 +22,8 @@ interface SignUpFormProps {
     emailPlaceholder: string;
     passwordPlaceholder: string;
     confirmPasswordPlaceholder: string;
+    inputRequired: string
+    passwordsDidNotMatch: string
     registerButton: string
     passwordRecommendation: string
     registrationStatusSuccess: string
@@ -35,6 +37,8 @@ export const SignUpForm: React.FC<SignUpFormProps> = ({
     emailPlaceholder,
     passwordPlaceholder,
     confirmPasswordPlaceholder,
+    inputRequired,
+    passwordsDidNotMatch,
     registerButton,
     passwordRecommendation,
     registrationStatusSuccess,
@@ -55,7 +59,7 @@ export const SignUpForm: React.FC<SignUpFormProps> = ({
     const [passwordStrengthBar, setPasswordStrengthBar] = useState<Strength>(0)
     const [inputedPassword, setInputedPassword] = useState("");
     const passwordSecurityLevel = passwordStrength(inputedPassword).value
-
+    //store fucntions
     const updateEmail = LoginStore(state => state.updateEmail)
     const updateEmailError = LoginStore(state => state.updateEmailError)
     const updatePasswordError = LoginStore(state => state.updatePasswordError)
@@ -74,6 +78,10 @@ export const SignUpForm: React.FC<SignUpFormProps> = ({
         setPasswordShown(!passwordShown);
     };
 
+    const timeoutButton = () => {
+        router.push("/successfull_registration");
+    }
+
 
 
     const validateData = async (e: Schema) => {
@@ -83,20 +91,68 @@ export const SignUpForm: React.FC<SignUpFormProps> = ({
                 const validationError = result.error.format()
                 console.log(validationError)
                 validationError._errors !== undefined
-                    ? setConfirmPasswordError(validationError._errors[0])
-                    : setConfirmPasswordError("")
+                    ? (() => {
+                        switch (validationError._errors[0]) {
+                            case "Required":
+                                setConfirmPasswordError(inputRequired);
+                                break;
+                            case "The passwords did not match":
+                                setConfirmPasswordError(passwordsDidNotMatch);
+                                break;
+                            // Add more cases if needed
+                            default:
+                                setConfirmPasswordError(validationError._errors[0]);
+                        }
+                    })()
+                    : setConfirmPasswordError("");
                 validationError.password !== undefined
-                    ? setPasswordError(validationError.password._errors[0])
-                    : setPasswordError("")
+                    ? (() => {
+                        switch (validationError.password._errors[0]) {
+                            case "Required":
+                                setPasswordError(inputRequired);
+                                break;
+                            // Add more cases if needed
+                            default:
+                                setPasswordError(validationError.password._errors[0]);
+                        }
+                    })()
+                    : setPasswordError("");
                 validationError.email !== undefined
-                    ? setEmailError(validationError.email._errors[0])
-                    : setEmailError("")
+                    ? (() => {
+                        switch (validationError.email._errors[0]) {
+                            case "Required":
+                                setEmailError(inputRequired);
+                                break;
+                            // Add more cases if needed
+                            default:
+                                setEmailError(validationError.email._errors[0]);
+                        }
+                    })()
+                    : setEmailError("");
                 validationError.firstName !== undefined
-                    ? setFirstNameError(validationError.firstName._errors[0])
-                    : setFirstNameError("")
+                    ? (() => {
+                        switch (validationError.firstName._errors[0]) {
+                            case "Required":
+                                setFirstNameError(inputRequired);
+                                break;
+                            // Add more cases if needed
+                            default:
+                                setFirstNameError(validationError.firstName._errors[0]);
+                        }
+                    })()
+                    : setFirstNameError("");
                 validationError.secondName?._errors !== undefined
-                    ? setSecondNameError(validationError.secondName._errors[0])
-                    : setSecondNameError("")
+                    ? (() => {
+                        switch (validationError.secondName._errors[0]) {
+                            case "Required":
+                                setSecondNameError(inputRequired);
+                                break;
+                            // Add more cases if needed
+                            default:
+                                setSecondNameError(validationError.secondName._errors[0]);
+                        }
+                    })()
+                    : setSecondNameError("");
 
             } else if (passwordStrengthBar >= 2) {
                 setEmailError("")
@@ -116,13 +172,16 @@ export const SignUpForm: React.FC<SignUpFormProps> = ({
                         setRegistrationError(registrationErrorUnknown)
                     }
                     
-                }else{
-                    setRegistrationError("")
-                    setRegistrationStatus(registrationStatusSuccess)
-                    setTimeout(() => {
-                        router.push("/signin");
-                    }, 3000);
+                } else {
+                    setRegistrationError('');
+                    setRegistrationStatus(registrationStatusSuccess);
+                    updateEmail(formData.email);
 
+                    // Use router.push for navigation
+                    router.push('/successfull_registration');
+
+                    // The code below will execute after the navigation is complete
+                    console.log(storedEmail);
                 }
             }
         } catch (error) {
@@ -242,6 +301,7 @@ export const SignUpForm: React.FC<SignUpFormProps> = ({
                 <p className="mt-4 text-red-600 text-lg">{registrationError}</p>
                 
                 <button type="button" onClick={() => validateData(formData)} className='w-80 mt-8  py-2 text-center font-semibold text-lg bg-cyan-300 hover:bg-cyan-500 active:bg-cyan-700 rounded-xl'>{registerButton}</button>
+                <button type="button" onClick={() => timeoutButton()} className='w-80 mt-8  py-2 text-center font-semibold text-lg'>timeout test</button>
 
             </div>
         </form>

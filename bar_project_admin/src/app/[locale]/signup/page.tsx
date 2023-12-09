@@ -22,6 +22,8 @@ const SingInPage = () => {
                     registrationStatusSuccess={t("registation status")}
                     registrationErrorUnknown={t("registration error")}
                     registrationErrorUserAlreadyExists={t("registration error (user already exists)")}
+                    inputRequired={t("input required")}
+                    passwordsDidNotMatch={t("passwords didn't match")}
 
                 />
             </div>

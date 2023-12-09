@@ -13,11 +13,13 @@ export const signUpAction = async (formData: RegistrationInterface) => {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
 
-        const json = await response.json();
-        return json; // Return the JSON response
+        // Check if response body is empty before parsing JSON
+        const body = await response.text();
+        const json = body ? JSON.parse(body) : {};
+
+        return json;
 
     } catch (error) {
         console.error("Error:", error);
-        throw error; // Re-throw the error for handling in the main file
     }
 };

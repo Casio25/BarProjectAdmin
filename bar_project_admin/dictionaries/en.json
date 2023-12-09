@@ -25,11 +25,24 @@
         "email placeholder": "Email",
         "password placeholder": "Password",
         "confirm password placeholder": "Confirm password",
+        "input required": "Required",
+        "passwords didn't match": "Passwords do not match",
         "password recommendation": "Password Recommendations:\n - Your password should be at least 8 characters long.\n- Include a mix of uppercase and lowercase letters.\n- Add at least one numeric digit.\n- Add at least one special character.",
         "registration status": "You have successfully registered and will now be redirected to the 'Login' page.",
         "registration error": "Something went wrond",
         "registration error (user already exists)": "User with this email already exists"
     },
+
+    "Successfull Registration": {
+        "sucreg title": "Congrats! You almost there",
+        "sucreg text": "Now use the link thsst we send you via email and finish registration"
+
+    },
+    "Resend Email": {
+        "resend email text": "Massage can get in 'Spam' folder, check it \n If you didn't get the message, you can try to resend it ",
+        "resend email button": "Resend the message"
+    },
+
     "Header": {
         "home link": "Home",
         "signIn link": "Sign in"
