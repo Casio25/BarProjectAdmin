@@ -1,11 +1,12 @@
 "use client"
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { InputAdornment, IconButton, TextField, Button, Checkbox } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import EmailIcon from '@mui/icons-material/Email';
 import LockIcon from '@mui/icons-material/Lock';
 import { LoginStore } from "../store/LoginStore"
 import { SignUpSchema } from "../validation/SignUp";
+import { SignUpFormProps } from "../interface/SignUpInterface";
 import { z } from "zod";
 import { useRouter, redirect } from "@/navigation";
 // Password Strength Imports
@@ -13,23 +14,13 @@ import { passwordStrength } from "check-password-strength";
 import { Input } from "@nextui-org/react";
 import { PasswordStrengthBar } from "../components/passwordStrengthBar"
 import {signUpAction } from "../actions/signupAction"
+import ReCAPTCHA from "react-google-recaptcha";
+//recaptcha imports 
+
 
 type Strength = 0 | 1 | 2 | 3;
 
-interface SignUpFormProps {
-    firstNamePlaceholder: string;
-    secondNamePlaceholder: string;
-    emailPlaceholder: string;
-    passwordPlaceholder: string;
-    confirmPasswordPlaceholder: string;
-    inputRequired: string
-    passwordsDidNotMatch: string
-    registerButton: string
-    passwordRecommendation: string
-    registrationStatusSuccess: string
-    registrationErrorUnknown: string
-    registrationErrorUserAlreadyExists: string
-}
+
 
 export const SignUpForm: React.FC<SignUpFormProps> = ({
     firstNamePlaceholder,
@@ -65,6 +56,9 @@ export const SignUpForm: React.FC<SignUpFormProps> = ({
     const updatePasswordError = LoginStore(state => state.updatePasswordError)
     const storedEmail = LoginStore(state => state.email)
     const storedEmailError = LoginStore(state => state.emailError)
+    //recaptcha
+    const [captcha, setCaptcha] = useState<string | null>();
+    
 
 
     const router = useRouter()
@@ -77,12 +71,6 @@ export const SignUpForm: React.FC<SignUpFormProps> = ({
     const togglePassword = () => {
         setPasswordShown(!passwordShown);
     };
-
-    const timeoutButton = () => {
-        router.push("/successfull_registration");
-    }
-
-
 
     const validateData = async (e: Schema) => {
         try {
@@ -154,7 +142,7 @@ export const SignUpForm: React.FC<SignUpFormProps> = ({
                     })()
                     : setSecondNameError("");
 
-            } else if (passwordStrengthBar >= 2) {
+            } else if (passwordStrengthBar >= 2 && captcha) {
                 setEmailError("")
                 setPasswordError("")
                 setConfirmPasswordError("")
@@ -297,11 +285,12 @@ export const SignUpForm: React.FC<SignUpFormProps> = ({
                     }
                     }
                 />
+                <ReCAPTCHA sitekey="6Le-JiwpAAAAAN3Z-d0XX0CWxpMJ7h0lP5Ue7p_2" onChange={setCaptcha} className="mt-10"/>
+
                 <p className="mt-4 text-red-600">{confirmPasswordError}</p>
                 <p className="mt-4 text-red-600 text-lg">{registrationError}</p>
                 
                 <button type="button" onClick={() => validateData(formData)} className='w-80 mt-8  py-2 text-center font-semibold text-lg bg-cyan-300 hover:bg-cyan-500 active:bg-cyan-700 rounded-xl'>{registerButton}</button>
-                <button type="button" onClick={() => timeoutButton()} className='w-80 mt-8  py-2 text-center font-semibold text-lg'>timeout test</button>
 
             </div>
         </form>

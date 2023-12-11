@@ -15,6 +15,10 @@
         "login button": "Log in",
         "email placeholder": "Email",
         "password placeholder": "Password",
+        "input required": "Required",
+        "invalid email": "This does not look like email",
+        "password is short": "Password must contain at least 8 character(s)",
+        "password is long": "Password must contain at most 20 character(s)",
         "or": "or"
     },
     "Register": {

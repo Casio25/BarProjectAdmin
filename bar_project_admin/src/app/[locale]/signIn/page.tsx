@@ -16,6 +16,10 @@ const SingInPage = () => {
           passwordPlaceholder={t("password placeholder")}
           loginButton={t("login button")}
           signupButton={t("signup button")}
+          inputRequired={t("input required")}
+          invalidEmail={t("invalid email")}
+          shortPasswordError={t("password is short")}
+          longPasswordError={t("password is long")}
           or={t("or")}
         />
       </div>

@@ -3,5 +3,9 @@ export interface SignInFormProps {
     passwordPlaceholder: string;
     loginButton: string;
     signupButton: string
+    inputRequired: string
+    invalidEmail: string
+    shortPasswordError: string
+    longPasswordError: string
     or: string
 }

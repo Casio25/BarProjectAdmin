@@ -7,6 +7,7 @@ import LockIcon from '@mui/icons-material/Lock';
 import {LoginStore} from "../store/LoginStore"
 import {SignInSchema} from "../validation/SignIn";
 import { SignInFormProps } from "../interface/SignInInterface";
+import { signInAction } from "../actions/signinAction";
 import {z} from "zod"
 import { Link } from "@/navigation";
 
@@ -16,6 +17,10 @@ export const SignInForm: React.FC<SignInFormProps> = ({
     passwordPlaceholder,
     loginButton,
     signupButton,
+    inputRequired,
+    invalidEmail,
+    shortPasswordError,
+    longPasswordError,
     or,
 }) => {
     type Schema = z.infer<typeof SignInSchema>
@@ -24,6 +29,7 @@ export const SignInForm: React.FC<SignInFormProps> = ({
     const [passwordError, setPasswordError] = useState('')
     const [passwordShown, setPasswordShown] = useState(false);
     const updateEmail = LoginStore(state=>state.updateEmail)
+    const updateJwtToken = LoginStore(state=>state.updateJwtToken)
     const updateEmailError = LoginStore(state=>state.updateEmailError)
     const updatePasswordError = LoginStore(state=>state.updatePasswordError)
     const storedEmail = LoginStore(state => state.email)
@@ -34,20 +40,55 @@ export const SignInForm: React.FC<SignInFormProps> = ({
         setPasswordShown(!passwordShown);
     };
 
-    const validateData = (e: Schema) => {
+    const validateData = async (e: Schema) => {
         try {
             const result = SignInSchema.safeParse(formData)
             if (!result.success) {
                 const validationError = result.error.format()
                 validationError.password !== undefined
-                 ? setPasswordError(validationError.password._errors[0])
-                 : setPasswordError("")
+                    ? (() => {
+                        switch (validationError.password._errors[0]) {
+                            case "Required":
+                                setPasswordError(inputRequired)
+                                break;
+                            case "String must contain at least 8 character(s)":
+                                setPasswordError(shortPasswordError)
+                                break;
+                            case "String must contain at most 20 character(s)":
+                                setPasswordError(longPasswordError)
+                                break;
+                            // Add more cases if needed
+                            default:
+                                setPasswordError(validationError.password._errors[0]);
+                        }
+                    })()
+                    : setPasswordError("");
                 validationError.email !== undefined
-                 ? setEmailError(validationError.email._errors[0])
-                 : setEmailError("")
+                    ? (() => {
+                        switch (validationError.email._errors[0]) {
+                            case "Required":
+                                setEmailError(inputRequired);
+                                break;
+                            case "Invalid email":
+                                setEmailError(invalidEmail);
+                                break;
+                            // Add more cases if needed
+                            default:
+                                setEmailError(validationError.email._errors[0]);
+                        }
+                    })()
+                    : setEmailError("");
             }else{
                 setEmailError("")
                 setPasswordError("")
+                const response = await signInAction(formData)
+                if (response.error){
+                    console.log(response.error)
+                }else{
+                    console.log("success")
+                    console.log(response.access_token)
+                    updateJwtToken(response.access_token)
+                }
             }
         }catch (error){
             console.log(error)
@@ -60,7 +101,7 @@ export const SignInForm: React.FC<SignInFormProps> = ({
                 <TextField
                     style={{ margin: '1rem 0', height: '2.5rem', padding: '0.5rem 1rem', width: '100%' }}
                     className="my-5 h-10 px-2 rounded-lg border border-slate-600 w-full"
-                    placeholder={emailError == "" ? emailPlaceholder: emailError}
+                    placeholder={ emailPlaceholder}
                     onChange={(e)=> setFormData({...formData, email: e.target.value})}
                     InputProps={{startAdornment: (
                         <InputAdornment position="start">
@@ -72,7 +113,7 @@ export const SignInForm: React.FC<SignInFormProps> = ({
                 <TextField
                     style={{ margin: '1rem 0', height: '2.5rem', padding: '0.5rem 1rem', width: '100%' }}
                     className="my-5 h-10 px-2 rounded-lg border border-slate-600 w-full"
-                    placeholder={passwordError == '' ? passwordPlaceholder : passwordError}
+                    placeholder={passwordPlaceholder}
                     onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                     type={passwordShown ? "text" : "password"}
                     InputProps={{

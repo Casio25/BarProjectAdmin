@@ -15,6 +15,10 @@
         "login button": "Увійти",
         "email placeholder": "Електронна пошта",
         "password placeholder": "Пароль",
+        "input required": "Обов'язкове поле",
+        "invalid email": "Це не схоже на електрону пошту",
+        "password is short": "Пароль має містити мінімум 8 символів",
+        "password is long": "Пароль має містити маскимум 20 символів",
         "or": "або"
     },
     "Register": {
