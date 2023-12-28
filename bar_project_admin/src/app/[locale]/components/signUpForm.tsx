@@ -1,5 +1,5 @@
 "use client"
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { InputAdornment, IconButton, TextField, Button, Checkbox } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import EmailIcon from '@mui/icons-material/Email';
@@ -149,6 +149,7 @@ export const SignUpForm: React.FC<SignUpFormProps> = ({
                 setFirstNameError("")
                 setSecondNameError("")
                 const response = await signUpAction(formData)
+                console.log("formData: ", formData)
                 
                 if (response.error){
                     console.log(response.error)
@@ -166,7 +167,7 @@ export const SignUpForm: React.FC<SignUpFormProps> = ({
                     updateEmail(formData.email);
 
                     // Use router.push for navigation
-                    router.push('/successfull_registration');
+                    router.push('/confirm_registration');
 
                     // The code below will execute after the navigation is complete
                     console.log(storedEmail);
@@ -223,6 +224,9 @@ export const SignUpForm: React.FC<SignUpFormProps> = ({
 
                     }}
                     type={passwordShown ? "text" : "password"}
+                    inputProps={{
+                        maxLength: 11,
+                    }}
                     InputProps={{
                         endAdornment: (
                             <InputAdornment position="end">
@@ -269,6 +273,9 @@ export const SignUpForm: React.FC<SignUpFormProps> = ({
                     placeholder={confirmPasswordPlaceholder}
                     onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
                     type={passwordShown ? "text" : "password"}
+                    inputProps={{
+                        maxLength: 11,
+                    }}
                     InputProps={{
                         endAdornment: (
                             <InputAdornment position="end">

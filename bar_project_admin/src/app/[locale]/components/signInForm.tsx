@@ -9,7 +9,8 @@ import {SignInSchema} from "../validation/SignIn";
 import { SignInFormProps } from "../interface/SignInInterface";
 import { signInAction } from "../actions/signinAction";
 import {z} from "zod"
-import { Link } from "@/navigation";
+import { Link, useRouter } from "@/navigation";
+import { profileAction } from "../actions/profile";
 
 
 export const SignInForm: React.FC<SignInFormProps> = ({
@@ -17,10 +18,14 @@ export const SignInForm: React.FC<SignInFormProps> = ({
     passwordPlaceholder,
     loginButton,
     signupButton,
+    forgotPasswordButton,
     inputRequired,
     invalidEmail,
     shortPasswordError,
     longPasswordError,
+    signinError,
+    signinErrorWrongEmail,
+    signinErrorWrongPassword,
     or,
 }) => {
     type Schema = z.infer<typeof SignInSchema>
@@ -28,12 +33,15 @@ export const SignInForm: React.FC<SignInFormProps> = ({
     const [emailError, setEmailError] = useState('')
     const [passwordError, setPasswordError] = useState('')
     const [passwordShown, setPasswordShown] = useState(false);
+    const storedJwtToken = LoginStore(state => state.jwtToken);
     const updateEmail = LoginStore(state=>state.updateEmail)
     const updateJwtToken = LoginStore(state=>state.updateJwtToken)
     const updateEmailError = LoginStore(state=>state.updateEmailError)
     const updatePasswordError = LoginStore(state=>state.updatePasswordError)
     const storedEmail = LoginStore(state => state.email)
     const storedEmailError = LoginStore(state => state.emailError)
+
+    const router = useRouter()
 
 
     const togglePassword = () => {
@@ -82,13 +90,31 @@ export const SignInForm: React.FC<SignInFormProps> = ({
                 setEmailError("")
                 setPasswordError("")
                 const response = await signInAction(formData)
-                if (response.error){
-                    console.log(response.error)
+                if (response.error) {
+                    switch (response.error) {
+                        case "Wrong password":
+                            setPasswordError(signinErrorWrongPassword);
+                            break;     
+                        case "User with this email doesn't exist":
+                            setEmailError(signinErrorWrongEmail)
+                            break;
+                        default:
+                            setEmailError(signinError)
+                    }
                 }else{
-                    console.log("success")
-                    console.log(response.access_token)
                     updateJwtToken(response.access_token)
+                    console.log("response from signin: ", response.access_token)
+                    const profileResponse = await profileAction(response.access_token)
+                    console.log("response from find: ", profileResponse)
+                    if (!profileResponse.isEmailConfirmed) {
+                        console.log(profileResponse)
+                        updateEmail(formData.email);
+
+                        // Use router.push for navigation
+                        router.push('/confirm_registration');
+                    }
                 }
+                
             }
         }catch (error){
             console.log(error)
@@ -137,6 +163,9 @@ export const SignInForm: React.FC<SignInFormProps> = ({
                 <p className='py-2'>{or}</p>
                 <Link href="./signup">
                     <button type="button" className='w-80  py-2 text-center  text-lg bg-cyan-300 hover:bg-cyan-500 active:bg-cyan-700 rounded-xl'>{signupButton}</button>
+                </Link>
+                <Link href="./forgot_password">
+                    <button type="button" className='w-80 mt-12 py-2 text-center  text-lg bg-rose-300 hover:bg-rose-500 active:bg-rose-700 rounded-xl'>{forgotPasswordButton}</button>
                 </Link>
             </div>
         </form>

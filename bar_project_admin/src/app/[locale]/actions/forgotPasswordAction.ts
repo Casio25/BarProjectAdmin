@@ -1,12 +1,14 @@
 "use server"
-import { LoginInterface } from "../interface/LoginInterface";
+import { ForgotPasswordInterface } from "../interface/ForgotPasswordInterface";
 
-export const signInAction = async (formData: LoginInterface) => {
+export const forgotPasswordAction = async (formData: ForgotPasswordInterface) => {
     try {
-        const response = await fetch("http://localhost:4000/auth/signin", {
-            cache: "no-store",
+        const response = await fetch("http://localhost:4000/auth/forgot_password", {
             method: "POST",
-            headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" },
+            headers: { "Content-Type": "application/json", 
+            "Access-Control-Allow-Origin": "*"
+
+},
             body: JSON.stringify(formData),
         });
 
@@ -15,12 +17,10 @@ export const signInAction = async (formData: LoginInterface) => {
         }
 
         // Check if response body is empty before parsing JSON
-        
         const body = await response.text();
         const json = body ? JSON.parse(body) : {};
 
         return json;
-        
 
     } catch (error) {
         console.error("Error:", error);
