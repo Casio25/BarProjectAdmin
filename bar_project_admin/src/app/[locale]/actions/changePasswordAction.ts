@@ -12,6 +12,7 @@ export const ChangePasswordAction = async (formData: ChangePasswordInterface) =>
             console.log("token in action component: ", jwtToken);
 
             const response = await fetch("http://localhost:4000/auth/update", {
+                cache: "no-store",
                 method: "PATCH",
                 headers: {
                     "Content-Type": "application/json",

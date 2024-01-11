@@ -4,6 +4,7 @@ import { ForgotPasswordInterface } from "../interface/ForgotPasswordInterface";
 export const forgotPasswordAction = async (formData: ForgotPasswordInterface) => {
     try {
         const response = await fetch("http://localhost:4000/auth/forgot_password", {
+            cache: "no-store",
             method: "POST",
             headers: { "Content-Type": "application/json", 
             "Access-Control-Allow-Origin": "*"

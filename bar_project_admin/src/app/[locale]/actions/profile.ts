@@ -5,6 +5,7 @@ export const profileAction = async (storedJwtToken: string) => {
     try {
         console.log("token in server: ", storedJwtToken)
         const response = await fetch("http://localhost:4000/user/find", {
+            cache: "no-store",
             method: "GET",
             headers: { "Content-Type": "application/json",
              "Access-Control-Allow-Origin": "*",

@@ -1,12 +1,8 @@
 "use server"
 
-const VerifyEmailAction = async() => {
-    try {
+const VerifyEmailAction = async(jwtToken: string) => {
 
-        const urlSearchParams = new URLSearchParams(window.location.search)
-        const queryParams = Object.fromEntries(urlSearchParams.entries())
-        const jwtToken = queryParams.token
-        console.log("token in action component: ", jwtToken)
+    try {
         const response = await fetch("http://localhost:4000/auth/verify", {
             method: "GET", headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*", "Authorization": `Bearer ${jwtToken}` },
 
@@ -15,8 +11,10 @@ const VerifyEmailAction = async() => {
         if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
+            return response.status;
     } catch (error) {
-
+        console.error("Verification failde:", error)
+        
     }
 }
 

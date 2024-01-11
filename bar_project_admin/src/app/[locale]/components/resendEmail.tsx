@@ -35,7 +35,9 @@ export const ResendEmail: React.FC<ResendEmailProps> = ({
       ))}
       <p className='mr-auto mt-2 font-bold'>{ResendCurrentEmail}</p>
       <p>{storedEmail}</p>
-      <button onClick={() => resendEmail(storedEmail)} className='p-2 mt-4 text-center font-semibold text-lg bg-cyan-300 hover:bg-cyan-500 active:bg-cyan-700 rounded-xl'>{ResendEmailButton}</button>
+      <button onClick={() => resendEmail(storedEmail)} className='w-[360px] h-12 px-6 py-4 bg-violet-900 active:bg-violet-700 rounded-3xl justify-center items-center gap-2 inline-flex'>
+        <p className='text-center text-white text-sm font-semibold leading-none'>{ResendEmailButton}</p>
+        </button>
     </div>
   );
 

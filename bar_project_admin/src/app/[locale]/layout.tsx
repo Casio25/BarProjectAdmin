@@ -1,12 +1,15 @@
 import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
+import { Inter, Work_Sans, Montserrat } from 'next/font/google'
+
 import { useLocale } from 'next-intl'
 import { notFound } from 'next/navigation'
 import Header from './components/header'
+import  Cookies  from './components/cookies'
 import './globals.css'
 import { Providers } from './providers'
+import { ChangeLanguage } from './components/changeLanguage'
 
-const inter = Inter({ subsets: ['latin'] })
+const inter = Montserrat({ subsets: ['latin', 'cyrillic'] })
 
 export const metadata: Metadata = {
   title: 'Create Next App',
@@ -26,8 +29,9 @@ if (!locales.includes(locale as any)) notFound();
     <html lang={locale}>
       <body className={inter.className}>
         <Providers>
-        <Header/>
+        <ChangeLanguage />
         {children}
+        <Cookies/>
         </Providers>
         </body>
     </html> 

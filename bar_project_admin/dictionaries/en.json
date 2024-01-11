@@ -20,7 +20,7 @@
         "invalid email": "This does not look like email",
         "password is short": "Password must contain at least 8 character(s)",
         "password is long": "Password must contain at most 20 character(s)",
-        "signin error": "Something went wrong",
+        "signin error": "Looks like something went wrong",
         "signin error (wrong email)": "User with this emaill doesn't exist",
         "signin error (wrong password)": "Wrong password",
         "or": "or"
@@ -79,6 +79,12 @@
     "Header": {
         "home link": "Home",
         "signIn link": "Sign in"
+    },
+
+    "User Error": {
+        "error title": "Looks like something went wrong",
+        "error text": "Please, try again or contact our support team to resolve this issue"
     }
+
 
 }

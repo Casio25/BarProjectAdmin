@@ -199,7 +199,8 @@ export const ChangePasswordForm: React.FC<ChangePasswordFormProps> = ({
                     }
                 />
                 <p className="mt-4 text-red-600">{confirmPasswordError}</p>
-                <button type="button" onClick={() => validateData(formData)} className='w-80 mt-8  py-2 text-center font-semibold text-lg bg-cyan-300 hover:bg-cyan-500 active:bg-cyan-700 rounded-xl'>{changePasswordButton}</button>
+                <button type="button" onClick={() => validateData(formData)} className='w-[360px] h-12 mt-4 px-6 py-4 bg-violet-900 active:bg-violet-700 rounded-3xl justify-center items-center gap-2 inline-flex'>
+                    <p className='text-center text-white text-sm font-semibold leading-none'>{changePasswordButton}</p></button>
 
             </div>
         </form>

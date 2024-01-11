@@ -1,14 +1,14 @@
 "use client"
 import React, { useState, useEffect } from "react";
-import { InputAdornment, IconButton, TextField, Button} from "@mui/material";
+import { InputAdornment, IconButton, TextField, Button } from "@mui/material";
 import { Schema, Visibility, VisibilityOff } from "@mui/icons-material";
 import EmailIcon from '@mui/icons-material/Email';
 import LockIcon from '@mui/icons-material/Lock';
-import {LoginStore} from "../store/LoginStore"
-import {SignInSchema} from "../validation/SignIn";
+import { LoginStore } from "../store/LoginStore"
+import { SignInSchema } from "../validation/SignIn";
 import { SignInFormProps } from "../interface/SignInInterface";
 import { signInAction } from "../actions/signinAction";
-import {z} from "zod"
+import { z } from "zod"
 import { Link, useRouter } from "@/navigation";
 import { profileAction } from "../actions/profile";
 
@@ -34,10 +34,10 @@ export const SignInForm: React.FC<SignInFormProps> = ({
     const [passwordError, setPasswordError] = useState('')
     const [passwordShown, setPasswordShown] = useState(false);
     const storedJwtToken = LoginStore(state => state.jwtToken);
-    const updateEmail = LoginStore(state=>state.updateEmail)
-    const updateJwtToken = LoginStore(state=>state.updateJwtToken)
-    const updateEmailError = LoginStore(state=>state.updateEmailError)
-    const updatePasswordError = LoginStore(state=>state.updatePasswordError)
+    const updateEmail = LoginStore(state => state.updateEmail)
+    const updateJwtToken = LoginStore(state => state.updateJwtToken)
+    const updateEmailError = LoginStore(state => state.updateEmailError)
+    const updatePasswordError = LoginStore(state => state.updatePasswordError)
     const storedEmail = LoginStore(state => state.email)
     const storedEmailError = LoginStore(state => state.emailError)
 
@@ -86,7 +86,7 @@ export const SignInForm: React.FC<SignInFormProps> = ({
                         }
                     })()
                     : setEmailError("");
-            }else{
+            } else {
                 setEmailError("")
                 setPasswordError("")
                 const response = await signInAction(formData)
@@ -94,14 +94,14 @@ export const SignInForm: React.FC<SignInFormProps> = ({
                     switch (response.error) {
                         case "Wrong password":
                             setPasswordError(signinErrorWrongPassword);
-                            break;     
+                            break;
                         case "User with this email doesn't exist":
                             setEmailError(signinErrorWrongEmail)
                             break;
                         default:
                             setEmailError(signinError)
                     }
-                }else{
+                } else {
                     updateJwtToken(response.access_token)
                     console.log("response from signin: ", response.access_token)
                     const profileResponse = await profileAction(response.access_token)
@@ -114,9 +114,9 @@ export const SignInForm: React.FC<SignInFormProps> = ({
                         router.push('/confirm_registration');
                     }
                 }
-                
+
             }
-        }catch (error){
+        } catch (error) {
             console.log(error)
         }
     }
@@ -125,19 +125,21 @@ export const SignInForm: React.FC<SignInFormProps> = ({
         <form>
             <div className="w-full flex flex-col items-center max-w-md p-6 rounded-lg shadow-lg'">
                 <TextField
-                    style={{ margin: '1rem 0', height: '2.5rem', padding: '0.5rem 1rem', width: '100%' }}
-                    className="my-5 h-10 px-2 rounded-lg border border-slate-600 w-full"
-                    placeholder={ emailPlaceholder}
-                    onChange={(e)=> setFormData({...formData, email: e.target.value})}
-                    InputProps={{startAdornment: (
-                        <InputAdornment position="start">
-                            <EmailIcon />
-                        </InputAdornment>
-                    )}}
+                    style={{ margin: '1rem 0', height: '2.5rem', width: '100%', }}
+                    className="my-5 h-10 px-2 py-6 rounded-lg border border-slate-600 w-full"
+                    placeholder={emailPlaceholder}
+                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    InputProps={{
+                        startAdornment: (
+                            <InputAdornment position="start">
+                                <EmailIcon />
+                            </InputAdornment>
+                        )
+                    }}
                 />
                 <p className="mt-4 text-red-600">{emailError}</p>
                 <TextField
-                    style={{ margin: '1rem 0', height: '2.5rem', padding: '0.5rem 1rem', width: '100%' }}
+                    style={{ margin: '1rem 0', height: '2.5rem', width: '100%' }}
                     className="my-5 h-10 px-2 rounded-lg border border-slate-600 w-full"
                     placeholder={passwordPlaceholder}
                     onChange={(e) => setFormData({ ...formData, password: e.target.value })}
@@ -156,17 +158,26 @@ export const SignInForm: React.FC<SignInFormProps> = ({
                             </InputAdornment>
                         )
                     }
-                }
+                    }
                 />
                 <p className="mt-4 text-red-600">{passwordError}</p>
-                <button type="button" onClick={()=> validateData(formData)} className='w-80 mt-8  py-2 text-center font-semibold text-lg bg-cyan-300 hover:bg-cyan-500 active:bg-cyan-700 rounded-xl'>{loginButton}</button>
-                <p className='py-2'>{or}</p>
+                <Link className="flex mb-4 my-2 mr-auto" href="./forgot_password">
+                    <p className='text-zinc-900 text-sm font-normal underline leading-none'>{forgotPasswordButton}</p>
+                </Link>
+                <button type="button" onClick={() => validateData(formData)} className='w-[360px] h-12 px-6 py-4 bg-violet-900 active:bg-violet-700 rounded-3xl justify-center items-center gap-2 inline-flex'>
+                    <p className="text-center text-white text-sm font-semibold font-['Work Sans'] leading-none">{loginButton}</p>
+                </button>
+                <div className="flex">
+                    <p className="w-32 my-5 h-px bg-neutral-200" />
+                    <p className='py-2 mx-4'>{or}</p>
+                    <p className="w-32 my-5 h-px bg-neutral-200" />
+                </div>
                 <Link href="./signup">
-                    <button type="button" className='w-80  py-2 text-center  text-lg bg-cyan-300 hover:bg-cyan-500 active:bg-cyan-700 rounded-xl'>{signupButton}</button>
+                    <button type="button" className='w-[360px] h-12 px-6 py-4 rounded-3xl border border-violet-900 justify-center items-center gap-2 inline-flex'>
+                        <p className="text-center text-violet-900 text-sm font-semibold font-['Work Sans'] leading-none">{signupButton}</p>
+                    </button>
                 </Link>
-                <Link href="./forgot_password">
-                    <button type="button" className='w-80 mt-12 py-2 text-center  text-lg bg-rose-300 hover:bg-rose-500 active:bg-rose-700 rounded-xl'>{forgotPasswordButton}</button>
-                </Link>
+                
             </div>
         </form>
     );

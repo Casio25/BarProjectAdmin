@@ -10,17 +10,18 @@ export const ChangeLanguage = () => {
     const ChangeOpacity = () => {
         setLanguageOpacity(!languageOpacity)
     }
+    
 
     return (
-        <div className=" flex relative z-0">
-            <button className="mx-6 border-2 align-middle border-violet-500 flex rounded-lg active:ring-4 "
+        <div className=" flex flex-col h-10 z-0 px-6 ">
+            <button className="mt-3 scale-150 border-2 align-middle border-violet-500 flex rounded-lg active:ring-4 ml-auto "
             onClick={ChangeOpacity}>
-               <LanguageIcon />
+                <LanguageIcon sx={{ color: 'light-blue' }} />
             </button>
-            <div className={`absolute z-10 mt-16 align:center px-4 transition-all ${!languageOpacity
+            <div className={`absolute z-10 mt-16 align:center transition-all ${!languageOpacity
                 ? 'opacity-0 -translate-y-3' 
-                : 'active:opacity-100 translate-y-0'} ease-in-out bg-white text-black shadow-xl hover:shadow-2xl rounded mb-2`}>
-                <ul >
+                : 'active:opacity-100 translate-y-0'} ease-in-out right-0 mr-3`}>
+                <ul className= "bg-white text-black shadow-xl hover:shadow-2xl rounded mb-2 p-2">
                     <Link href={pathname} locale="ua">
                         <li>
                             <span className="fi fi-ua text-2xl"></span>

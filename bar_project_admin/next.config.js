@@ -27,6 +27,7 @@ const nextConfig = {
 
         return config;
     },
+    
 }
 const withNextIntl = require("next-intl/plugin")(
     './src/i18n.ts'
