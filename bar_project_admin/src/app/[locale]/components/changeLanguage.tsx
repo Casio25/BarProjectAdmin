@@ -13,7 +13,7 @@ export const ChangeLanguage = () => {
     
 
     return (
-        <div className=" flex flex-col h-10 z-0 px-6 ">
+        <div className="h-10 z-0 px-6 ">
             <button className="mt-3 scale-150 border-2 align-middle border-violet-500 flex rounded-lg active:ring-4 ml-auto "
             onClick={ChangeOpacity}>
                 <LanguageIcon sx={{ color: 'light-blue' }} />

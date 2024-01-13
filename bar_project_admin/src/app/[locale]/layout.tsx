@@ -29,7 +29,6 @@ if (!locales.includes(locale as any)) notFound();
     <html lang={locale}>
       <body className={inter.className}>
         <Providers>
-        <ChangeLanguage />
         {children}
         <Cookies/>
         </Providers>
