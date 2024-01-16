@@ -2,11 +2,19 @@ import { useTranslations } from 'next-intl';
 import SideNavBar from './components/sideNavBar';
 
 export default function Home() {
-  const t = useTranslations('Home');
+  const h = useTranslations('Home');
+  const t = useTranslations("SideNavBar")
   return (
-    <div>
-      <h1>{t('title')}</h1>
-      <SideNavBar />
+    <div className='flex'>
+      <SideNavBar
+        Promotions={t("Promotions")}
+        Orders={t("Orders")}
+        Home={t("Home")}
+        PaymentDetails={t("PaymentDetails")}
+        FAQ={t("FAQ")}
+        Settings={t("Settings")}
+        Feedback={t("Feedback")} />
+      <h1>{h('title')}</h1>
     </div>
   );
 }

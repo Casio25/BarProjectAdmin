@@ -1,7 +1,7 @@
-import { useTranslations } from 'next-intl'
 import React from 'react'
 import SideNavBar from '../components/sideNavBar'
-const PaymentPage = () => {
+import { useTranslations } from 'next-intl';
+const FAQPage = () => {
     const t = useTranslations("SideNavBar")
     return (
         <div className='flex'>
@@ -13,8 +13,8 @@ const PaymentPage = () => {
                 FAQ={t("FAQ")}
                 Settings={t("Settings")}
                 Feedback={t("Feedback")} />
-            <p>paymet page</p>
+            <p>FAQ page</p>
         </div>
     )
 }
-export default PaymentPage
+export default FAQPage

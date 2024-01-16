@@ -103,16 +103,13 @@ export const SignInForm: React.FC<SignInFormProps> = ({
                     }
                 } else {
                     updateJwtToken(response.access_token)
-                    console.log("response from signin: ", response.access_token)
                     const profileResponse = await profileAction(response.access_token)
-                    console.log("response from find: ", profileResponse)
                     if (!profileResponse.isEmailConfirmed) {
                         console.log(profileResponse)
                         updateEmail(formData.email);
-
-                        // Use router.push for navigation
                         router.push('/confirm_registration');
                     }
+                    router.push("/")
                 }
 
             }

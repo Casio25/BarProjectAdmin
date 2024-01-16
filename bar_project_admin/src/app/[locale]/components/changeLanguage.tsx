@@ -13,10 +13,10 @@ export const ChangeLanguage = () => {
     
 
     return (
-        <div className="h-10 z-0 px-6 ">
+        <div className="h-10 z-0 px-6 ml-auto">
             <button className="mt-3 scale-150 border-2 align-middle border-violet-500 flex rounded-lg active:ring-4 ml-auto "
             onClick={ChangeOpacity}>
-                <LanguageIcon sx={{ color: 'light-blue' }} />
+                <LanguageIcon sx={{ color: 'white' }} />
             </button>
             <div className={`absolute z-10 mt-16 align:center transition-all ${!languageOpacity
                 ? 'opacity-0 -translate-y-3' 

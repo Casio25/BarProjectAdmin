@@ -1,7 +1,9 @@
-import { useTranslations } from 'next-intl'
 import React from 'react'
+import PageNavigation from '../components/pageNavigation'
 import SideNavBar from '../components/sideNavBar'
-const PaymentPage = () => {
+import { useTranslations } from 'next-intl';
+import { ChangeLanguage } from '../components/changeLanguage';
+const SettingsPage = () => {
     const t = useTranslations("SideNavBar")
     return (
         <div className='flex'>
@@ -13,8 +15,9 @@ const PaymentPage = () => {
                 FAQ={t("FAQ")}
                 Settings={t("Settings")}
                 Feedback={t("Feedback")} />
-            <p>paymet page</p>
+            <ChangeLanguage/>
         </div>
     )
 }
-export default PaymentPage
+
+export default SettingsPage

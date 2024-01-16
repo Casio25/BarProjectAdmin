@@ -2,13 +2,16 @@ import { LoginStore } from "../store/LoginStore"
 import { useTranslations } from 'next-intl';
 import React from 'react'
 import { SignInForm } from '../components/signInForm';
+import { ChangeLanguage } from "../components/changeLanguage";
 
 
 
 const SingInPage = () => {
   const t = useTranslations("SignIn")
   return (
-    <div className="min-h-screen flex items-center justify-center bg-violet-900">
+    <div className='flex flex-col bg-violet-900'>
+      <ChangeLanguage />
+    <div className="min-h-screen flex flex-col items-center justify-center bg-violet-900">
       <div className='w-full flex flex-col items-center max-w-md p-6 bg-white rounded-xl shadow-xl'>
        
         <SignInForm
@@ -27,6 +30,7 @@ const SingInPage = () => {
           or={t("or")}
         />
       </div>
+    </div>
     </div>
   )
 }

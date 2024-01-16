@@ -84,7 +84,24 @@
     "User Error": {
         "error title": "Looks like something went wrong",
         "error text": "Please, try again or contact our support team to resolve this issue"
-    }
+    },
+
+    "Promotion Page Header": {
+        "prom header new": "New",
+        "prom header accepted": "Accepted",
+        "prom header finished": "Finished"
+    },
+     "SideNavBar": {
+        "Promotions": "Promotions",
+        "Orders": "Orders",
+        "Home": "Home",
+        "PaymentDetails": "Payment details",
+        "FAQ": "FAQ",
+        "Settings": "Settings",
+        "Feedback": "Feedback"
+     }
+
+
 
 
 }

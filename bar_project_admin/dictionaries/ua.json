@@ -86,5 +86,21 @@
     "User Error": {
         "error title": "Щось пішло не так",
         "error text": "Спробуйте ще раз або зверніться до нашої служби підтримки, щоб вирішити цю проблему"
+    },
+
+    "Promotion Page Header": {
+        "prom header new": "Нові",
+        "prom header accepted": "Прийняті",
+        "prom header finished": "Завершені"
+    },
+
+    "SideNavBar": {
+        "Promotions": "Акції",
+        "Orders": "Замовлення",
+        "Home": "Головна",
+        "PaymentDetails": "Деталі оплати",
+        "FAQ": "FAQ",
+        "Settings": "Налаштування",
+        "Feedback": "Зворотній зв'язок"
     }
 }
