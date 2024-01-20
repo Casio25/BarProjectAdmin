@@ -108,8 +108,9 @@ export const SignInForm: React.FC<SignInFormProps> = ({
                         console.log(profileResponse)
                         updateEmail(formData.email);
                         router.push('/confirm_registration');
+                    }else{
+                        router.push("/")
                     }
-                    router.push("/")
                 }
 
             }
