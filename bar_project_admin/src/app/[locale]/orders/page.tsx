@@ -1,6 +1,6 @@
 import { useTranslations } from 'next-intl'
 import React from 'react'
-import { GetProductsComponent } from '../components/getProducts'
+import { GetProductsComponent } from '../components/getProductsExel'
 import SideNavBar from '../components/sideNavBar'
 
 const OrdersPage = () => {
@@ -13,6 +13,7 @@ const OrdersPage = () => {
                 Orders={t("Orders")}
                 Home={t("Home")}
                 PaymentDetails={t("PaymentDetails")}
+                Products={t("Products")}
                 FAQ={t("FAQ")}
                 Settings={t("Settings")}
                 Feedback={t("Feedback")} />

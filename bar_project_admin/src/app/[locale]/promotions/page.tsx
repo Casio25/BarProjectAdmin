@@ -17,6 +17,7 @@ const PromotionPage = () => {
         Orders={s("Orders")}
         Home={String("Home")}
         PaymentDetails={s("PaymentDetails")}
+        Products={t("Products")}
         FAQ={s("FAQ")}
         Settings={s("Settings")}
         Feedback={s("Feedback")} />

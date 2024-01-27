@@ -11,6 +11,7 @@ export default function Home() {
         Orders={t("Orders")}
         Home={t("Home")}
         PaymentDetails={t("PaymentDetails")}
+        Products={t("Products")}
         FAQ={t("FAQ")}
         Settings={t("Settings")}
         Feedback={t("Feedback")} />

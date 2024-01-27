@@ -2,7 +2,7 @@
 import classNames from "classnames";
 import React, { useState, useMemo } from "react";
 import { Link, useRouter, usePathname } from "@/navigation";
-import { PromotionIcon, HomeIcon, MoneyIcon, SettingsIcon, ATBIcon, FAQIcon, FeedbackIcon, OrdersIcon } from "./svgs";
+import { PromotionIcon, HomeIcon, MoneyIcon, SettingsIcon, ATBIcon, FAQIcon, FeedbackIcon, OrdersIcon, ProductsIcon } from "./svgs";
 import { SideNavBarProps } from "../interface/SideNavBarInterface";
 
 
@@ -12,6 +12,7 @@ const SideNavBar :React.FC<SideNavBarProps> = ({
   Orders,
   Home,
   PaymentDetails,
+  Products,
   FAQ,
   Settings,
   Feedback
@@ -47,6 +48,12 @@ const SideNavBar :React.FC<SideNavBarProps> = ({
           <li className={`flex mx-5 w-60 h-12 pt-2 rounded-lg ${isActive("/payment_details") ? "bg-zinc-100" : "bg-white"}`}>
             <MoneyIcon/>
             <p className="ml-2">{PaymentDetails}</p>
+          </li>
+        </Link>
+        <Link href="/products">
+          <li className={`flex mx-5 w-60 h-12 pt-2 rounded-lg ${isActive("/products") ? "bg-zinc-100" : "bg-white"}`}>
+            <ProductsIcon />
+            <p className="ml-2">{Products}</p>
           </li>
         </Link>
       </ul>

@@ -3,6 +3,7 @@ export interface SideNavBarProps {
     Orders: string,
     Home: string,
     PaymentDetails: string,
+    Products: string,
     FAQ: string,
     Settings: string,
     Feedback: string
