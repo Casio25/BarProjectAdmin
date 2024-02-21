@@ -5,7 +5,7 @@ import { getProductsAction } from '../actions/getProductsAction'
 import { useRouter } from '@/navigation'
 import * as ExcelJS from 'exceljs';
 
-export const GetProductsComponent = () => {
+export const GetProductsExel = () => {
     const router = useRouter()
     const storedJwtToken = LoginStore(state => state.jwtToken);
     const getProducts = async (jwtToken: string) => {
@@ -19,7 +19,7 @@ export const GetProductsComponent = () => {
                 const workbook = new ExcelJS.Workbook();
                 const sheet = workbook.addWorksheet('Sheet1');
 
-                // Assuming jsonData is an array of objects with the same structure
+                
                 if (response.length > 0) {
                     // Add headers to the worksheet
                     const headers = Object.keys(response[0]);

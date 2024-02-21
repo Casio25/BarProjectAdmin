@@ -8,8 +8,12 @@ import  Cookies  from './components/cookies'
 import './globals.css'
 import { Providers } from './providers'
 import { ChangeLanguage } from './components/changeLanguage'
+import { LoginStore } from './store/LoginStore'
+import { LoginStoreComponent } from './components/LoginStoreComponent'
+
 
 const inter = Montserrat({ subsets: ['latin', 'cyrillic'] })
+
 
 export const metadata: Metadata = {
   title: 'Create Next App',
@@ -26,6 +30,7 @@ export default function RootLayout({
   const locale = useLocale()
 if (!locales.includes(locale as any)) notFound();
   return (
+
     <html lang={locale}>
       <body className={inter.className}>
         <Providers>
@@ -34,5 +39,6 @@ if (!locales.includes(locale as any)) notFound();
         </Providers>
         </body>
     </html> 
+
   )
 }

@@ -29,7 +29,15 @@ export const LoginStore = create<State & Action>((set) => ({
     updateName: (name) => set(()=>({name: name})),
     updateEmail: (email) => set(() => ({email: email})),
     updatePassword: (password) => set(() => ({password: password})),
-    updateJwtToken: (jwtToken) => set(()=>({jwtToken: jwtToken})),
+    // Update jwtToken and store it in localStorage
+    updateJwtToken: (jwtToken) => {
+        set(() => ({ jwtToken }));
+        if (jwtToken) {
+            localStorage.setItem("jwtToken", jwtToken);
+        } else {
+            localStorage.removeItem("jwtToken"); 
+        }
+    },
     updateEmailError: (emailError) => set(() => ({emailError: emailError})),
     updatePasswordError: (passwordError) => set(() => ({passwordError: passwordError}))
 }))

@@ -1,6 +1,6 @@
 import { useTranslations } from 'next-intl'
 import React from 'react'
-import { GetProductsComponent } from '../components/getProductsExel'
+import { GetProductsExel} from '../components/getProductsExel'
 import SideNavBar from '../components/sideNavBar'
 
 const OrdersPage = () => {
@@ -20,7 +20,7 @@ const OrdersPage = () => {
             <div className='flex flex-col w-full items-center'>
                 <div>
                     <p>Orders Page</p>
-                    <GetProductsComponent/>
+                    <GetProductsExel/>
                 </div>
                 
             </div>

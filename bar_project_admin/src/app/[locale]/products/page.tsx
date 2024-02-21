@@ -1,5 +1,6 @@
 import React from 'react'
 import SideNavBar from '../components/sideNavBar'
+import { GetProductsMenu } from '../components/getProductsMenu';
 import { useTranslations } from 'next-intl';
 const ProductsPage = () => {
     const t = useTranslations("SideNavBar")
@@ -15,8 +16,9 @@ const ProductsPage = () => {
                 Settings={t("Settings")}
                 Feedback={t("Feedback")} />
             <div className='flex flex-col w-full items-center'>
-                <div>
+                <div className='w-full px-8'>
                     <p>Products Page</p>
+                    <GetProductsMenu/>
                 </div>
 
             </div>
