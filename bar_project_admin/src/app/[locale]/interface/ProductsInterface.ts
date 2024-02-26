@@ -12,5 +12,6 @@ export interface Product {
 }
 
 export interface ProductsInterface {
+
     products: Product[];
 }

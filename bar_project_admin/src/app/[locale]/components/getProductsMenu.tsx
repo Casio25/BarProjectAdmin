@@ -8,22 +8,33 @@ import { useEffect } from 'react';
 import { CategoriesInterface } from '../interface/CategoriesInterface'
 import { ProductsInterface } from '../interface/ProductsInterface'
 import { DragAndDrop } from './svgs'
-import {DragDropContext, Droppable}from "react-beautiful-dnd"
 import { getCategoriesAction } from '../actions/getCategoriesAction'
 import { number } from 'zod'
+import { SortableContainer, SortableElement, SortableHandle } from 'react-sortable-hoc';
+import { changeProductAction } from '../actions/changeProductAction'
+
 
 export const GetProductsMenu = () => {
+    let updatedProductsArray: any = undefined
     const router = useRouter();
     const storedJwtToken = localStorage.getItem("jwtToken");
     const storedProducts = ProductStore(state => state.products);
     const updateStoredProducts = ProductStore(state => state.updateProducts)
     const [categories, setCategories] = useState<CategoriesInterface>([]);
-    const [targetOrder, setTargetOrder] = useState<number>()
     const [expandedCategories, setExpandedCategories] = useState<{ [key: number]: boolean }>({});
+    const [targetOrder, setTargetOrder] = useState<number>()
+    const [filteredProducts, setFilteredProducts] = useState([]);
+    const [product, setProduct] = useState({
+        name: "",
+        photo: "",
+        description: "",
+        price: null,
+        visibility: undefined,
+        inStock: undefined,
+        categoryId: null,
+        order: null,
+    });
     // all fetching
-    const switchProductsOrder =  (product: any) => {
-        
-    }
 
     const fetchCategories = async () => {
         try {
@@ -35,13 +46,13 @@ export const GetProductsMenu = () => {
     };
 
     const fetchProducts = async () => {
-            try {
-                const response = await getProductsAction(storedJwtToken)
-                if (response == 401) {
-                    router.push('/signin')
-                } else {
+        try {
+            const response = await getProductsAction(storedJwtToken)
+            if (response == 401) {
+                router.push('/signin')
+            } else {
                 updateStoredProducts(await response);
-                
+
             }
         } catch (error) {
             console.error('Error fetching categories:', error);
@@ -50,15 +61,33 @@ export const GetProductsMenu = () => {
     useEffect(() => {
 
         fetchCategories();
-        
+
         fetchProducts();
 
     }, []);
 
     const updatedProducts: ProductsInterface = storedProducts.map(product => {
-        const updatedProduct = {...product}
+        const updatedProduct = { ...product }
         return updatedProduct
     })
+
+    const changeProduct = () => (property, value) => {
+        setProduct({
+            ...product,
+            [property]: value 
+        });
+    };
+
+    const saveChanges = () => {
+        try {
+            storedProducts.forEach((product) => {
+                 changeProductAction(product, storedJwtToken)
+            })
+        } catch (error) {
+            console.error("Error:", error);
+        }
+    };
+
 
 
     const toggleCategory = (categoryId: number) => {
@@ -73,15 +102,12 @@ export const GetProductsMenu = () => {
         console.log("targetOrder: ", targetOrder)
     };
 
-    const handleDragStart = (e: React.DragEvent<HTMLLIElement>,  productId: number, productCategoryId: number, categoryId: number) => {
+    const handleDragStart = (e, productId: number, productCategoryId: number, categoryId: number, productOrder: number,) => {
         e.dataTransfer.setData('text/plain', JSON.stringify({ productId, productCategoryId, categoryId }));
     };
 
-    const onDragEnd = () => {
-        console.log("Drag end event")
-    }
 
-    const handleDrop = async (e: React.DragEvent<HTMLLIElement>, categoryId: number) => {
+    const handleDrop = async(e: React.DragEvent<HTMLLIElement>, categoryId: number) => {
         e.preventDefault();
         const data = JSON.parse(e.dataTransfer.getData('text/plain'));
         const { productId, productCategoryId, originalCategoryId } = data;
@@ -89,49 +115,32 @@ export const GetProductsMenu = () => {
         if (productCategoryId === categoryId) {
             console.log('Dropped product ID', productId, 'into category ID', categoryId);
 
-            const draggedProduct = updatedProducts.find(product => product.id === productId && product.categoryId === productCategoryId);
-            const targetProduct = updatedProducts.find(product => product.order === targetOrder && product.categoryId === productCategoryId);
-            const biggerProducts = updatedProducts.filter(product => product.order > targetOrder && product.categoryId === productCategoryId);
-            let reorderedBiggerProducts;
+            const draggedProduct = storedProducts.find(product => product.id === productId && product.categoryId === productCategoryId);
+            const targetProduct = storedProducts.find(product => product.order === targetOrder && product.categoryId === productCategoryId);
 
             if (draggedProduct && targetProduct) {
-                const reorderedDraggedProduct = {
-                    ...draggedProduct,
-                    order: targetProduct.order
-                };
+                
+                const newOrder = targetProduct.order;
 
-                const reorderedTargetProduct = {
-                    ...targetProduct,
-                    order: targetProduct.order + 1
-                };
+                updatedProductsArray = storedProducts.map(product => {
+                    if (product.categoryId !== categoryId) {
+                        return product; 
+                    }
 
-                if (biggerProducts) {
-                    reorderedBiggerProducts = biggerProducts.map((product) => {
-                        return {
-                            ...product,
-                            order: product.order + 1
-                        }
-                    });
-                    const index = reorderedBiggerProducts.indexOf(draggedProduct);
-                    reorderedBiggerProducts.splice(index, 1);
-                }
+                    if (product.id === draggedProduct.id) {
+                        return { ...product, order: newOrder };
+                    } else if (draggedProduct.order < targetProduct.order && product.order > draggedProduct.order && product.order <= targetProduct.order) {
+                        return { ...product, order: product.order - 1 };
+                    } else if (draggedProduct.order > targetProduct.order && product.order < draggedProduct.order && product.order >= targetProduct.order) {
+                        return { ...product, order: product.order + 1 };
+                    }
+                    return product;
+                });
 
-                console.log('Reordered dragged product:', reorderedDraggedProduct);
-                console.log('Reordered target product:', reorderedTargetProduct);
-                console.log("Reordered bigger products: ", reorderedBiggerProducts);
+                
+                 updateStoredProducts(updatedProductsArray);
 
-                const reorderedProducts = reorderedBiggerProducts.concat(reorderedTargetProduct, reorderedDraggedProduct);
-
-                // Filter out the existing products with the same IDs
-                const filteredStoredProducts = storedProducts.filter(product => !reorderedProducts.some(p => p.id === product.id));
-
-                // Concatenate the filtered products with the reordered products
-                const updatedProductsArray = filteredStoredProducts.concat(reorderedProducts);
-
-                updateStoredProducts(updatedProductsArray);
-                switchProductsOrder(reorderedDraggedProduct);
-                const filteredProducts = storedProducts.filter(product => product.categoryId === 3);
-                console.log("Filtered products: ", filteredProducts);
+                
             } else {
                 console.log("Product not found or category doesn't match the current category");
             }
@@ -140,12 +149,27 @@ export const GetProductsMenu = () => {
         }
     };
 
+    const handleDragEnd = () => {
+        console.log("Drag end event")
+        updateStoredProducts(updatedProductsArray);
+        const filteredProducts = storedProducts.filter(product => product.categoryId === categoryId);
+        console.log("Filtered products: ", filteredProducts);
+    }
+
+
+
+
+
 
 
 
     return (
         <div>
             <h2>Categories</h2>
+            <div>
+                <button className='rounded-md p-2 font-semibold shadow-sm bg-amber-300 active:bg-amber-500'
+                onClick={()=> saveChanges()}>Apply Changes</button>
+            </div>
             <ul>
                 {categories.map(category => (
                     <li key={category.id}>
@@ -155,36 +179,37 @@ export const GetProductsMenu = () => {
                         {expandedCategories[category.id] && (
                             <div className='shadow-lg rounded-md'>
                                 <ul>
-                                    <DragDropContext
-                                        onDragEnd={onDragEnd}>
-                                            
-                                    {storedProducts
-                                        .filter(product => product.categoryId === category.id)
-                                        .sort((a, b) => a.order - b.order)
-                                        .map(product => (
-                                            <li key={product.id}
-                                                draggable="true"
-                                                onDragStart={(e) => handleDragStart(e, product.id, product.categoryId, category.id)}
-                                                onDragOver={(e) => handleDragOver(e, product.order)}
-                                                onDrop={(e) => handleDrop(e, category.id)}
-                                            >
-                                                <hr className="h-px bg-gray-200 border-0 dark:bg-gray-700" />
-                                                <div className='flex'>
-                                                    <div className='my-auto'>
-                                                        <DragAndDrop />
+                                    
+
+                                        {storedProducts
+                                            .filter(product => product.categoryId === category.id)
+                                            .sort((a, b) => a.order - b.order)
+                                            .map(product => (
+                                                <li key={product.id}
+                                                    draggable="true"
+                                                    onDragStart={(e) => handleDragStart(e, product.id, product.categoryId, category.id, product.order)}
+                                                    onDragOver={(e) => handleDragOver(e, product.order)}
+                                                    onDrop={(e) => handleDrop(e, category.id)}
+                                                >
+                                                    <hr className="h-px bg-gray-200 border-0 dark:bg-gray-700" />
+                                                    <div className='flex'>
+                                                        <div className='my-auto'>
+                                                            <DragAndDrop />
+                                                        </div>
+                                                        <div className='my-auto'>
+                                                            <input className='rounded mx-2' type="checkbox" />
+                                                        </div>
+                                                        <div>
+                                                            <p className='text-sm'>{product.name}</p>
+                                                            <p className='text-xs text-gray-400'>{product.description}</p>
+                                                        </div>
+                                                        <input className='rounded-md my-2 w-20' type="number" value={product.price}
+                                                        onChange={()=>changeProduct("price", product.price)}></input>
+                                                        <p>{product.order}</p>
                                                     </div>
-                                                    <div className='my-auto'>
-                                                        <input className='rounded mx-2' type="checkbox" />
-                                                    </div>
-                                                    <div>
-                                                        <p className='text-sm'>{product.name}</p>
-                                                        <p className='text-xs text-gray-400'>{product.description}</p>
-                                                    </div>
-                                                    <input className='rounded-md my-2 w-20' type="number" value={product.price}></input>
-                                                </div>
-                                            </li>
-                                        ))}
-                                    </DragDropContext>
+                                                </li>
+                                            ))}
+                                    
                                 </ul>
                             </div>
                         )}
