@@ -6,16 +6,12 @@ import { getProductsAction } from '../actions/getProductsAction'
 import { useRouter } from '@/navigation'
 import { useEffect } from 'react';
 import { CategoriesInterface } from '../interface/CategoriesInterface'
-import { Product, ProductsInterface } from '../interface/ProductsInterface'
 import { DragAndDrop } from './svgs'
 import { getCategoriesAction } from '../actions/getCategoriesAction'
-import { number } from 'zod'
-import { SortableContainer, SortableElement, SortableHandle } from 'react-sortable-hoc';
 import { changeProductAction } from '../actions/changeProductAction'
 
 
 export const GetProductsMenu = () => {
-    let updatedProductsArray: any = undefined
     const router = useRouter();
     const storedJwtToken = localStorage.getItem("jwtToken");
     const storedProducts = ProductStore(state => state.products);
@@ -55,9 +51,8 @@ export const GetProductsMenu = () => {
 
     }, []);
 
+    //changing spesific property of specific product
     const changeProduct = async(property: string, value: any, productId: number) => {
-        const changedProduct = storedProducts.find(product => product.id === productId)
-        console.log(changedProduct)
         const updatedPropertiesProducts = storedProducts.map(product => {
             if (product.id === productId) {
                 
@@ -69,12 +64,10 @@ export const GetProductsMenu = () => {
        await updateStoredProducts(updatedPropertiesProducts);
     };
 
+    //saving all the products from store
     const saveChanges = async () => {
-        const filteredProducts = storedProducts.filter(product => product.categoryId === 1);
-        console.log("Filtered products: ", filteredProducts);
         try {
-            storedProducts.forEach((product) => {
-                console.log(product)
+            await storedProducts.forEach((product) => {
                 changeProductAction(product, storedJwtToken)
             })
         } catch (error) {
@@ -83,78 +76,60 @@ export const GetProductsMenu = () => {
     };
 
 
-
     const toggleCategory = (categoryId: number) => {
         setExpandedCategories(prevState => ({
             ...prevState,
             [categoryId]: !prevState[categoryId]
         }));
     };
+
+    // all handle funcitons
     const handleDragOver = (e: React.DragEvent<HTMLLIElement>, targetOrder: number) => {
         e.preventDefault();
         setTargetOrder(targetOrder)
-        console.log("targetOrder: ", targetOrder)
     };
 
     const handleDragStart = (e, productId: number, productCategoryId: number, categoryId: number, productOrder: number,) => {
         e.dataTransfer.setData('text/plain', JSON.stringify({ productId, productCategoryId, categoryId }));
     };
 
-
     const handleDrop = async (e: React.DragEvent<HTMLLIElement>, categoryId: number) => {
         e.preventDefault();
         const data = JSON.parse(e.dataTransfer.getData('text/plain'));
         const { productId, productCategoryId, originalCategoryId } = data;
 
-        if (productCategoryId === categoryId) {
-            console.log('Dropped product ID', productId, 'into category ID', categoryId);
-
-            const draggedProduct = storedProducts.find(product => product.id === productId && product.categoryId === productCategoryId);
-            const targetProduct = storedProducts.find(product => product.order === targetOrder && product.categoryId === productCategoryId);
-
-            if (draggedProduct && targetProduct) {
-
-                const newOrder = targetProduct.order;
-
-                updatedProductsArray = storedProducts.map(product => {
-                    if (product.categoryId !== categoryId) {
-                        return product;
-                    }
-
-                    if (product.id === draggedProduct.id) {
-                        return { ...product, order: newOrder };
-                    } else if (draggedProduct.order < targetProduct.order && product.order > draggedProduct.order && product.order <= targetProduct.order) {
-                        return { ...product, order: product.order - 1 };
-                    } else if (draggedProduct.order > targetProduct.order && product.order < draggedProduct.order && product.order >= targetProduct.order) {
-                        return { ...product, order: product.order + 1 };
-                    }
-                    return product;
-                });
-
-
-                await updateStoredProducts(updatedProductsArray);
-
-
-            } else {
-                console.log("Product not found or category doesn't match the current category");
-            }
-        } else {
+        if (productCategoryId !== categoryId) {
             console.log("Product category doesn't match the current category");
+            return;
         }
+
+        const draggedProduct = storedProducts.find(product => product.id === productId && product.categoryId === productCategoryId);
+        const targetProduct = storedProducts.find(product => product.order === targetOrder && product.categoryId === productCategoryId);
+
+        if (!draggedProduct || !targetProduct) {
+            console.log("Product not found or category doesn't match the current category");
+            return;
+        }
+
+        const newOrder = targetProduct.order;
+
+        const updatedProductsArray = storedProducts.map(product => {
+            if (product.categoryId !== categoryId) {
+                return product;
+            }
+
+            if (product.id === draggedProduct.id) {
+                return { ...product, order: newOrder };
+            } else if (draggedProduct.order < targetProduct.order && product.order > draggedProduct.order && product.order <= targetProduct.order) {
+                return { ...product, order: product.order - 1 };
+            } else if (draggedProduct.order > targetProduct.order && product.order < draggedProduct.order && product.order >= targetProduct.order) {
+                return { ...product, order: product.order + 1 };
+            }
+            return product;
+        });
+
+        await updateStoredProducts(updatedProductsArray);
     };
-
-    const handleDragEnd = () => {
-        console.log("Drag end event")
-        
-        const filteredProducts = storedProducts.filter(product => product.categoryId === 1);
-        console.log("Filtered products: ", filteredProducts);
-    }
-
-
-
-
-
-
 
 
     return (
@@ -184,7 +159,6 @@ export const GetProductsMenu = () => {
                                                 onDragStart={(e) => handleDragStart(e, product.id, product.categoryId, category.id, product.order)}
                                                 onDragOver={(e) => handleDragOver(e, product.order)}
                                                 onDrop={(e) => handleDrop(e, category.id)}
-                                                onDragEnd={(e) => handleDragEnd()}
                                             >
                                                 <hr className="h-px bg-gray-200 border-0 dark:bg-gray-700" />
                                                 <div className='flex'>

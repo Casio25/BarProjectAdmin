@@ -10,6 +10,7 @@ export const getProductsAction = async (storedJwtToken: string | null) => {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
+                "Access-Control-Allow-Origin": "*",
                 "Authorization": `Bearer ${storedJwtToken}`
             },
         });
