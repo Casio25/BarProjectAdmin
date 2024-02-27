@@ -6,7 +6,7 @@ import { getProductsAction } from '../actions/getProductsAction'
 import { useRouter } from '@/navigation'
 import { useEffect } from 'react';
 import { CategoriesInterface } from '../interface/CategoriesInterface'
-import { ProductsInterface } from '../interface/ProductsInterface'
+import { Product, ProductsInterface } from '../interface/ProductsInterface'
 import { DragAndDrop } from './svgs'
 import { getCategoriesAction } from '../actions/getCategoriesAction'
 import { number } from 'zod'
@@ -23,18 +23,7 @@ export const GetProductsMenu = () => {
     const [categories, setCategories] = useState<CategoriesInterface>([]);
     const [expandedCategories, setExpandedCategories] = useState<{ [key: number]: boolean }>({});
     const [targetOrder, setTargetOrder] = useState<number>()
-    const [filteredProducts, setFilteredProducts] = useState([]);
-    const [product, setProduct] = useState({
-        name: "",
-        photo: "",
-        description: "",
-        price: null,
-        visibility: undefined,
-        inStock: undefined,
-        categoryId: null,
-        order: null,
-    });
-    // all fetching
+
 
     const fetchCategories = async () => {
         try {
@@ -66,22 +55,27 @@ export const GetProductsMenu = () => {
 
     }, []);
 
-    const updatedProducts: ProductsInterface = storedProducts.map(product => {
-        const updatedProduct = { ...product }
-        return updatedProduct
-    })
-
-    const changeProduct = () => (property, value) => {
-        setProduct({
-            ...product,
-            [property]: value 
+    const changeProduct = async(property: string, value: any, productId: number) => {
+        const changedProduct = storedProducts.find(product => product.id === productId)
+        console.log(changedProduct)
+        const updatedPropertiesProducts = storedProducts.map(product => {
+            if (product.id === productId) {
+                
+                return { ...product, [property]: value };
+            } else {
+                return product;
+            }
         });
+       await updateStoredProducts(updatedPropertiesProducts);
     };
 
-    const saveChanges = () => {
+    const saveChanges = async () => {
+        const filteredProducts = storedProducts.filter(product => product.categoryId === 1);
+        console.log("Filtered products: ", filteredProducts);
         try {
             storedProducts.forEach((product) => {
-                 changeProductAction(product, storedJwtToken)
+                console.log(product)
+                changeProductAction(product, storedJwtToken)
             })
         } catch (error) {
             console.error("Error:", error);
@@ -107,7 +101,7 @@ export const GetProductsMenu = () => {
     };
 
 
-    const handleDrop = async(e: React.DragEvent<HTMLLIElement>, categoryId: number) => {
+    const handleDrop = async (e: React.DragEvent<HTMLLIElement>, categoryId: number) => {
         e.preventDefault();
         const data = JSON.parse(e.dataTransfer.getData('text/plain'));
         const { productId, productCategoryId, originalCategoryId } = data;
@@ -119,12 +113,12 @@ export const GetProductsMenu = () => {
             const targetProduct = storedProducts.find(product => product.order === targetOrder && product.categoryId === productCategoryId);
 
             if (draggedProduct && targetProduct) {
-                
+
                 const newOrder = targetProduct.order;
 
                 updatedProductsArray = storedProducts.map(product => {
                     if (product.categoryId !== categoryId) {
-                        return product; 
+                        return product;
                     }
 
                     if (product.id === draggedProduct.id) {
@@ -137,10 +131,10 @@ export const GetProductsMenu = () => {
                     return product;
                 });
 
-                
-                 updateStoredProducts(updatedProductsArray);
 
-                
+                await updateStoredProducts(updatedProductsArray);
+
+
             } else {
                 console.log("Product not found or category doesn't match the current category");
             }
@@ -151,8 +145,8 @@ export const GetProductsMenu = () => {
 
     const handleDragEnd = () => {
         console.log("Drag end event")
-        updateStoredProducts(updatedProductsArray);
-        const filteredProducts = storedProducts.filter(product => product.categoryId === categoryId);
+        
+        const filteredProducts = storedProducts.filter(product => product.categoryId === 1);
         console.log("Filtered products: ", filteredProducts);
     }
 
@@ -168,7 +162,7 @@ export const GetProductsMenu = () => {
             <h2>Categories</h2>
             <div>
                 <button className='rounded-md p-2 font-semibold shadow-sm bg-amber-300 active:bg-amber-500'
-                onClick={()=> saveChanges()}>Apply Changes</button>
+                    onClick={() => saveChanges()}>Apply Changes</button>
             </div>
             <ul>
                 {categories.map(category => (
@@ -179,37 +173,46 @@ export const GetProductsMenu = () => {
                         {expandedCategories[category.id] && (
                             <div className='shadow-lg rounded-md'>
                                 <ul>
-                                    
 
-                                        {storedProducts
-                                            .filter(product => product.categoryId === category.id)
-                                            .sort((a, b) => a.order - b.order)
-                                            .map(product => (
-                                                <li key={product.id}
-                                                    draggable="true"
-                                                    onDragStart={(e) => handleDragStart(e, product.id, product.categoryId, category.id, product.order)}
-                                                    onDragOver={(e) => handleDragOver(e, product.order)}
-                                                    onDrop={(e) => handleDrop(e, category.id)}
-                                                >
-                                                    <hr className="h-px bg-gray-200 border-0 dark:bg-gray-700" />
-                                                    <div className='flex'>
-                                                        <div className='my-auto'>
-                                                            <DragAndDrop />
-                                                        </div>
-                                                        <div className='my-auto'>
-                                                            <input className='rounded mx-2' type="checkbox" />
-                                                        </div>
-                                                        <div>
-                                                            <p className='text-sm'>{product.name}</p>
-                                                            <p className='text-xs text-gray-400'>{product.description}</p>
-                                                        </div>
-                                                        <input className='rounded-md my-2 w-20' type="number" value={product.price}
-                                                        onChange={()=>changeProduct("price", product.price)}></input>
-                                                        <p>{product.order}</p>
+
+                                    {storedProducts
+                                        .filter(product => product.categoryId === category.id)
+                                        .sort((a, b) => a.order - b.order)
+                                        .map(product => (
+                                            <li key={product.id}
+                                                draggable="true"
+                                                onDragStart={(e) => handleDragStart(e, product.id, product.categoryId, category.id, product.order)}
+                                                onDragOver={(e) => handleDragOver(e, product.order)}
+                                                onDrop={(e) => handleDrop(e, category.id)}
+                                                onDragEnd={(e) => handleDragEnd()}
+                                            >
+                                                <hr className="h-px bg-gray-200 border-0 dark:bg-gray-700" />
+                                                <div className='flex'>
+                                                    <div className='my-auto'>
+                                                        <DragAndDrop />
                                                     </div>
-                                                </li>
-                                            ))}
-                                    
+                                                    <div className='my-auto'>
+                                                        <input className='rounded mx-2' type="checkbox" />
+                                                    </div>
+                                                    <div>
+                                                        <p className='text-sm'>{product.name}</p>
+                                                        <p className='text-xs text-gray-400'>{product.description}</p>
+                                                    </div>
+                                                    <input className='rounded-md my-2 w-20' type="number" value={product.price}
+                                                        onKeyPress={(event) => {
+                                                            if (!/[0-9]/.test(event.key)) {
+                                                                event.preventDefault();
+                                                            }
+                                                        }}
+                                                        onChange={(e) => {
+                                                            const price = parseFloat(e.target.value);
+                                                            changeProduct("price", price, product.id);
+                                                        }} />
+                                                    <p>{product.order}</p>
+                                                </div>
+                                            </li>
+                                        ))}
+
                                 </ul>
                             </div>
                         )}
@@ -219,5 +222,8 @@ export const GetProductsMenu = () => {
         </div>
     );
 };
+
+
+
 
 
