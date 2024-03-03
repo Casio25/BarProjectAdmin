@@ -100,6 +100,11 @@
         "FAQ": "FAQ",
         "Settings": "Settings",
         "Feedback": "Feedback"
+     },
+     "ProductsMenu": {
+        "Edit": "Edit",
+        "Delete": "Delete",
+        "Apply Changes": "Apply changes"
      }
 
 

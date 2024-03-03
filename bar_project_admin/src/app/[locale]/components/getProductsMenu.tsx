@@ -6,19 +6,29 @@ import { getProductsAction } from '../actions/getProductsAction'
 import { useRouter } from '@/navigation'
 import { useEffect } from 'react';
 import { CategoriesInterface } from '../interface/CategoriesInterface'
-import { DragAndDrop } from './svgs'
+import { DragAndDrop, ThreeDots } from './svgs'
 import { getCategoriesAction } from '../actions/getCategoriesAction'
 import { changeProductAction } from '../actions/changeProductAction'
+import { Product } from '../interface/ProductsInterface'
+import { DeleteProductModal } from './deleteProductModal'
+import { GetProductsMenuProps } from '../interface/GetProductsMenuProps'
 
 
-export const GetProductsMenu = () => {
+export const GetProductsMenu: React.FC<GetProductsMenuProps> = ({
+    Edit,
+    Delete,
+    ApplyChanges
+}) => {
     const router = useRouter();
     const storedJwtToken = localStorage.getItem("jwtToken");
     const storedProducts = ProductStore(state => state.products);
     const updateStoredProducts = ProductStore(state => state.updateProducts)
     const [categories, setCategories] = useState<CategoriesInterface>([]);
     const [expandedCategories, setExpandedCategories] = useState<{ [key: number]: boolean }>({});
+    const [productOptions, setProductOptions] = useState<number>()
     const [targetOrder, setTargetOrder] = useState<number>()
+    const [deleteProductModal, setDeleteProductModal] = useState()
+    const [deleteModalStatus, setDeleteModalStatus] = useState<boolean>(false)
 
 
     const fetchCategories = async () => {
@@ -48,6 +58,7 @@ export const GetProductsMenu = () => {
         fetchCategories();
 
         fetchProducts();
+        console.log("modalStatus: ", deleteModalStatus)
 
     }, []);
 
@@ -82,6 +93,23 @@ export const GetProductsMenu = () => {
             [categoryId]: !prevState[categoryId]
         }));
     };
+
+    const toggleOptions = (productId: number) => {
+        if (productOptions === productId) {
+            setProductOptions(null); 
+        } else {
+            setProductOptions(productId);
+        }
+    };
+    const areOptionsOpen = (productId: number) => {
+        return productOptions === productId;
+    };
+
+    //modal funcitons
+    const toggleDeleteModal = () => {
+        setDeleteModalStatus(!deleteModalStatus)
+        console.log("test toggle delete button")
+    }
 
     // all handle funcitons
     const handleDragOver = (e: React.DragEvent<HTMLLIElement>, targetOrder: number) => {
@@ -133,11 +161,12 @@ export const GetProductsMenu = () => {
 
 
     return (
+        <>
         <div>
             <h2>Categories</h2>
             <div>
                 <button className='rounded-md p-2 font-semibold shadow-sm bg-amber-300 active:bg-amber-500'
-                    onClick={() => saveChanges()}>Apply Changes</button>
+                    onClick={() => saveChanges()}>{ApplyChanges}</button>
             </div>
             <ul>
                 {categories.map(category => (
@@ -183,6 +212,17 @@ export const GetProductsMenu = () => {
                                                             changeProduct("price", price, product.id);
                                                         }} />
                                                     <p>{product.order}</p>
+                                                    <div className='ml-auto my-auto active:bg-gray-300 rounded-md' onClick={()=>toggleOptions(product.id)}>
+                                                        <ThreeDots/>
+                                                    </div>
+                                                    {areOptionsOpen(product.id) && (
+                                                        <div className='shadow-md'>
+                                                            <p>{Edit}</p>
+                                                            <p onClick={() => {toggleDeleteModal();
+                                                                 setDeleteProductModal(product)
+                                                            }}>{Delete}</p>
+                                                        </div>
+                                                    )}
                                                 </div>
                                             </li>
                                         ))}
@@ -193,7 +233,10 @@ export const GetProductsMenu = () => {
                     </li>
                 ))}
             </ul>
+                <DeleteProductModal product={deleteProductModal} modalStatus={deleteModalStatus} toggleModal={toggleDeleteModal} />
         </div>
+        
+        </>
     );
 };
 

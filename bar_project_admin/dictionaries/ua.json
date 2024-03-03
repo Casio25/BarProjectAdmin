@@ -103,5 +103,10 @@
         "FAQ": "FAQ",
         "Settings": "Налаштування",
         "Feedback": "Зворотній зв'язок"
+    },
+    "ProductsMenu": {
+        "Edit": "Редагувати",
+        "Delete": "Видалити",
+        "Apply Changes": "Зберігти"
     }
 }

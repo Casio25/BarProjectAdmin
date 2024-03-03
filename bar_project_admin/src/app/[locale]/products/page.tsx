@@ -4,6 +4,7 @@ import { GetProductsMenu } from '../components/getProductsMenu';
 import { useTranslations } from 'next-intl';
 const ProductsPage = () => {
     const t = useTranslations("SideNavBar")
+    const p = useTranslations("ProductsMenu")
     return (
         <div className='flex'>
             <SideNavBar
@@ -18,7 +19,10 @@ const ProductsPage = () => {
             <div className='flex flex-col w-full items-center'>
                 <div className='w-full px-8'>
                     <p>Products Page</p>
-                    <GetProductsMenu/>
+                    <GetProductsMenu
+                    Edit={p("Edit")}
+                    Delete={p("Delete")}
+                    ApplyChanges={p("Apply Changes")}/>
                 </div>
 
             </div>
