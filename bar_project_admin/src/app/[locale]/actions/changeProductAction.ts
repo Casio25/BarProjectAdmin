@@ -11,6 +11,7 @@ export const changeProductAction = async(product: Product | undefined, jwtToken:
             },
             body: JSON.stringify(product),
         });
+        
 
         if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);

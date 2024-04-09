@@ -3,6 +3,7 @@ import PageNavigation from '../components/pageNavigation'
 import SideNavBar from '../components/sideNavBar'
 import { useTranslations } from 'next-intl';
 import { ChangeLanguage } from '../components/changeLanguage';
+import { UnSignInComponent } from '../components/unSignInComponent';
 const SettingsPage = () => {
     const t = useTranslations("SideNavBar")
     return (
@@ -17,6 +18,7 @@ const SettingsPage = () => {
                 Settings={t("Settings")}
                 Feedback={t("Feedback")} />
             <ChangeLanguage/>
+            <UnSignInComponent/>
         </div>
     )
 }

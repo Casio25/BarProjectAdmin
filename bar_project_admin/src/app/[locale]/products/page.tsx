@@ -6,7 +6,7 @@ const ProductsPage = () => {
     const t = useTranslations("SideNavBar")
     const p = useTranslations("ProductsMenu")
     return (
-        <div className='flex'>
+        <div className='flex bg-zinc-100'>
             <SideNavBar
                 Promotions={t("Promotions")}
                 Orders={t("Orders")}
@@ -20,9 +20,16 @@ const ProductsPage = () => {
                 <div className='w-full px-8'>
                     <p>Products Page</p>
                     <GetProductsMenu
+                    Confirm={p("Confirm")}
                     Edit={p("Edit")}
                     Delete={p("Delete")}
-                    ApplyChanges={p("Apply Changes")}/>
+                    ApplyChanges={p("Apply Changes")}
+                    CategoriesDropdown = {p("CategoriesDropdown")}
+                    CreateCategory = {p("Create Category")}
+                    CreateProduct = {p("Create Product")}
+                    ConfirmDeleteProduct={p("Confirm Delete Product")}
+                    ConfirmEditProduct = {p("Confirm Edit Product")}
+                    Cancel={p("Cancel")}/>
                 </div>
 
             </div>

@@ -105,8 +105,15 @@
         "Feedback": "Зворотній зв'язок"
     },
     "ProductsMenu": {
+        "Confirm": "Підтвердити",
         "Edit": "Редагувати",
         "Delete": "Видалити",
-        "Apply Changes": "Зберігти"
+        "Apply Changes": "Зберігти",
+        "CategoriesDropdown": "Категорії",
+        "Create Category": "Створити категорію",
+        "Create Product": "Створити продукт",
+        "Confirm Delete Product": "Видалити продукт",
+        "Confirm Edit Product": "Підтвердити зміни",
+        "Cancel": "Скасувати"
     }
 }

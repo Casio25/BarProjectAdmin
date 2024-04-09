@@ -11,5 +11,7 @@ export {default as OrdersIcon} from "./receipt.svg"
 export {default as ProductsIcon} from "./qr_code_2.svg"
 export {default as DragAndDrop} from "./drag&drop.svg"
 export {default as ThreeDots} from "./3 dots.svg"
+export {default as ArrowDownCategory} from "./arrow_down.svg"
+export { default as ArrowUpCategory } from "./arrow_up.svg"
 export {default as ATBIcon} from "./АТБ_logo.svg"
 

@@ -13,6 +13,7 @@ export const ChangeLanguage = () => {
     
 
     return (
+        <>
         <div className="h-10 z-0 px-6 ml-auto">
             <button className="mt-3 scale-150 border-2 align-middle border-violet-500 flex rounded-lg active:ring-4 ml-auto "
             onClick={ChangeOpacity}>
@@ -38,5 +39,6 @@ export const ChangeLanguage = () => {
             </div>
 
         </div>
+        </>
     )
 }

@@ -6,8 +6,9 @@ import { useRouter } from '@/navigation'
 import * as ExcelJS from 'exceljs';
 
 export const GetProductsExel = () => {
+
     const router = useRouter()
-    const storedJwtToken = LoginStore(state => state.jwtToken);
+    const storedJwtToken = localStorage.getItem("jwtToken");
     const getProducts = async (jwtToken: string) => {
         try {
             const response = await getProductsAction(jwtToken)

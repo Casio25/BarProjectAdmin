@@ -4,7 +4,6 @@
 
 export const getProductsAction = async (storedJwtToken: string | null) => {
     try {
-        console.log("token in server: ", storedJwtToken);
         const response = await fetch("http://localhost:4000/catalog", {
             cache: "no-store",
             method: "GET",

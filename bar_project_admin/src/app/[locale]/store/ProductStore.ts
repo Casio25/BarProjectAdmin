@@ -1,12 +1,13 @@
 import { create } from "zustand";
-import { ProductsInterface } from "../interface/ProductsInterface";
+import { ProductsInterface, Product } from "../interface/ProductsInterface";
+
 
 type State = {
-    products: ProductsInterface[];
+    products: Product[];
 };
 
 type Actions = {
-    updateProducts: (products: ProductsInterface[]) => void;
+    updateProducts: (products: Product[]) => void;
 };
 
 export const ProductStore = create<State & Actions>((set) => ({

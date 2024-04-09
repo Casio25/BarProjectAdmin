@@ -102,9 +102,16 @@
         "Feedback": "Feedback"
      },
      "ProductsMenu": {
+        "Confirm": "Confirm",
         "Edit": "Edit",
         "Delete": "Delete",
-        "Apply Changes": "Apply changes"
+        "Apply Changes": "Apply changes",
+        "CategoriesDropdown": "Categories",
+        "Create Category": "Create Category",
+        "Create Product" :"Create Product",
+        "Confirm Delete Product": "Confirm Delete",
+        "Confirm Edit Product": "Save Changes",
+        "Cancel": "Cancel"
      }
 
 
