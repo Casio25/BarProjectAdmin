@@ -23,7 +23,7 @@ const SideNavBar :React.FC<SideNavBarProps> = ({
   const isActiveHome = (path: string) => pathname === path;
   
   return(
-    <div className="flex flex-col w-72 h-screen bg-white drop-shadow-md">
+    <div className="flex flex-col fixed w-72 h-screen bg-white drop-shadow-md">
       <ATBIcon/>
       <ul className="text-lg flex-col font-semibold ">
         <Link href="/promotions">

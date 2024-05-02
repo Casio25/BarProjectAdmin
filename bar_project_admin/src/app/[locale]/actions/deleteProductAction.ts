@@ -14,6 +14,9 @@ export const DeleteProductAction = async(product: Product, storedJwtToken: strin
             },
             body: JSON.stringify(product)
         })
+        console.log(response)
+        const json = await response.json();
+        return json;
     }catch(error){
         console.log("Error deleting products: ", error)
     }

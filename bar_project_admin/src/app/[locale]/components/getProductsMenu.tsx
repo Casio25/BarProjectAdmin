@@ -14,15 +14,17 @@ import { DeleteProductModal } from './deleteProductModal'
 import { GetProductsMenuProps } from '../interface/GetProductsMenuProps'
 import { EditProductModal } from './editProductModal'
 import { CreateCategoryModal } from './createCategoryModal'
-import {CreateProductModal} from "./createProductModal"
+import { CreateProductModal } from "./createProductModal"
 import { number } from 'zod'
 
 
 
 export const GetProductsMenu: React.FC<GetProductsMenuProps> = ({
+    NoProductsInCategory,
     Confirm,
     Edit,
     Delete,
+    RemoveFromCategory,
     ApplyChanges,
     CategoriesDropdown,
     CreateCategory,
@@ -30,6 +32,12 @@ export const GetProductsMenu: React.FC<GetProductsMenuProps> = ({
     ConfirmDeleteProduct,
     ConfirmEditProduct,
     Cancel,
+    ProductName,
+    ProductDescription,
+    ProductPhoto,
+    ProductPrice,
+    ProductVisibility,
+    ProductInStock
 }) => {
     const router = useRouter();
     const storedJwtToken = typeof window !== 'undefined' ? localStorage.getItem("jwtToken") : null;
@@ -54,7 +62,7 @@ export const GetProductsMenu: React.FC<GetProductsMenuProps> = ({
             if (response == 401) {
                 router.push('/signin')
             } else {
-            setCategories(await response);
+                setCategories(await response);
             }
         } catch (error) {
             console.error('Error fetching categories:', error);
@@ -84,17 +92,20 @@ export const GetProductsMenu: React.FC<GetProductsMenuProps> = ({
     }, []);
 
     //changing spesific property of specific product
-    const changeProduct = async(property: string, value: any, productId: number) => {
-        const updatedPropertiesProducts = storedProducts.map(product => {
-            if (product.id === productId) {
-                
-                return { ...product, [property]: value };
-            } else {
-                return product;
-            }
-        });
-       await updateStoredProducts(updatedPropertiesProducts);
-    };
+
+    const removeProductCategory = async (product: Product, categoryId: number) => {
+        const updatedCategoeries = product.categories.filter((cat) => cat.id !== categoryId);
+        const updatedOrders = product.orders.filter((order)=> order.categoryId !== categoryId);
+        const updatedProduct: Product = {
+            ...product,
+            categories: updatedCategoeries,
+            orders: updatedOrders
+        };
+        console.log("updatedOrders", updatedOrders)
+        await changeProductAction(updatedProduct, storedJwtToken)
+        fetchProducts()
+
+    }
 
     //saving all the products from store
     const saveChanges = async () => {
@@ -118,7 +129,7 @@ export const GetProductsMenu: React.FC<GetProductsMenuProps> = ({
     const toggleOptions = (id: number, type: 'category' | 'product'): void => {
         if (type === 'category') {
             if (categoryOptions === id) {
-                setCategoryOptions(undefined); 
+                setCategoryOptions(undefined);
             } else {
                 setCategoryOptions(id);
             }
@@ -126,7 +137,7 @@ export const GetProductsMenu: React.FC<GetProductsMenuProps> = ({
             if (productOptions === id) {
                 setProductOptions(undefined);
             } else {
-                setProductOptions(id); 
+                setProductOptions(id);
             }
         }
     };
@@ -171,6 +182,7 @@ export const GetProductsMenu: React.FC<GetProductsMenuProps> = ({
 
 
     const handleDrop = async (e: React.DragEvent<HTMLLIElement>, categoryId: number) => {
+        console.log("categroy id", categoryId)
         e.preventDefault();
         const data = JSON.parse(e.dataTransfer.getData('text/plain'));
         const { productId, productCategories } = data;
@@ -206,105 +218,129 @@ export const GetProductsMenu: React.FC<GetProductsMenuProps> = ({
 
 
 
+
     return (
         <>
-        <div >
-            <h2>Categories</h2>
-            <div>
-                <button className='rounded-md p-2 font-semibold shadow-sm bg-amber-300 active:bg-amber-500'
-                    onClick={() => toggleCreateCategoryModal()}>{CreateCategory}</button>
-            </div>
+            <div >
+                <h2>Categories</h2>
+                <div>
+                    <button className='rounded-md p-2 font-semibold shadow-sm bg-amber-300 active:bg-amber-500'
+                        onClick={() => toggleCreateCategoryModal()}>{CreateCategory}</button>
+                </div>
                 {Array.isArray(categories) && (
-            <ul>
-                {categories.map(category => (
-                    <li key={category.id}>
-                        <div className='my-2 shadow rounded-md bg-white'>
-                        <p className='p-2'>
-                            {category.name}
-                        </p>
-                        
-                            <div className=' flex ml-auto my-auto '>
-                                <p className='ml-auto my-auto' onClick={() => toggleCategory(category.id)}>
-                                    {expandedCategories[category.id] ? <ArrowUpCategory /> : <ArrowDownCategory />}
-                                </p>
-                                <div className="my-auto active:bg-gray-300 rounded-md" onClick={() => toggleOptions(category.id, "category")}>
-                                    <ThreeDots />
-                                </div>
-                                {areOptionsOpen(category.id, "category")&&(
-                                    <div className={`shadow-md transition-all transform ${areOptionsOpen(category.id, "category") ? 'translate-x-0' : ' translate-x-full'} ease-in-out`}>
-                                        <p onClick={() => toggleCreateProductModal()}>{CreateProduct}</p>
-                                        <p>{Delete}</p>
+                    <ul>
+                        {categories.map(category => (
+                            <li key={category.id}>
+                                <div className='my-2 shadow rounded-md bg-white'>
+
+
+                                    <div className=' flex ml-auto my-auto '>
+                                        <p className='p-2'>
+                                            {category.name}
+                                        </p>
+                                        {(() => {
+                                            const productsInCategory = storedProducts.filter(product => product.categories.some(productCategory => productCategory.id === category.id));
+                                            if (productsInCategory.length === 0) {
+                                                return <div className="ml-auto my-auto bg-red-400 bg-opacity-10 rounded justify-start items-start gap-2.5 inline-flex">
+                                                    <p className="text-red-400 text-sm font-medium font-['Work Sans'] leading-none"> {NoProductsInCategory}</p>
+                                                </div>;
+                                            }
+                                        })()}
+
+                                        <p className='ml-auto my-auto' onClick={() => toggleCategory(category.id)}>
+                                            {expandedCategories[category.id] ? <ArrowUpCategory /> : <ArrowDownCategory />}
+                                        </p>
+                                        <div className="my-auto active:bg-gray-300 rounded-md" onClick={() => toggleOptions(category.id, "category")}>
+                                            <ThreeDots />
+                                        </div>
+                                        {areOptionsOpen(category.id, "category") && (
+                                            <div className={`shadow-md transition-all transform ${areOptionsOpen(category.id, "category") ? 'translate-y-0' : ' translate-y-full'} duration-300 ease-in-out`}>
+                                                <p onClick={() => toggleCreateProductModal()}>{CreateProduct}</p>
+                                                <p>{Delete}</p>
+                                            </div>
+                                        )}
                                     </div>
-                                )}
-                            </div>
-                        
-                        {expandedCategories[category.id] && (
-                            <div className='shadow-lg rounded-md'>
-                                <ul>
+
+                                    {expandedCategories[category.id] && (
+                                        <div className='shadow-lg rounded-md'>
+                                            <ul>
 
 
-                                    {storedProducts
-                                        .filter(product => product.categories.some(productCategory => productCategory.id === category.id))
-                                        .sort((a, b) => a.order - b.order)
-                                        .map(product => (
-                                            <li key={product.id}
-                                                draggable="true"
-                                                onDragStart={(e) => handleDragStart(e, product.id, product.categories, category.id, product.order)}
-                                                onDragOver={(e) => handleDragOver(e, product.order)}
-                                                onDrop={(e) => handleDrop(e, category.id)}
-                                            >
-                                                <hr className="h-px bg-gray-200 border-0 dark:bg-gray-700" />
-                                                <div className='flex'>
-                                                    <div className='my-auto'>
-                                                        <DragAndDrop />
-                                                    </div>
-                                                    <div className='my-auto'>
-                                                        <input className='rounded mx-2' type="checkbox" />
-                                                    </div>
-                                                    <div>
-                                                        <p className='text-sm'>{product.name}</p>
-                                                        <p className='text-xs text-gray-400'>{product.description}</p>
-                                                    </div>
-                                                    <input className='rounded-md my-2 w-20' type="number" value={product.price}
-                                                        onKeyPress={(event) => {
-                                                            if (!/[0-9]/.test(event.key)) {
-                                                                event.preventDefault();
-                                                            }
-                                                        }}
-                                                        onChange={(e) => {
-                                                            const price = parseFloat(e.target.value);
-                                                            changeProduct("price", price, product.id);
-                                                        }} />
-                                                    <p>{product.order}</p>
-                                                    <div className='ml-auto my-auto active:bg-gray-300 rounded-md' onClick={()=>toggleOptions(product.id, "product")}>
-                                                        <ThreeDots/>
-                                                    </div>
-                                                    {areOptionsOpen(product.id, "product") && (
-                                                        <div className={`shadow-md transition-all transform ${areOptionsOpen(product.id, "product") ? 'translate-x-0' : ' translate-x-full'} ease-in-out`}>
-                                                            <p onClick={() => { toggleEditModal(); setEditProductModal(product) }}>{Edit}</p>
-                                                            <p onClick={() => { toggleDeleteModal(); setDeleteProductModal(product) }}>{Delete}</p>
-                                                        </div>
+                                                {storedProducts
+                                                    .filter(product => product.categories.some(productCategory => productCategory.id === category.id))
+                                                    .sort((a, b) => {
+                                                        // Get the order values of the first orders in the products' orders arrays within the category
+                                                        const orderA = a.orders
+                                                            .filter(order => order.categoryId === category.id)
+                                                            .map(order => order.order)
+                                                            .sort((x, y) => x - y)[0] || Infinity;
 
+                                                        const orderB = b.orders
+                                                            .filter(order => order.categoryId === category.id)
+                                                            .map(order => order.order)
+                                                            .sort((x, y) => x - y)[0] || Infinity;
 
-                                                    )}
-                                                </div>
-                                            </li>
-                                        ))}
+                                                        // Compare the order values
+                                                        return orderA - orderB;
+                                                    })
+                                                    .map(product => (
+                                                        <li key={product.id}
+                                                            draggable="true"
+                                                            onDragStart={(e) => handleDragStart(e, product.id, product.categories, category.id, product.order)}
+                                                            onDragOver={(e) => handleDragOver(e, product.order)}
+                                                            onDrop={(e) => handleDrop(e, category.id)}
+                                                        >
+                                                            <hr className="h-px bg-gray-200 border-0 dark:bg-gray-700" />
+                                                            <div className='flex'>
+                                                                <div className='my-auto'>
+                                                                    <DragAndDrop />
+                                                                </div>
+                                                                <div className='my-auto py-2.5'>
+                                                                    <input className='rounded mx-2' type="checkbox" />
+                                                                </div>
+                                                                <div className='my-auto'>
+                                                                    <p className='text-sm'>{product.name}</p>
 
-                                </ul>
-                            </div>
-                        )}
-                        </div>
-                    </li>
-                ))}
-            </ul>
-)}
-                <DeleteProductModal product={deleteProductModal} modalStatus={deleteModalStatus} toggleModal={toggleDeleteModal} ConfirmDeleteProduct={ConfirmDeleteProduct} Cancel={Cancel} />
-                <EditProductModal product={editProductModal} modalStatus={editModalStatus} toggleModal={toggleEditModal} ConfirmEditProduct={ConfirmEditProduct} Cancel={Cancel} CategoriesDropdown={CategoriesDropdown}/>
-                <CreateCategoryModal modalStatus={createCategoryModalStatus} toggleModal={toggleCreateCategoryModal} fetchCategories={fetchCategories} Confirm={Confirm} Cancel={Cancel}/>
-                <CreateProductModal category={categoryOptions}  modalStatus={createProductModalStatus} toggleModal={toggleCreateProductModal} ConfirmCreateProduct={CreateProduct} Cancel={Cancel} CategoriesDropdown={CategoriesDropdown} />
-        </div>
-        
+                                                                </div>
+                                                                <div className='my-auto px-5 flex-grow'>
+                                                                    <p className='text-xs text-gray-400'>{product.description}</p>
+                                                                </div>
+
+                                                                <div className="my-auto ml-auto w-20  h-8 px-3 py-2 rounded border border-neutral-300">
+                                                                    <p className="text-justify text-black text-sm font-medium font-['Work Sans'] leading-none">{product.price}</p>
+                                                                </div>
+                                                                <p>{product.order}</p>
+                                                                <div className='ml-auto my-auto active:bg-gray-300 rounded-md' onClick={() => toggleOptions(product.id, "product")}>
+                                                                    <ThreeDots />
+                                                                </div>
+                                                                {areOptionsOpen(product.id, "product") && (
+                                                                    <div className={`transition-all transform ${areOptionsOpen(product.id, "product") ? 'translate-x-0' : 'translate-x-full'} ease-in-out`}>
+                                                                        <p onClick={() => { toggleEditModal(); setEditProductModal(product) }}>{Edit}</p>
+                                                                        <p onClick={() => { toggleDeleteModal(); setDeleteProductModal(product) }}>{Delete}</p>
+                                                                        {product.categories.length >= 2 && (
+                                                                            <p onClick={() => removeProductCategory(product, category.id)}>{RemoveFromCategory}</p>
+                                                                        )}
+                                                                    </div>
+                                                                )}
+
+                                                            </div>
+                                                        </li>
+                                                    ))}
+
+                                            </ul>
+                                        </div>
+                                    )}
+                                </div>
+                            </li>
+                        ))}
+                    </ul>
+                )}
+                <DeleteProductModal product={deleteProductModal} modalStatus={deleteModalStatus} toggleModal={toggleDeleteModal} fetchProducts={fetchProducts} ConfirmDeleteProduct={ConfirmDeleteProduct} Cancel={Cancel} />
+                <EditProductModal product={editProductModal} modalStatus={editModalStatus} toggleModal={toggleEditModal} ConfirmEditProduct={ConfirmEditProduct} Cancel={Cancel} CategoriesDropdown={CategoriesDropdown} ProductName={ProductName} ProductDescription={ProductDescription} ProductPhoto={ProductPhoto} ProductPrice={ProductPrice} ProductInStock={ProductInStock} ProductVisibility={ProductVisibility} />
+                <CreateCategoryModal modalStatus={createCategoryModalStatus} toggleModal={toggleCreateCategoryModal} fetchCategories={fetchCategories} Confirm={Confirm} Cancel={Cancel}  />
+                <CreateProductModal category={categoryOptions} modalStatus={createProductModalStatus} toggleModal={toggleCreateProductModal} fetchProducts={fetchProducts} ConfirmCreateProduct={CreateProduct} Cancel={Cancel} CategoriesDropdown={CategoriesDropdown} ProductName={ProductName} ProductDescription={ProductDescription} ProductPhoto={ProductPhoto} ProductPrice={ProductPrice} ProductInStock={ProductInStock} ProductVisibility={ProductVisibility} />
+            </div>
+
         </>
     );
 };

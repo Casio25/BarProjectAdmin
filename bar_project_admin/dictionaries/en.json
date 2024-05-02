@@ -102,16 +102,24 @@
         "Feedback": "Feedback"
      },
      "ProductsMenu": {
+        "No products in category": "No products in category",
         "Confirm": "Confirm",
         "Edit": "Edit",
         "Delete": "Delete",
+        "Remove from category": "Remove from category",
         "Apply Changes": "Apply changes",
         "CategoriesDropdown": "Categories",
         "Create Category": "Create Category",
         "Create Product" :"Create Product",
         "Confirm Delete Product": "Confirm Delete",
         "Confirm Edit Product": "Save Changes",
-        "Cancel": "Cancel"
+        "Cancel": "Cancel",
+        "Product Name": "Name",
+        "Product Description": "Description",
+        "Product Price": "Price",
+        "Product Photo": "Photo",
+        "Product In Stock": "In Stock",
+        "Product Visibility": "Visibilty"
      }
 
 

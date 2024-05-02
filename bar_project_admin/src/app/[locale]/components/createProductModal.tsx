@@ -6,17 +6,47 @@ import { CategoriesInterface } from "../interface/CategoriesInterface";
 import { NewProduct } from "../interface/ProductsInterface";
 import { ProductStore } from "../store/ProductStore";
 import { addProductAction } from "../actions/addProductAction";
+import { useRouter } from '@/navigation'
+import { Visibility } from "@mui/icons-material";
+import { getMaxOrderAction } from "../actions/getMaxOrderAction";
 
 
-export const CreateProductModal = ({ category, modalStatus, toggleModal, ConfirmCreateProduct, Cancel, CategoriesDropdown }:
-    { category: number | undefined, modalStatus: boolean, toggleModal: () => void, ConfirmCreateProduct: string, Cancel: string, CategoriesDropdown: string }) => {
+export const CreateProductModal = ({ category,
+     modalStatus,
+    toggleModal,
+    fetchProducts,
+    ConfirmCreateProduct,
+    Cancel,
+    CategoriesDropdown,
+    ProductName,
+    ProductDescription,
+    ProductPhoto,
+    ProductPrice,
+    ProductVisibility,
+    ProductInStock }:
+    { category: number | undefined, 
+    modalStatus: boolean,
+    toggleModal: () => void,
+    fetchProducts: () => void,
+    ConfirmCreateProduct: string,
+    Cancel: string,
+    CategoriesDropdown: string,
+    ProductName: string,
+    ProductDescription: string,
+    ProductPhoto: string,
+    ProductPrice: string,
+    ProductVisibility: string,
+    ProductInStock: string
+}) => {
 
     const [categories, setCategories] = useState<CategoriesInterface>([]);
+    const router = useRouter();
 
     const [newProduct, setNewProduct] = useState<NewProduct>({
         name: '',
         description: '',
         categories: [],
+        orders: [],
         photo: "",
         price: 0,
         visibility: true,
@@ -46,11 +76,35 @@ export const CreateProductModal = ({ category, modalStatus, toggleModal, Confirm
         if (!newProduct.name || !newProduct.description || newProduct.price <= 0 || isNaN(newProduct.price)) {
             setEmptyFieldError("Not all fields are filled correctly");
         } else {
+            const maxOrdersPromises = newProduct.categories.map(category =>
+                getMaxOrderAction(storedJwtToken, category.id)
+            );
+
+            console.log("maxOrdersPromises", maxOrdersPromises);
+
             try {
+                // Wait for all max order promises to resolve
+                const maxOrders = await Promise.all(maxOrdersPromises);
+                console.log("all max orders", maxOrders);
+
+                // Update the orders in the newProduct object
+                newProduct.orders = maxOrders.map((order, index) => ({
+                    order,
+                    categoryId: newProduct.categories[index].id
+                }));
+
+                console.log("new product", newProduct);
+
+                // Proceed with adding the product
                 const response = await addProductAction(newProduct, storedJwtToken);
-                if (response) {
-                    console.log("response", response)
-                    console.log(response.status);
+                console.log(response)
+                if (response == 401) {
+                    router.push('/signin');
+                } else if (response.status == 400) {
+                    setEmptyFieldError("Product with this name already exists");
+                } else if (response.status == 201) {
+                    setEmptyFieldError("");
+                    fetchProducts();
                     toggleModal();
                 }
             } catch (error) {
@@ -58,7 +112,6 @@ export const CreateProductModal = ({ category, modalStatus, toggleModal, Confirm
             }
         }
     };
-
 
     useEffect(() => {
         fetchCategories(); 
@@ -71,6 +124,7 @@ export const CreateProductModal = ({ category, modalStatus, toggleModal, Confirm
                 }));
             }
         }
+        fetchProducts()
     }, [category]);
     return (
         <>
@@ -79,7 +133,7 @@ export const CreateProductModal = ({ category, modalStatus, toggleModal, Confirm
                     <div className="p-8 border w-96 shadow-lg rounded-md bg-white">
 
                         <div>
-                            <p>Name</p>
+                            <p>{ProductName}</p>
                             <input className="rounded-md" type="text" value={newProduct.name}
                                 onChange={(e) => {setNewProduct(prevState => ({
                                     ...prevState,
@@ -87,15 +141,15 @@ export const CreateProductModal = ({ category, modalStatus, toggleModal, Confirm
                                 }))
                                     setEmptyFieldError("")
                                 }} />
-                            <p className="text-sm">Description</p>
-                            <input className="rounded-md" type="text" value={newProduct.description}
+                            <p className="text-sm">{ProductDescription}</p>
+                            <textarea maxLength={100} className="resize-none rounded-md h-full min-h-[130px] w-full" value={newProduct.description}
                                 onChange={(e) => {setNewProduct(prevState => ({
                                     ...prevState,
                                     description: e.target.value
                                 }))
                             setEmptyFieldError("")
                                 }} />
-                            <p>Price</p>
+                            <p>{ProductPrice}</p>
                             <input
                                 className='rounded-md my-2 w-20'
                                 type="number"
@@ -114,7 +168,7 @@ export const CreateProductModal = ({ category, modalStatus, toggleModal, Confirm
                                     setEmptyFieldError("");
                                 }}
                             />  
-                            <p>Photo</p>
+                            <p>{ProductPhoto}</p>
                             <input className="rounded-md" type="text" value={newProduct.photo}
                                 onChange={(e) => {setNewProduct(prevState => ({
                                     ...prevState,
@@ -124,7 +178,7 @@ export const CreateProductModal = ({ category, modalStatus, toggleModal, Confirm
                                     setEmptyFieldError("")
                                 }}/>
                                 
-                            <div id="dropdown" className={` z-10 ${dropdown ? "hidden" : ""}  bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700`}>
+                            
                                 <ul className="py-2 text-sm text-gray-700 dark:text-gray-200" >
                                     {categories.map(category => (
                                         <li key={category.id}>
@@ -153,7 +207,7 @@ export const CreateProductModal = ({ category, modalStatus, toggleModal, Confirm
                                         </li>
                                     ))}
                                 </ul>
-                            </div>
+                            
                             <label>
                                 <input
                                     type="checkbox"
@@ -164,7 +218,7 @@ export const CreateProductModal = ({ category, modalStatus, toggleModal, Confirm
                                         visibility: !newProduct.visibility
                                     }))}
                                 />
-                                Visibility
+                                {ProductVisibility}
                             </label>
                             <label>
                                 <input
@@ -176,7 +230,7 @@ export const CreateProductModal = ({ category, modalStatus, toggleModal, Confirm
                                         inStock: !newProduct.inStock
                                     }))}
                                 />
-                                In stock
+                                {ProductInStock}
                             </label>
                         </div>
                         <p className="mt-4 text-red-600" >{emptyFiledError}</p>

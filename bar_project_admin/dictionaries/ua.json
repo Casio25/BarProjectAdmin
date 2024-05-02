@@ -105,15 +105,23 @@
         "Feedback": "Зворотній зв'язок"
     },
     "ProductsMenu": {
+        "No products in category": "Категорія немає продуктів",
         "Confirm": "Підтвердити",
         "Edit": "Редагувати",
         "Delete": "Видалити",
+        "Remove from category": "Прибрати з категорії",
         "Apply Changes": "Зберігти",
         "CategoriesDropdown": "Категорії",
         "Create Category": "Створити категорію",
         "Create Product": "Створити продукт",
         "Confirm Delete Product": "Видалити продукт",
         "Confirm Edit Product": "Підтвердити зміни",
-        "Cancel": "Скасувати"
+        "Cancel": "Скасувати",
+        "Product Name": "Назва",
+        "Product Description": "Опис",
+        "Product Price": "Ціна",
+        "Product Photo": "Фото",
+        "Product In Stock": "В наявності",
+        "Product Visibility": "Видимість"
     }
 }
