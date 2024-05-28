@@ -9,6 +9,8 @@ export interface GetProductsMenuProps {
     CreateCategory: string,
     CreateProduct: string,
     ConfirmDeleteProduct: string,
+    ConfirmDeleteCategory: string,
+    DeleteCategoryWarning: string,
     ConfirmEditProduct: string,
     Cancel: string,
     ProductName: string,
@@ -17,4 +19,5 @@ export interface GetProductsMenuProps {
     ProductPrice: string,
     ProductVisibility: string,
     ProductInStock: string
+    
 }

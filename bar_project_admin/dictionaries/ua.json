@@ -115,6 +115,8 @@
         "Create Category": "Створити категорію",
         "Create Product": "Створити продукт",
         "Confirm Delete Product": "Видалити продукт",
+        "Confirm Delete Category": "Видалити категорію",
+        "Delete Category Warning": "Увага, якщо у вас є продукти, які лише під'єднанні до цієї категорії, вони будуть видалені",
         "Confirm Edit Product": "Підтвердити зміни",
         "Cancel": "Скасувати",
         "Product Name": "Назва",

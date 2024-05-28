@@ -16,7 +16,7 @@ const PromotionPageAccepted = () => {
             <SideNavBar
                 Promotions={s("Promotions")}
                 Orders={s("Orders")}
-                Home={String("Home")}
+                Home={s("Home")}
                 PaymentDetails={s("PaymentDetails")}
                 Products={s("Products")}
                 FAQ={s("FAQ")}

@@ -2,9 +2,9 @@
 
 
 
-export const getProductsAction = async (storedJwtToken: string | null) => {
+export const getOrdersAction = async (storedJwtToken: string | null) => {
     try {
-        const response = await fetch("http://localhost:4000/catalog", {
+        const response = await fetch("http://localhost:4000/orders/get_orders", {
             cache: "no-store",
             method: "GET",
             headers: {
@@ -15,7 +15,6 @@ export const getProductsAction = async (storedJwtToken: string | null) => {
         });
 
         if (response.status === 401) {
-            console.log(response)
             console.error("Unauthorized access:", response.statusText);
             return response.status;
         }

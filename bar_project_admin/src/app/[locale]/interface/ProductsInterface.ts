@@ -8,7 +8,7 @@ export interface Product {
     visibility: boolean;
     inStock: boolean;
     categories: Category[];
-    orders: Order[];
+    orders: OrderOfProduct[];
     newOrder?: number;
 }
 
@@ -18,7 +18,7 @@ export interface Category {
     type: string
 
 }
-export interface Order {
+export interface OrderOfProduct {
     id: number;
     authorId: number;
     order: number
@@ -34,9 +34,9 @@ export interface NewProduct {
     visibility: boolean;
     inStock: boolean;
     categories: Category[]
-    orders: Order[]
+    orders: NewOrder[]
 }
-export interface Order {
+export interface NewOrder {
     order: number,
     categoryId: number
 }

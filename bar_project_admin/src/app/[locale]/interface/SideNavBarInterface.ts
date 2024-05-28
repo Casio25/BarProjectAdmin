@@ -1,3 +1,5 @@
+import { Dispatch, SetStateAction } from "react";
+
 export interface SideNavBarProps {
     Promotions: string,
     Orders: string,
@@ -7,4 +9,5 @@ export interface SideNavBarProps {
     FAQ: string,
     Settings: string,
     Feedback: string
+    
 }

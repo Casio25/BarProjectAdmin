@@ -1,7 +1,7 @@
 "use client"
 import { changeProductAction } from "../actions/changeProductAction";
 import { DeleteProductAction } from "../actions/deleteProductAction";
-import { Category, Order, Product, ProductsInterface } from "../interface/ProductsInterface";
+import { Category, OrderOfProduct, Product, ProductsInterface } from "../interface/ProductsInterface";
 import { ProductStore } from "../store/ProductStore";
 import { OrdersIcon } from "./svgs";
 
@@ -12,7 +12,7 @@ export const DeleteProductModal = ({ product, modalStatus, toggleModal, fetchPro
     const storedProducts = ProductStore(state => state.products);
     const updateStoredProducts = ProductStore(state => state.updateProducts)
 
-    const handleDelete = async (productCategoryIds: Category[], selectedProductOrder: Order[], product: Product) => {
+    const handleDelete = async (productCategoryIds: Category[], selectedProductOrder: OrderOfProduct[], product: Product) => {
         const updatedProductsArray = storedProducts.map((storedProduct) => {
             // Check if the stored product has any of the categories to be deleted
             if (productCategoryIds.some((categoryId) => storedProduct.categories.some((cat) => cat.id === categoryId.id))) {
