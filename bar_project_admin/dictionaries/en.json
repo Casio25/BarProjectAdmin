@@ -122,6 +122,21 @@
         "Product Photo": "Photo",
         "Product In Stock": "In Stock",
         "Product Visibility": "Visibilty"
+     },
+     "OrdersMenu": {
+        "New Orders": "New Orders",
+        "OrderStatusNew": "New",
+        "In Progress": "In Progress",
+        "Finished": "Finished",
+        "OrderStatusFinished": "Finished",
+        "Paid": "Paid",
+        "Unpaid": "Unpaid",
+        "paid": "paid",
+        "unpaid": "unpaid",
+        "Total": "Total",
+        "Q-ty": "Q-ty",
+        "Price": "Price",
+        "Product": "Product"
      }
 
 

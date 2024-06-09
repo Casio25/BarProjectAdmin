@@ -6,6 +6,7 @@ import SideNavBar from '../components/sideNavBar'
 
 const OrdersPage = () => {
     const t = useTranslations("SideNavBar")
+    const o = useTranslations("OrdersMenu")
     
     return (
         <div className='flex w-full min-h-screen bg-zinc-100'>
@@ -18,7 +19,20 @@ const OrdersPage = () => {
                 FAQ={t("FAQ")}
                 Settings={t("Settings")}
                 Feedback={t("Feedback")} />
-            <OrdersMenu/>
+            <OrdersMenu
+            NewOrders={o("New Orders")}
+            OrderStatusNew={o("OrderStatusNew")}
+            InProgress={o("In Progress")}
+            Finished={o("Finished")}
+            OrderStatusFinished={o("OrderStatusFinished")}
+            Paid={o("Paid")}
+            Unpaid={o("Unpaid")}
+            paid={o("paid")}
+            unpaid={o("unpaid")}
+            Total={o("Total")}
+            Quantity_short={o("Q-ty")}
+            Price={o("Price")}
+            Product={o("Product")}/>
         </div>
     )
 }

@@ -125,5 +125,20 @@
         "Product Photo": "Фото",
         "Product In Stock": "В наявності",
         "Product Visibility": "Видимість"
+    },
+    "OrdersMenu": {
+        "New Orders": "Нові замовлення",
+        "OrderStatusNew": "Нове",
+        "In Progress": "В процессі",
+        "Finished": "Завершені",
+        "OrderStatusFinished": "Завершене",
+        "Paid": "Оплачено",
+        "Unpaid": "Неоплачено",
+        "paid": "оплачено",
+        "unpaid": "неоплачено",
+        "Total": "Всього",
+        "Q-ty": "К-ть",
+        "Price": "Ціна",
+        "Product": "Продукт"
     }
 }

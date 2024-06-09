@@ -75,6 +75,8 @@ export const CreateProductModal = ({ category,
     const validate = async () => {
         if (!newProduct.name || !newProduct.description || newProduct.price <= 0 || isNaN(newProduct.price)) {
             setEmptyFieldError("Not all fields are filled correctly");
+        }else if(newProduct.categories.length === 0){
+            setEmptyFieldError("Choose at least one category")
         } else {
             const maxOrdersPromises = newProduct.categories.map(category =>
                 getMaxOrderAction(storedJwtToken, category.id)
