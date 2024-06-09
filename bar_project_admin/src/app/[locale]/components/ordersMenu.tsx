@@ -96,17 +96,22 @@ const OrdersMenu: React.FC<OrdersMenuProps> = ({
     const handleDragOver = (e: React.DragEvent<HTMLUListElement>) => {
         e.preventDefault()
     }
-    const handleDrop = (e: React.DragEvent<HTMLUListElement>, orderStatus: OrderStatus) => {
-        e.preventDefault();
-        if (draggedOrder){
-            const updatedOrder = {...draggedOrder, orderStatus};
-            const updatedOrders = storedOrders.map(order => 
-                order.id === draggedOrder.id ? updatedOrder : order)
-                updateStoredOrders(updatedOrders);
-                setDraggedOrder(null);
-                console.log("updated order", updatedOrder)
+    const updateOrderStatus = (orderId: number, orderStatus: string) => {
+        const updatedOrders = storedOrders.map(order =>
+            order.id === orderId ? { ...order, orderStatus } : order
+        );
+        updateStoredOrders(updatedOrders);
+        if (selectedOrder && selectedOrder.id === orderId) {
+            setSelectedOrder({ ...selectedOrder, orderStatus });
         }
-    }
+    };
+    const handleDrop = (e: React.DragEvent<HTMLUListElement>, orderStatus: string) => {
+        e.preventDefault();
+        if (draggedOrder) {
+            updateOrderStatus(draggedOrder.id, orderStatus);
+            setDraggedOrder(null);
+        }
+    };
 
     const renderOrderList = (orders, status, color) => (
         <ul className="flex-col relative justify-center p-5 mt-6 w-full"
@@ -155,10 +160,13 @@ const OrdersMenu: React.FC<OrdersMenuProps> = ({
                 <div className='divide-black'>
                     <p className="text-black text-lg font-semibold font-['Barlow Semi Condensed'] leading-normal"> Order {selectedOrder.id}</p>
                 </div>
-                <div className='grid grid-cols-3 border-1 divide-x-1 divide-black border-black rounded-lg text-center mx-1 mb-5'>
-                    <p className={'p-3' + (selectedOrder.orderStatus == "new" ? " bg-yellow-300 rounded-l-lg font-semibold" : "")}>{OrderStatusNew}</p>
-                    <p className={'py-3' + (selectedOrder.orderStatus == "inProgress" ? " bg-yellow-300 font-semibold" : "")}>{InProgress}</p>
-                    <p className={'p-3' + (selectedOrder.orderStatus == "finished" ? " bg-yellow-300 rounded-r-lg font-semibold" : "")}>{OrderStatusFinished}</p>
+                <div className='grid grid-cols-3 border-1 divide-x-1 divide-black border-black rounded-lg text-center mx-1 mb-5 cursor-pointer'>
+                    <p className={'p-3' + (selectedOrder.orderStatus === OrderStatus.NEW ? " bg-yellow-300 rounded-l-lg font-semibold" : "")}
+                        onClick={() => updateOrderStatus(selectedOrder.id, OrderStatus.NEW)}>{OrderStatusNew}</p>
+                    <p className={'py-3' + (selectedOrder.orderStatus === OrderStatus.INPROGRESS ? " bg-yellow-300 font-semibold" : "")}
+                        onClick={() => updateOrderStatus(selectedOrder.id, OrderStatus.INPROGRESS)}>{InProgress}</p>
+                    <p className={'p-3' + (selectedOrder.orderStatus === OrderStatus.FINISHED ? " bg-yellow-300 rounded-r-lg font-semibold" : "")}
+                        onClick={() => updateOrderStatus(selectedOrder.id, OrderStatus.FINISHED)}>{OrderStatusFinished}</p>
                 </div>
                 <div className='grid grid-cols-2 border-1 divide-x-1 divide-black border-black rounded-lg text-center mx-1'>
                     <p className={'p-3' + (Array.isArray(selectedOrder.payment) && selectedOrder.payment[0].paymentStatus == "paid" ? " bg-yellow-300 rounded-l-lg font-semibold" : "")}>{Paid}</p>
