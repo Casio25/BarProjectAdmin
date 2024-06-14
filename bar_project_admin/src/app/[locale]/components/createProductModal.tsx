@@ -1,5 +1,4 @@
 "use client"
-
 import { useEffect, useState, HTMLInputTypeAttribute, ChangeEvent } from "react";
 import { getCategoriesAction } from "../actions/getCategoriesAction";
 import { CategoriesInterface } from "../interface/CategoriesInterface";
