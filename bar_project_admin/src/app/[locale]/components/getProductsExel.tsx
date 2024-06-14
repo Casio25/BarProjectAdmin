@@ -4,6 +4,7 @@ import React from 'react'
 import { getProductsAction } from '../actions/getProductsAction'
 import { useRouter } from '@/navigation'
 import * as ExcelJS from 'exceljs';
+import { Product } from '../interface/ProductsInterface'
 
 export const GetProductsExel = () => {
 
@@ -27,7 +28,7 @@ export const GetProductsExel = () => {
                     sheet.addRow(headers);
 
                     // Add data to the worksheet
-                    response.forEach(item => {
+                    response.forEach((item: Product) => {
                         sheet.addRow(Object.values(item));
                     });
 

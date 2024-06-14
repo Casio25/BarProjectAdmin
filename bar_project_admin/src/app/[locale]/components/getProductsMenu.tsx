@@ -228,8 +228,8 @@ export const GetProductsMenu: React.FC<GetProductsMenuProps> = ({
         const productsInBetween = storedProducts.filter(product =>
             product.categories.some(cat => cat.id === categoryId) &&
             product.orders.some(order =>
-                order.order > Math.min(draggedProduct.orders.find(o => o.categoryId === categoryId)?.order!, targetOrder) &&
-                order.order < Math.max(draggedProduct.orders.find(o => o.categoryId === categoryId)?.order!, targetOrder)
+                order.order > Math.min(draggedProduct?.orders.find(o => o.categoryId === categoryId)?.order!, targetOrder) &&
+                order.order < Math.max(draggedProduct?.orders.find(o => o.categoryId === categoryId)?.order!, targetOrder)
             )
         );
         console.log("prodcuts in between", productsInBetween);

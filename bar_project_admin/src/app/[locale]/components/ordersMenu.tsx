@@ -4,7 +4,7 @@ import { OrderInterface, OrderStatus } from '../interface/OrderInterface';
 import { useRouter } from '@/navigation'
 import { getOrdersAction } from '../actions/getOrdersAction';
 import { OrdersStore } from '../store/OrderStore';
-import { Order } from '@/test/Dto/order/create-order.dto';
+
 import {  ProductsInterface } from '../interface/ProductsInterface';
 import { getProductsAction } from '../actions/getProductsAction';
 import { OrdersMenuProps } from '../interface/OrdersMenuProps';
@@ -96,7 +96,7 @@ const OrdersMenu: React.FC<OrdersMenuProps> = ({
     const handleDragOver = (e: React.DragEvent<HTMLUListElement>) => {
         e.preventDefault()
     }
-    const updateOrderStatus = (orderId: number, orderStatus: string) => {
+    const updateOrderStatus = (orderId: number, orderStatus: OrderStatus) => {
         const updatedOrders = storedOrders.map(order =>
             order.id === orderId ? { ...order, orderStatus } : order
         );
@@ -105,7 +105,7 @@ const OrdersMenu: React.FC<OrdersMenuProps> = ({
             setSelectedOrder({ ...selectedOrder, orderStatus });
         }
     };
-    const handleDrop = (e: React.DragEvent<HTMLUListElement>, orderStatus: string) => {
+    const handleDrop = (e: React.DragEvent<HTMLUListElement>, orderStatus: OrderStatus) => {
         e.preventDefault();
         if (draggedOrder) {
             updateOrderStatus(draggedOrder.id, orderStatus);
@@ -113,12 +113,12 @@ const OrdersMenu: React.FC<OrdersMenuProps> = ({
         }
     };
 
-    const renderOrderList = (orders, status, color) => (
+    const renderOrderList = (orders: OrderInterface[], status: OrderStatus, color : string) => (
         <ul className="flex-col relative justify-center p-5 mt-6 w-full"
             onDragOver={handleDragOver}
             onDrop={(e) => handleDrop(e, status)}>
             <div className={`flex absolute justify-center items-center h-8 bg-white rounded-2xl border-1 border-${color}-400`}>
-                <p className='text-sm font-semibold ml-10 mx-2'>{status === "new" ? NewOrders : status === "inProgress" ? InProgress : Finished}</p>
+                <p className='text-sm font-semibold ml-10 mx-2'>{status === "new" ? NewOrders : status === OrderStatus.INPROGRESS ? InProgress : Finished}</p>
             </div>
             <div className={`flex absolute justify-center items-center w-8 h-8 bg-${color}-400 rounded-2xl`}>
                 <p className='font-bold text-white'>{orders.length}</p>
@@ -133,9 +133,13 @@ const OrdersMenu: React.FC<OrdersMenuProps> = ({
                             <p className='font-semibold'>Order ID: {order.id}</p>
                             <p className='font-semibold ml-auto'>{order.totalPrice}</p>
                             <p className='text-sm'>{formatDateToShort(order.creatAt)}</p>
-                            <p className={`ml-auto text-xs rounded-lg p-1 ${order.payment[0].paymentStatus === "paid" ? "text-yellow-300 bg-black font-semibold" : "text-neutral-500 bg-zinc-100"}`}>
-                                {order.payment[0].paymentStatus === "paid" ? paid : unpaid}
+                            <p className={`ml-auto text-xs rounded-lg p-1 ${order?.payment?.[0]?.paymentStatus === "paid"
+                                    ? "text-yellow-300 bg-black font-semibold"
+                                    : "text-neutral-500 bg-zinc-100"
+                                }`}>
+                                {order?.payment?.[0]?.paymentStatus === "paid" ? paid : unpaid}
                             </p>
+
                         </div>
                     </div>
                 </li>
