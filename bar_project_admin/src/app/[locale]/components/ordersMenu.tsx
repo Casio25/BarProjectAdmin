@@ -169,7 +169,8 @@ const OrdersMenu: React.FC<OrdersMenuProps> = ({
                         onClick={() => updateOrderStatus(selectedOrder.id, OrderStatus.FINISHED)}>{OrderStatusFinished}</p>
                 </div>
                 <div className='grid grid-cols-2 border-1 divide-x-1 divide-black border-black rounded-lg text-center mx-1'>
-                    <p className={'p-3' + (Array.isArray(selectedOrder.payment) && selectedOrder.payment[0].paymentStatus == "paid" ? " bg-yellow-300 rounded-l-lg font-semibold" : "")}>{Paid}</p>
+                    <p className={'p-3' + (Array.isArray(selectedOrder.payment) && selectedOrder.payment[0].paymentStatus == "paid" ? " bg-yellow-300 rounded-l-lg font-semibold" : "")}
+                    >{Paid}</p>
                     <p className={'p-3' + (Array.isArray(selectedOrder.payment) && selectedOrder.payment[0].paymentStatus == "unpaid" ? " bg-yellow-300 rounded-r-lg font-semibold" : "")}>{Unpaid}</p>
                 </div>
                 <ul className='absolute bottom-0 w-full'>
