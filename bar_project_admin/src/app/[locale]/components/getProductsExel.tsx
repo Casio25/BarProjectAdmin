@@ -9,7 +9,7 @@ export const GetProductsExel = () => {
 
     const router = useRouter()
     const storedJwtToken = localStorage.getItem("jwtToken");
-    const getProducts = async (jwtToken: string) => {
+    const getProducts = async (jwtToken: string | null) => {
         try {
             const response = await getProductsAction(jwtToken)
             console.log("response from exel: ", response)
