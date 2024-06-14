@@ -198,6 +198,11 @@ export const GetProductsMenu: React.FC<GetProductsMenuProps> = ({
         // Filter targetOrders to only include orders with the same categoryId as the initial productOrders
         const filteredOrders = targetOrders.filter(order => order.categoryId === categoryId);
 
+        if (filteredOrders.length === 0) {
+            setTargetOrder(undefined); // Handle case where no orders match the categoryId
+            return;
+        }
+
         // Calculate the total sum of orders
         const totalOrderSum = filteredOrders.reduce((sum, order) => sum + order.order, 0);
 
@@ -207,6 +212,7 @@ export const GetProductsMenu: React.FC<GetProductsMenuProps> = ({
 
         setTargetOrder(targetOrder);
     };
+
 
     const handleDrop = async (e: React.DragEvent<HTMLLIElement>, categoryId: number) => {
         e.preventDefault();
@@ -218,12 +224,22 @@ export const GetProductsMenu: React.FC<GetProductsMenuProps> = ({
             product.categories.some(category => productCategories.some(selectedCategory => selectedCategory.id === category.id))
         );
 
+        if (targetOrder === undefined) {
+            console.log("Target order is undefined");
+            return;
+        }
+
         // Find the targetProduct with the same categoryId as the function parameter
         const targetProduct = storedProducts.find(product => {
             const hasSameCategory = product.categories.some(selectedProductCategory => selectedProductCategory.id === categoryId);
             const hasSameOrder = product.orders.some(order => order.categoryId === categoryId && order.order === targetOrder);
             return hasSameCategory && hasSameOrder;
         });
+
+        if (!draggedProduct || !targetProduct) {
+            console.log("Product not found or category doesn't match the current category");
+            return;
+        }
 
         const productsInBetween = storedProducts.filter(product =>
             product.categories.some(cat => cat.id === categoryId) &&
@@ -232,20 +248,17 @@ export const GetProductsMenu: React.FC<GetProductsMenuProps> = ({
                 order.order < Math.max(draggedProduct?.orders.find(o => o.categoryId === categoryId)?.order!, targetOrder)
             )
         );
-        console.log("prodcuts in between", productsInBetween);
+        console.log("products in between", productsInBetween);
 
-        if (!draggedProduct || !targetProduct) {
-            console.log("Product not found or category doesn't match the current category");
-            return;
-        }
         const hasSameCategory = draggedProduct.orders.some(order => targetProduct.orders.some(targetOrder => order.categoryId === targetOrder.categoryId));
         if (!hasSameCategory) {
             console.log("Products don't have the same categoryId in their orders");
             return;
         }
-        if (draggedProduct === targetProduct){
+        if (draggedProduct === targetProduct) {
             return;
         }
+
         // Determine the direction of adjustment based on the relative sizes of dragged and target products
         const adjustment = draggedProduct.orders.find(o => o.categoryId === categoryId)?.order! > targetOrder ? 1 : -1;
 
@@ -260,8 +273,6 @@ export const GetProductsMenu: React.FC<GetProductsMenuProps> = ({
 
         console.log("Adjusted products in between:", productsInBetween);
 
-
-        // Update the order of the dragged product
         // Update the order of the dragged product
         draggedProduct.orders = draggedProduct.orders.map(order => order.categoryId === categoryId ? { ...order, order: targetOrder } : order);
 
@@ -297,9 +308,8 @@ export const GetProductsMenu: React.FC<GetProductsMenuProps> = ({
         storedProducts.map(async product => {
             await changeProductAction(product, storedJwtToken)
         })
-        
-        
-    }
+    };
+
 
 
 
