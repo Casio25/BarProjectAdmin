@@ -1,10 +1,9 @@
 "use server"
 
-import { ProductInfoInterface } from "../interface/ProductsInterface";
 
 
 
-export const getProductsAction = async (storedJwtToken: string | null, productInfo) => {
+export const getProductsAction = async (storedJwtToken: string | null, productInfo : string | undefined) => {
     try {
         // Build query parameters from productInfo if it's not null
         const queryParams = productInfo ? new URLSearchParams(productInfo as any).toString() : '';
