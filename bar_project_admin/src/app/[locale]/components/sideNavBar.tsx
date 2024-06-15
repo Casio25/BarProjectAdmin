@@ -62,25 +62,25 @@ const SideNavBar :React.FC<SideNavBarProps> = ({
           
         </Link>
         <Link href="/orders">
-            <li className={`flex mx-5 px-2 ${isOpen ? "w-10" : "w-60"} h-12 pt-2 rounded-lg ${isActive("/orders") ? "bg-zinc-100" : "bg-white"} transition-all duration-300 ease-in-out`}>
+            <li className={`flex mx-5 px-2 ${isOpen ? "w-10" : "w-60"} h-12 pt-2 rounded-lg ${isActive("/orders") ? "bg-zinc-100" : "bg-white"} `}>
             <OrdersIcon />
             {isOpen ? <></> : <p className="ml-2">{Orders}</p>}
           </li>
         </Link>
         <Link href="/">
-            <li className={`flex mx-5 px-2 ${isOpen ? "w-10" : "w-60"} h-12 pt-2 rounded-lg ${isActiveHome("/") ? "bg-zinc-100" : "bg-white"} transition-all duration-300 ease-in-out`}>
+            <li className={`flex mx-5 px-2 ${isOpen ? "w-10" : "w-60"} h-12 pt-2 rounded-lg ${isActiveHome("/") ? "bg-zinc-100" : "bg-white"} `}>
             <HomeIcon/>
             {isOpen ? <></> : <p className="ml-2">{Home}</p>}
           </li>
         </Link>
         <Link href="/payment_details">
-            <li className={`flex mx-5 px-2 ${isOpen ? "w-10" : "w-60"} h-12 pt-2 rounded-lg ${isActive("/payment_details") ? "bg-zinc-100" : "bg-white"} transition-all duration-300 ease-in-out`}>
+            <li className={`flex mx-5 px-2 ${isOpen ? "w-10" : "w-60"} h-12 pt-2 rounded-lg ${isActive("/payment_details") ? "bg-zinc-100" : "bg-white"} `}>
             <MoneyIcon/>
             {isOpen ? <></> :<p className="ml-2">{PaymentDetails}</p>}
           </li>
         </Link>
         <Link href="/products">
-            <li className={`flex mx-5 px-2 ${isOpen ? "w-10" : "w-60"} h-12 pt-2 rounded-lg ${isActive("/products") ? "bg-zinc-100" : "bg-white"} transition-all duration-300 ease-in-out`}>
+            <li className={`flex mx-5 px-2 ${isOpen ? "w-10" : "w-60"} h-12 pt-2 rounded-lg ${isActive("/products") ? "bg-zinc-100" : "bg-white"} `}>
             <ProductsIcon />
             {isOpen ? <></> : <p ref={parent} className="ml-2">{Products}</p>}
           </li>
@@ -88,19 +88,19 @@ const SideNavBar :React.FC<SideNavBarProps> = ({
       </ul>
       <ul className="text-lg flex-col mt-auto font-semibold">
         <Link href="/faq">
-            <li className={`flex mx-5 px-2 ${isOpen ? "w-10" : "w-60"} h-12 pt-2 rounded-lg ${isActive("/faq") ? "bg-zinc-100" : "bg-white"} transition-all duration-300 ease-in-out`}>
+            <li className={`flex mx-5 px-2 ${isOpen ? "w-10" : "w-60"} h-12 pt-2 rounded-lg ${isActive("/faq") ? "bg-zinc-100" : "bg-white"} `}>
             <FAQIcon />
             {isOpen ? <></> : <p className="ml-2">{FAQ}</p>}
           </li>
         </Link>
         <Link href="/settings">
-            <li className={`flex mx-5 px-2 ${isOpen ? "w-10" : "w-60"} h-12 pt-2 rounded-lg ${isActive("/settings") ? "bg-zinc-100" : "bg-white"} transition-all duration-300 ease-in-out`}>
+            <li className={`flex mx-5 px-2 ${isOpen ? "w-10" : "w-60"} h-12 pt-2 rounded-lg ${isActive("/settings") ? "bg-zinc-100" : "bg-white"} `}>
             <SettingsIcon />
             {isOpen ? <></> : <p className="ml-2">{Settings}</p>}
           </li>
         </Link>
         <Link href="/feedback">
-            <li className={`flex mx-5 px-2 ${isOpen ? "w-10" : "w-60 "} h-12 pt-2 rounded-lg ${isActive("/feedback") ? "bg-zinc-100" : "bg-white"} transition-all duration-300 ease-in-out`}>
+            <li className={`flex mx-5 px-2 ${isOpen ? "w-10" : "w-60 "} h-12 pt-2 rounded-lg ${isActive("/feedback") ? "bg-zinc-100" : "bg-white"} `}>
             <FeedbackIcon />
             {isOpen ? <></> :  <p className="ml-2"  >{Feedback}</p>}
           </li>
