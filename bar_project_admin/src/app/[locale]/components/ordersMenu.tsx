@@ -123,7 +123,12 @@ const OrdersMenu: React.FC<OrdersMenuProps> = ({
             <div className={`flex absolute justify-center items-center w-8 h-8 bg-${color}-400 rounded-2xl`}>
                 <p className='font-bold text-white'>{orders.length}</p>
             </div>
-            {orders.map(order => (
+            {orders.length === 0 ? (
+                <li className='mt-32 mb-5 bg-white shadow rounded-lg w-full flex relative justify-center items-center'>
+                    <p className='text-gray-500'>There are no orders</p>
+                </li>
+            ) : (
+            orders.map(order => (
                 <li key={order.id} className='first-of-type:mt-32 mb-5 bg-white shadow rounded-lg w-full flex relative'
                     draggable="true"
                     onDragStart={(e) => handleDragStart(e, order)}>
@@ -143,7 +148,8 @@ const OrdersMenu: React.FC<OrdersMenuProps> = ({
                         </div>
                     </div>
                 </li>
-            ))}
+            ))
+            )}
         </ul>
     );
 
@@ -155,12 +161,17 @@ const OrdersMenu: React.FC<OrdersMenuProps> = ({
     return (
         <>
             <div className="flex w-lvw h-28 bg-white shadow">
-                {storedOrders && storedOrders.filter(order => order.orderStatus === "new") &&
-                    renderOrderList(storedOrders.filter(order => order.orderStatus === "new"), OrderStatus.NEW, "blue")}
-                {storedOrders && storedOrders.filter(order => order.orderStatus === "inProgress") &&
-                    renderOrderList(storedOrders.filter(order => order.orderStatus === "inProgress"), OrderStatus.INPROGRESS, "orange")}
-                {storedOrders && storedOrders.filter(order => order.orderStatus === "finished") &&
-                    renderOrderList(storedOrders.filter(order => order.orderStatus === "finished"), OrderStatus.FINISHED, "green")}
+                {storedOrders && storedOrders.length > 0 ? (
+                    <>
+                        {renderOrderList(storedOrders.filter(order => order.orderStatus === "new"), OrderStatus.NEW, "blue")}
+                        {renderOrderList(storedOrders.filter(order => order.orderStatus === "inProgress"), OrderStatus.INPROGRESS, "orange")}
+                        {renderOrderList(storedOrders.filter(order => order.orderStatus === "finished"), OrderStatus.FINISHED, "green")}
+                    </>
+                ) : (
+                    <div className="flex w-full justify-center items-center">
+                        <p className="text-gray-500">There are no orders</p>
+                    </div>
+                )}
             </div>
             <div className='w-3/5 bg-white ml-auto relative'>
                 <div className='divide-black'>

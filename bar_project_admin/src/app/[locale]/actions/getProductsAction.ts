@@ -8,7 +8,7 @@ export const getProductsAction = async (storedJwtToken: string | null) => {
         // Build query parameters from productInfo if it's not null
         // const queryParams = productInfo ? new URLSearchParams(productInfo as any).toString() : '';
         // const url = `http://localhost:4000/catalog${queryParams ? `?${queryParams}` : ''}`;
-        const url = `http://localhost:4000/catalog/get_products`
+        const url = `HRKU-4835e690-589c-4262-ad65-d92975f6d1f4/catalog/get_products`
         const response = await fetch(url, {
             cache: "no-store",
             method: "GET",

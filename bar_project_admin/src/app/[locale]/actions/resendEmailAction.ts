@@ -4,7 +4,7 @@ export const resendEmailAction = async (formData: LoginInterface) => {
     try {
         console.log(formData)
         
-        const response = await fetch("http://localhost:4000/auth/resend_email", {
+        const response = await fetch("HRKU-4835e690-589c-4262-ad65-d92975f6d1f4/auth/resend_email", {
             cache: "no-store",
             method: "POST",
             headers: {
