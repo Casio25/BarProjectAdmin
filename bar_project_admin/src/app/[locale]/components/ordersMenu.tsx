@@ -155,11 +155,11 @@ const OrdersMenu: React.FC<OrdersMenuProps> = ({
     return (
         <>
             <div className="flex w-lvw h-28 bg-white shadow">
-                {storedOrders && storedOrders.filter(order => order.orderStatus === "new").length > 0 &&
+                {storedOrders.filter(order => order.orderStatus === "new") &&
                     renderOrderList(storedOrders.filter(order => order.orderStatus === "new"), OrderStatus.NEW, "blue")}
-                {storedOrders && storedOrders.filter(order => order.orderStatus === "inProgress").length > 0 &&
+                {storedOrders.filter(order => order.orderStatus === "inProgress") &&
                     renderOrderList(storedOrders.filter(order => order.orderStatus === "inProgress"), OrderStatus.INPROGRESS, "orange")}
-                {storedOrders && storedOrders.filter(order => order.orderStatus === "finished").length > 0 &&
+                {storedOrders.filter(order => order.orderStatus === "finished") &&
                     renderOrderList(storedOrders.filter(order => order.orderStatus === "finished"), OrderStatus.FINISHED, "green")}
             </div>
             <div className='w-3/5 bg-white ml-auto relative'>
