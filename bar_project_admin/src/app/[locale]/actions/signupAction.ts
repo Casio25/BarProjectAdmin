@@ -24,3 +24,4 @@ export const signUpAction = async (formData: RegistrationInterface) => {
         console.error("Error:", error);
     }
 };
+//
