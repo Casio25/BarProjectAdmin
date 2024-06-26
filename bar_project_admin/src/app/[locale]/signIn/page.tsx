@@ -6,7 +6,7 @@ import { ChangeLanguage } from "../components/changeLanguage";
 
 
 
-const SingInPage = () => {
+const SignInPage = () => {
   const t = useTranslations("SignIn")
   return (
     <div className='flex flex-col bg-violet-900'>
@@ -35,4 +35,4 @@ const SingInPage = () => {
   )
 }
 
-export default SingInPage
+export default SignInPage
