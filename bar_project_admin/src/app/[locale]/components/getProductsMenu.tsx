@@ -414,9 +414,9 @@ export const GetProductsMenu: React.FC<GetProductsMenuProps> = ({
                                                                 <div className="my-auto ml-auto w-20  h-8 px-3 py-2 rounded border border-neutral-300">
                                                                     <p className="text-justify text-black text-sm font-medium font-['Work Sans'] leading-none">{product.price}</p>
                                                                 </div>
-                                                                {product.orders.map(order => (
+                                                                {/* {product.orders.map(order => (
                                                                     <li key={order.id}>{order.order}</li>
-                                                                ))}
+                                                                ))} */}
                                                                 <div className='ml-auto my-auto active:bg-gray-300 rounded-md' onClick={() => toggleOptions(product.id, "product")}>
                                                                     <ThreeDots />
                                                                 </div>

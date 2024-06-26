@@ -8,7 +8,7 @@ import { ChangeLanguage } from "../components/changeLanguage";
 
 
 
-const SingInPage = () => {
+const SingUpPage = () => {
     const t = useTranslations("Register")
     return (
         <div className='flex flex-col bg-violet-900'>
@@ -42,4 +42,4 @@ const SingInPage = () => {
     )
 }
 
-export default SingInPage
+export default SingUpPage

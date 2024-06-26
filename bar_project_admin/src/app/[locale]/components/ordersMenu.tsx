@@ -105,6 +105,8 @@ const OrdersMenu: React.FC<OrdersMenuProps> = ({
             setSelectedOrder({ ...selectedOrder, orderStatus });
         }
     };
+    
+
     const handleDrop = (e: React.DragEvent<HTMLUListElement>, orderStatus: OrderStatus) => {
         e.preventDefault();
         if (draggedOrder) {
@@ -124,7 +126,7 @@ const OrdersMenu: React.FC<OrdersMenuProps> = ({
                 <p className='font-bold text-white'>{orders.length}</p>
             </div>
             {orders.length === 0 ? (
-                <li className='mt-32 mb-5 bg-white shadow rounded-lg w-full flex relative justify-center items-center'>
+                <li className='mt-32 mb-5 h-20 bg-white shadow rounded-lg w-full flex relative justify-center items-center'>
                     <p className='text-gray-500'>There are no orders</p>
                 </li>
             ) : (
@@ -186,9 +188,10 @@ const OrdersMenu: React.FC<OrdersMenuProps> = ({
                         onClick={() => updateOrderStatus(selectedOrder.id, OrderStatus.FINISHED)}>{OrderStatusFinished}</p>
                 </div>
                 <div className='grid grid-cols-2 border-1 divide-x-1 divide-black border-black rounded-lg text-center mx-1'>
-                    <p className={'p-3' + (Array.isArray(selectedOrder.payment) && selectedOrder.payment[0].paymentStatus == "paid" ? " bg-yellow-300 rounded-l-lg font-semibold" : "")}
-                    >{Paid}</p>
-                    <p className={'p-3' + (Array.isArray(selectedOrder.payment) && selectedOrder.payment[0].paymentStatus == "unpaid" ? " bg-yellow-300 rounded-r-lg font-semibold" : "")}>{Unpaid}</p>
+                    <p className={'p-3' + (Array.isArray(selectedOrder.payment) && selectedOrder.payment[0].paymentStatus === "paid" ? " bg-yellow-300 rounded-l-lg font-semibold" : "")}
+                        >{Paid}</p>
+                    <p className={'p-3' + (Array.isArray(selectedOrder.payment) && selectedOrder.payment[0].paymentStatus === "unpaid" ? " bg-yellow-300 rounded-r-lg font-semibold" : "")}
+                        >{Unpaid}</p>
                 </div>
                 <ul className='absolute bottom-0 w-full'>
                     <div className=' bg-zinc-100 grid grid-cols-4 p-2 font-black'>
