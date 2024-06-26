@@ -78,7 +78,7 @@
 
     "Header": {
         "home link": "Home",
-        "signIn link": "Sign in"
+        "signin link": "Sign in"
     },
 
     "User Error": {

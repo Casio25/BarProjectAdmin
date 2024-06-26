@@ -80,7 +80,7 @@
 
     "Header": {
         "home link": "Головна",
-        "signIn link": "Увійти"
+        "signin link": "Увійти"
     },
 
     "User Error": {
