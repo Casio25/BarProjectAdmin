@@ -193,7 +193,7 @@ const OrdersMenu: React.FC<OrdersMenuProps> = ({
                     <p className={'p-3' + (Array.isArray(selectedOrder.payment) && selectedOrder.payment[0].paymentStatus === "unpaid" ? " bg-yellow-300 rounded-r-lg font-semibold" : "")}
                         >{Unpaid}</p>
                 </div>
-                <ul className='absolute bottom-0 w-full'>
+                <ul className='absolute bottom-0 w-full '>
                     <div className=' bg-zinc-100 grid grid-cols-4 p-2 font-black'>
                         <p>{Product}</p>
                         <p>{Quantity_short}</p>
