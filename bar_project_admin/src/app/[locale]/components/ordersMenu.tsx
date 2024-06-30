@@ -115,6 +115,19 @@ const OrdersMenu: React.FC<OrdersMenuProps> = ({
         }
     };
 
+    const renderColorStatus = (status: OrderStatus) => {
+        switch (status) {
+            case OrderStatus.NEW:
+                return <div className={`bg-blue-400 rounded-lg w-full`}></div>;
+            case OrderStatus.INPROGRESS: 
+                return <div className={`bg-orange-400 rounded-lg w-full`}></div>;
+            case OrderStatus.FINISHED:
+                return<div className={`bg-green-400 rounded-lg w-full`}></div>
+            default:
+                break;
+        }
+    }
+
     const renderOrderList = (orders: OrderInterface[], status: OrderStatus, color : string) => (
         <ul className="flex-col relative justify-center p-5 mt-6 w-full"
             onDragOver={handleDragOver}
@@ -134,6 +147,7 @@ const OrdersMenu: React.FC<OrdersMenuProps> = ({
                 <li key={order.id} className='first-of-type:mt-32 mb-5 bg-white shadow rounded-lg w-full flex relative'
                     draggable="true"
                     onDragStart={(e) => handleDragStart(e, order)}>
+                    
                     <div className={`bg-${color}-400 rounded-lg w-full`}>
                         <div className='relative left-2 bg-white grid grid-cols-2 border-2 border-white rounded-lg p-2'
                             onClick={() => setSelectedOrder(order)}>
