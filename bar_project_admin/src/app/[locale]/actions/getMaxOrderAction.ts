@@ -1,7 +1,7 @@
 "use server"
 export const getMaxOrderAction = async (storedJwttoken: string | null, categoryId: number) => {
     try {
-        const response = await fetch("http://localhost:4000/catalog/get_max_order", {
+        const response = await fetch(`${process.env.SERVER_URL}/catalog/get_max_order`, {
             cache: 'no-store',
             method: "POST",
             headers: {

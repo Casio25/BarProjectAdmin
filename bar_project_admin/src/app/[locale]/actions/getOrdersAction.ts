@@ -4,7 +4,7 @@
 
 export const getOrdersAction = async (storedJwtToken: string | null) => {
     try {
-        const response = await fetch("http://localhost:4000/orders/get_orders", {
+        const response = await fetch(`${process.env.SERVER_URL}/orders/get_orders`, {
             cache: "no-store",
             method: "GET",
             headers: {

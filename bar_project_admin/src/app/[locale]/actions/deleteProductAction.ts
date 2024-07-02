@@ -4,7 +4,7 @@ import { Product, ProductsInterface } from "../interface/ProductsInterface"
 
 export const DeleteProductAction = async(product: Product, storedJwtToken: string | null) => {
     try{
-        const response = await fetch("http://localhost:4000/catalog/delete", {
+        const response = await fetch(`${process.env.SERVER_URL}/catalog/delete`, {
             cache: "no-store",
             method: "DELETE",
             headers: {

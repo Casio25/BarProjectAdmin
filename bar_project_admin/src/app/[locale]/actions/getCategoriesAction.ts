@@ -2,7 +2,7 @@
 
 export const getCategoriesAction = async(storedJwttoken: string | null) => {
     try{
-        const response = await fetch("http://localhost:4000/catalog/get_categories",{
+        const response = await fetch(`${process.env.SERVER_URL}/catalog/get_categories`,{
             cache: 'no-store',
             method: "GET",
             headers: {

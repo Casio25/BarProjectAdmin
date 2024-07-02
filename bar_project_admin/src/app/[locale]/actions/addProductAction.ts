@@ -6,7 +6,7 @@ import { NewProduct } from "../interface/ProductsInterface"
 export const addProductAction = async (product: NewProduct, storedJwtToken: string | null) => {
     try {
         console.log("product addProductAction", product);
-        const response = await fetch("http://localhost:4000/catalog/add_product", {
+        const response = await fetch(`${process.env.SERVER_URL}/catalog/add_product`, {
             cache: 'no-store',
             method: "POST",
             headers: {

@@ -2,7 +2,7 @@
 import { ProductsInterface, Product } from './../interface/ProductsInterface';
 export const changeProductAction = async(product: Product | undefined, jwtToken: null | string) => {
     try{
-        const response = await fetch("http://localhost:4000/catalog/change", {
+        const response = await fetch(`${process.env.SERVER_URL}/catalog/change`, {
             cache: "no-store",
             method: "PATCH",
             headers: {

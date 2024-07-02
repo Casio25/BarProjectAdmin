@@ -3,7 +3,7 @@ import { RegistrationInterface } from "../interface/RegistrationInterface";
 
 export const signUpAction = async (formData: RegistrationInterface) => {
     try {
-        const response = await fetch("http://localhost:4000/auth/signup", {
+        const response = await fetch(`${process.env.SERVER_URL}/auth/signup`, {
             cache: "no-store",
             method: "POST",
             headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" },

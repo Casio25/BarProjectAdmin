@@ -4,7 +4,7 @@ export const resendEmailAction = async (formData: LoginInterface) => {
     try {
         console.log(formData)
         
-        const response = await fetch("http://localhost:4000/auth/resend_email", {
+        const response = await fetch(`${process.env.SERVER_URL}/auth/resend_email`, {
             cache: "no-store",
             method: "POST",
             headers: {

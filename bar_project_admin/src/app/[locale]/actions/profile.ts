@@ -4,7 +4,7 @@
 export const profileAction = async (storedJwtToken: string) => {
     try {
         console.log("token in server: ", storedJwtToken)
-        const response = await fetch("http://localhost:4000/user/find", {
+        const response = await fetch(`${process.env.SERVER_URL}/user/find`, {
             cache: "no-store",
             method: "GET",
             headers: { "Content-Type": "application/json",
