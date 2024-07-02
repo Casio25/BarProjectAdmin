@@ -293,7 +293,7 @@ export const SignUpForm: React.FC<SignUpFormProps> = ({
                     }
                     }
                 />
-                <ReCAPTCHA sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SECRET_KEY} onChange={setCaptcha} className="mt-10"/>
+                <ReCAPTCHA sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SECRET_KEY!} onChange={setCaptcha} className="mt-10"/>
 
                 <p className="mt-4 text-red-600">{confirmPasswordError}</p>
                 <p className="mt-4 text-red-600 text-lg">{registrationError}</p>
