@@ -100,7 +100,7 @@ export const CreateProductModal = ({ category,
                 const response = await addProductAction(newProduct, storedJwtToken);
                 console.log(response)
                 if (response == 401) {
-                    router.push('/signin');
+                    router.push('/sign_in');
                 } else if (response.status == 400) {
                     setEmptyFieldError("Product with this name already exists");
                 } else if (response.status == 201) {

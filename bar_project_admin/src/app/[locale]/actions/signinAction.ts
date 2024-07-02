@@ -3,7 +3,7 @@ import { LoginInterface } from "../interface/LoginInterface";
 
 export const signInAction = async (formData: LoginInterface) => {
     try {
-        const response = await fetch(`${process.env.SERVER_URL}/auth/signin`, {
+        const response = await fetch(`${process.env.SERVER_URL}/auth/sign_in`, {
             cache: "no-store",
             method: "POST",
             headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" },

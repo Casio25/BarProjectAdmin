@@ -15,7 +15,7 @@ export const GetProductsExel = () => {
             const response = await getProductsAction(jwtToken)
             console.log("response from exel: ", response)
             if (response == 401 ){
-                router.push('/signin')
+                router.push('/sign_in')
             } else {
                 // Convert JSON data to Excel
                 const workbook = new ExcelJS.Workbook();

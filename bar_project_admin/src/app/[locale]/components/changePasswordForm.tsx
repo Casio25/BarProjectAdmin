@@ -113,7 +113,7 @@ export const ChangePasswordForm: React.FC<ChangePasswordFormProps> = ({
                     setChangeStatus(changeStatusSuccess);
 
                     // Use router.push for navigation
-                    router.push('/signin');
+                    router.push('/sign_in');
 
                 }
             }

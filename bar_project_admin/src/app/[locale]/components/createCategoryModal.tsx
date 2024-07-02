@@ -23,7 +23,7 @@ export const CreateCategoryModal = ({ modalStatus, toggleModal, fetchCategories,
             const response = await addCategoryAction(category, storedJwtToken)
             console.log(response)
             if (response == 401) {
-                router.push('/signin')
+                router.push('/sign_in')
             }else if(response.status == 400){
                 setCategoryError("Category with this name already exists")
             }else if(response.status == 201){

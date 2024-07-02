@@ -19,7 +19,7 @@ const Header = () => {
           
             <NavbarCollapse>
               <Link className=' text-lg ' href="/">{t('home link')}</Link>
-            <Link className=' text-lg'  href="/signin">{t('signin link')}</Link>
+            <Link className=' text-lg'  href="/sign_in">{t('signin link')}</Link>
 
             </NavbarCollapse>
           

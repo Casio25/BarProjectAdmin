@@ -12,7 +12,7 @@ const UserErrorPage = () => {
         <ChangeLanguage/>
           <div className='w-full flex flex-col items-center max-w-md p-6 bg-white rounded-lg shadow-lg'>
               <button className="mr-auto border-2 border-violet-500 flex rounded-full active:ring-4 ">
-                  <Link href="./signin"><ArrowBackIcon /></Link>
+                  <Link href="./sign_in"><ArrowBackIcon /></Link>
               </button>
 
               <UserErrorIcon />

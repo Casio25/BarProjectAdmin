@@ -65,7 +65,7 @@ const OrdersMenu: React.FC<OrdersMenuProps> = ({
             const response = await getOrdersAction(storedJwtToken)
             console.log(response)
             if (response == 401) {
-                router.push('/signin')
+                router.push('/sign_in')
             } else {
                 updateStoredOrders(await response);
 

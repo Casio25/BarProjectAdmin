@@ -72,7 +72,7 @@ export const GetProductsMenu: React.FC<GetProductsMenuProps> = ({
         try {
             const response = await getCategoriesAction(storedJwtToken)
             if (response == 401) {
-                router.push('/signin')
+                router.push('/sign_in')
             } else {
                 setCategories(await response);
             }
@@ -86,7 +86,7 @@ export const GetProductsMenu: React.FC<GetProductsMenuProps> = ({
             const response = await getProductsAction(storedJwtToken)
             console.log(response)
             if (response == 401) {
-                router.push('/signin')
+                router.push('/sign_in')
             } else {
                 updateStoredProducts(await response);
 
