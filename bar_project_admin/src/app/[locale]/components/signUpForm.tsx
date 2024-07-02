@@ -169,9 +169,6 @@ export const SignUpForm: React.FC<SignUpFormProps> = ({
 
                     // Use router.push for navigation
                     router.push('/confirm_registration');
-
-                    // The code below will execute after the navigation is complete
-                    console.log(storedEmail);
                 }
             }
         } catch (error) {
