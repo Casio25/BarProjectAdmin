@@ -62,6 +62,7 @@ export const SignUpForm: React.FC<SignUpFormProps> = ({
 
 
     const router = useRouter()
+    
 
     useEffect(() => {
         setPasswordStrengthBar(passwordStrength(inputedPassword).id as Strength)
@@ -292,7 +293,7 @@ export const SignUpForm: React.FC<SignUpFormProps> = ({
                     }
                     }
                 />
-                <ReCAPTCHA sitekey="6Le-JiwpAAAAAN3Z-d0XX0CWxpMJ7h0lP5Ue7p_2" onChange={setCaptcha} className="mt-10"/>
+                <ReCAPTCHA sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SECRET_KEY} onChange={setCaptcha} className="mt-10"/>
 
                 <p className="mt-4 text-red-600">{confirmPasswordError}</p>
                 <p className="mt-4 text-red-600 text-lg">{registrationError}</p>

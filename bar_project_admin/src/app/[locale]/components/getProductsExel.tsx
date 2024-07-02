@@ -53,7 +53,7 @@ export const GetProductsExel = () => {
         }
     }
     return (
-        <button onClick={() => getProducts(storedJwtToken)} className='rounded-md p-2 font-semibold shadow-sm mr-2 bg-violet-900 active:bg-violet-700 rounded-3xl flex-col justify-center items-center gap-2'>
+        <button onClick={() => getProducts(storedJwtToken)} className=' p-2 font-semibold shadow-sm mr-2 bg-violet-900 active:bg-violet-700 rounded-3xl flex-col justify-center items-center gap-2'>
                 <p className='text-white text-sm font-semibold'>Get Products Exel</p>
             </button>   
     )
