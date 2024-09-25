@@ -121,7 +121,8 @@
         "Product Price": "Price",
         "Product Photo": "Photo",
         "Product In Stock": "In Stock",
-        "Product Visibility": "Visibilty"
+        "Product Visibility": "Visibilty",
+        "Select image to upload": "Select image to upload"
      },
      "OrdersMenu": {
         "New Orders": "New Orders",

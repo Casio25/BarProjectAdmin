@@ -6,13 +6,13 @@ import { useRouter } from '@/navigation'
 import * as ExcelJS from 'exceljs';
 import { Product } from '../interface/ProductsInterface'
 
+
 export const GetProductsExel = () => {
 
     const router = useRouter()
-    const storedJwtToken = localStorage.getItem("jwtToken");
-    const getProducts = async (jwtToken: string | null) => {
+    const getProducts = async () => {
         try {
-            const response = await getProductsAction(jwtToken)
+            const response = await getProductsAction()
             console.log("response from exel: ", response)
             if (response == 401 ){
                 router.push('/sign_in')
@@ -53,7 +53,7 @@ export const GetProductsExel = () => {
         }
     }
     return (
-        <button onClick={() => getProducts(storedJwtToken)} className=' p-2 font-semibold shadow-sm mr-2 bg-violet-900 active:bg-violet-700 rounded-3xl flex-col justify-center items-center gap-2'>
+        <button onClick={() => getProducts()} className=' p-2 font-semibold shadow-sm mr-2 bg-violet-900 active:bg-violet-700 rounded-3xl flex-col justify-center items-center gap-2'>
                 <p className='text-white text-sm font-semibold'>Get Products Exel</p>
             </button>   
     )

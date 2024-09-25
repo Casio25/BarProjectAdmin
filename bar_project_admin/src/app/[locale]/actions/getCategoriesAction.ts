@@ -1,12 +1,16 @@
 "use server"
 
-export const getCategoriesAction = async(storedJwttoken: string | null) => {
+import { cookies } from "next/headers"
+
+export const getCategoriesAction = async() => {
+    const storedJwtToken = cookies().get("jwtToken")?.value || null
+    
     try{
         const response = await fetch(`${process.env.SERVER_URL}/catalog/get_categories`,{
             cache: 'no-store',
             method: "GET",
             headers: {
-                "Authorization": `Bearer ${storedJwttoken}`,
+                "Authorization": `Bearer ${storedJwtToken}`,
                 "Content-Type": "application/json"
             }
         })

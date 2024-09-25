@@ -1,4 +1,5 @@
 "use server"
+import { cookies } from "next/headers";
 import { LoginInterface } from "../interface/LoginInterface";
 
 export const signInAction = async (formData: LoginInterface) => {
@@ -11,15 +12,14 @@ export const signInAction = async (formData: LoginInterface) => {
         });
 
         if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
+            const json = await response.json();
+            return json;
         }
-
-        // Check if response body is empty before parsing JSON
         
-        const body = await response.text();
-        const json = body ? JSON.parse(body) : {};
-
+        const json = await response.json();
+        cookies().set("jwtToken", json.access_token, { secure: true })
         return json;
+
         
 
     } catch (error) {

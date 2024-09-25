@@ -1,13 +1,14 @@
 "use client"
 
+import { cookies } from "next/headers"
 import { LoginStore } from "../store/LoginStore"
 
 export const UnSignInComponent = () => {
-    const updateJwtToken = LoginStore(state => state.updateJwtToken)
+
     return (
         <>
         <div>
-                <button onClick={()=> {updateJwtToken("")}}>LOg out</button>
+                <button onClick={()=> {cookies().set("jwtToken", "", {secure: true})}}>LOg out</button>
         </div>
         </>
     )

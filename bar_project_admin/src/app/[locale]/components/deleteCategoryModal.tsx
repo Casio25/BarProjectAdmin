@@ -1,5 +1,6 @@
 "use client"
 
+
 import { DeleteCategoryAction } from "../actions/deleteCategoryAction";
 import { DeleteProductAction } from "../actions/deleteProductAction";
 import { Category } from "../interface/ProductsInterface";
@@ -9,7 +10,7 @@ import { ProductStore } from "../store/ProductStore";
 
 export const DeleteCategoryModal = ({ category, modalStatus, toggleModal, fetchProducts, fetchCategories, ConfirmDeleteCategory, DeleteCategoryWarning, Cancel }: { category: Category | undefined, modalStatus: boolean, toggleModal: () => void, fetchProducts: () => void, fetchCategories: () => void, ConfirmDeleteCategory: string, DeleteCategoryWarning: string, Cancel: string }) => {
     const isModalOpen = () => modalStatus;
-    const storedJwtToken = localStorage.getItem("jwtToken");
+    
     const storedProducts = ProductStore(state => state.products);
     const updateStoredProducts = ProductStore(state => state.updateProducts)
 
@@ -19,9 +20,9 @@ export const DeleteCategoryModal = ({ category, modalStatus, toggleModal, fetchP
         );
         console.log(categoryProducts);
         categoryProducts.map(async (product) => {
-            await DeleteProductAction(product, storedJwtToken)
+            await DeleteProductAction(product)
         })
-        await DeleteCategoryAction(category, storedJwtToken)
+        await DeleteCategoryAction(category)
         fetchCategories()
     };
 

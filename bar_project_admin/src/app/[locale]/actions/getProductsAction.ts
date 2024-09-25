@@ -1,9 +1,12 @@
 "use server"
 
+import { cookies } from "next/headers";
 
 
 
-export const getProductsAction = async (storedJwtToken: string | null) => {
+
+export const getProductsAction = async () => {
+    const storedJwtToken = cookies().get("jwtToken")?.value || null
     try {
         // Build query parameters from productInfo if it's not null
         // const queryParams = productInfo ? new URLSearchParams(productInfo as any).toString() : '';
@@ -20,7 +23,7 @@ export const getProductsAction = async (storedJwtToken: string | null) => {
         });
 
         if (response.status === 401) {
-            console.log(response)
+            
             console.error("Unauthorized access:", response.statusText);
             return response.status;
         }

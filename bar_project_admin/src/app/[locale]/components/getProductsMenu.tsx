@@ -24,6 +24,7 @@ import { GetProductsExel } from './getProductsExel'
 
 
 
+
 export const GetProductsMenu: React.FC<GetProductsMenuProps> = ({
     NoProductsInCategory,
     Confirm,
@@ -44,10 +45,10 @@ export const GetProductsMenu: React.FC<GetProductsMenuProps> = ({
     ProductPhoto,
     ProductPrice,
     ProductVisibility,
-    ProductInStock
+    ProductInStock,
+    SelectImageToUpload
 }) => {
     const router = useRouter();
-    const storedJwtToken = typeof window !== 'undefined' ? localStorage.getItem("jwtToken") : null;
     const storedProducts = ProductStore(state => state.products);
     const updateStoredProducts = ProductStore(state => state.updateProducts)
     const [categories, setCategories] = useState<CategoriesInterface>([]);
@@ -70,11 +71,14 @@ export const GetProductsMenu: React.FC<GetProductsMenuProps> = ({
 
     const fetchCategories = async () => {
         try {
-            const response = await getCategoriesAction(storedJwtToken)
-            if (response == 401) {
+            
+            const response = await getCategoriesAction()
+            // const arrayResponse: Category[] = Object.values(response)
+            console.log(response)
+            if (response.statusCode == 401) {
                 router.push('/sign_in')
             } else {
-                setCategories(await response);
+                setCategories(response.data);
             }
         } catch (error) {
             console.error('Error fetching categories:', error);
@@ -83,13 +87,12 @@ export const GetProductsMenu: React.FC<GetProductsMenuProps> = ({
 
     const fetchProducts = async () => {
         try {
-            const response = await getProductsAction(storedJwtToken)
-            console.log(response)
-            if (response == 401) {
+            const response = await getProductsAction()
+            // const arrayResponse: Product[] = Object.values(response)
+            if (response.statusCode == 401) {
                 router.push('/sign_in')
             } else {
-                updateStoredProducts(await response);
-
+                updateStoredProducts(response.data);
             }
         } catch (error) {
             console.error('Error fetching categories:', error);
@@ -100,7 +103,6 @@ export const GetProductsMenu: React.FC<GetProductsMenuProps> = ({
         fetchCategories();
 
         fetchProducts();
-
     }, []);
 
     //changing spesific property of specific product
@@ -116,7 +118,7 @@ export const GetProductsMenu: React.FC<GetProductsMenuProps> = ({
             orders: updatedOrders
         };
         console.log("updatedOrders", updatedOrders)
-        await changeProductAction(updatedProduct, storedJwtToken)
+        await changeProductAction(updatedProduct)
         fetchProducts()
 
     }
@@ -124,8 +126,8 @@ export const GetProductsMenu: React.FC<GetProductsMenuProps> = ({
     //saving all the products from store
     const saveChanges = async () => {
         try {
-            await storedProducts.forEach((product) => {
-                changeProductAction(product, storedJwtToken)
+            storedProducts.forEach((product) => {
+                changeProductAction(product)
             })
         } catch (error) {
             console.error("Error:", error);
@@ -142,6 +144,7 @@ export const GetProductsMenu: React.FC<GetProductsMenuProps> = ({
 
     const toggleOptions = (id: number, type: 'category' | 'product'): void => {
         if (type === 'category') {
+            console.log("categoryId", id)
             if (categoryOptions === id) {
                 setCategoryOptions(undefined);
             } else {
@@ -304,9 +307,9 @@ export const GetProductsMenu: React.FC<GetProductsMenuProps> = ({
             return product;
         });
 
-        await updateStoredProducts(updatedProductsArray);
+        updateStoredProducts(updatedProductsArray);
         storedProducts.map(async product => {
-            await changeProductAction(product, storedJwtToken)
+            await changeProductAction(product)
         })
     };
 
@@ -329,7 +332,7 @@ export const GetProductsMenu: React.FC<GetProductsMenuProps> = ({
                     <button className='rounded-md p-2 font-semibold shadow-sm bg-amber-300 active:bg-amber-500'
                         onClick={() => toggleCreateCategoryModal()}>{CreateCategory}</button>
                 </div>
-                {Array.isArray(categories) && (
+                {Array.isArray(categories) && Array.isArray(storedProducts) && (
                     <ul ref={parent}>
                         {categories.map(category => (
                             <li ref={parent} key={category.id}>
@@ -444,10 +447,10 @@ export const GetProductsMenu: React.FC<GetProductsMenuProps> = ({
                     </ul>
                 )}
                 <DeleteProductModal product={deleteProductModal} modalStatus={deleteModalStatus} toggleModal={toggleDeleteModal} fetchProducts={fetchProducts} ConfirmDeleteProduct={ConfirmDeleteProduct} Cancel={Cancel} />
-                <EditProductModal product={editProductModal} modalStatus={editModalStatus} toggleModal={toggleEditModal} ConfirmEditProduct={ConfirmEditProduct} Cancel={Cancel} CategoriesDropdown={CategoriesDropdown} ProductName={ProductName} ProductDescription={ProductDescription} ProductPhoto={ProductPhoto} ProductPrice={ProductPrice} ProductInStock={ProductInStock} ProductVisibility={ProductVisibility} />
-                <CreateCategoryModal modalStatus={createCategoryModalStatus} toggleModal={toggleCreateCategoryModal} fetchCategories={fetchCategories} Confirm={Confirm} Cancel={Cancel} />
-                <DeleteCategoryModal modalStatus={deleteCategoryModalStatus} toggleModal={toggleDeleteCategoryModal} category={deleteCategoryModal} fetchProducts={fetchProducts} fetchCategories={fetchCategories} ConfirmDeleteCategory={ConfirmDeleteCategory} DeleteCategoryWarning={DeleteCategoryWarning} Cancel={Cancel} />
-                <CreateProductModal category={categoryOptions} modalStatus={createProductModalStatus} toggleModal={toggleCreateProductModal} fetchProducts={fetchProducts} ConfirmCreateProduct={CreateProduct} Cancel={Cancel} CategoriesDropdown={CategoriesDropdown} ProductName={ProductName} ProductDescription={ProductDescription} ProductPhoto={ProductPhoto} ProductPrice={ProductPrice} ProductInStock={ProductInStock} ProductVisibility={ProductVisibility} />
+                <EditProductModal product={editProductModal} modalStatus={editModalStatus} toggleModal={toggleEditModal} ConfirmEditProduct={ConfirmEditProduct} Cancel={Cancel} CategoriesDropdown={CategoriesDropdown} ProductName={ProductName} ProductDescription={ProductDescription} ProductPhoto={ProductPhoto} ProductPrice={ProductPrice} ProductInStock={ProductInStock} ProductVisibility={ProductVisibility}  />
+                <CreateCategoryModal modalStatus={createCategoryModalStatus} toggleModal={toggleCreateCategoryModal} fetchCategories={fetchCategories} Confirm={Confirm} Cancel={Cancel}  />
+                <DeleteCategoryModal modalStatus={deleteCategoryModalStatus} toggleModal={toggleDeleteCategoryModal} category={deleteCategoryModal} fetchProducts={fetchProducts} fetchCategories={fetchCategories} ConfirmDeleteCategory={ConfirmDeleteCategory} DeleteCategoryWarning={DeleteCategoryWarning} Cancel={Cancel}/>
+                <CreateProductModal category={categoryOptions} modalStatus={createProductModalStatus} toggleModal={toggleCreateProductModal} fetchProducts={fetchProducts} ConfirmCreateProduct={CreateProduct} Cancel={Cancel} CategoriesDropdown={CategoriesDropdown} ProductName={ProductName} ProductDescription={ProductDescription} ProductPhoto={ProductPhoto} ProductPrice={ProductPrice} ProductInStock={ProductInStock} ProductVisibility={ProductVisibility} SelectImageToUpload={SelectImageToUpload}/>
             </div>
             
             

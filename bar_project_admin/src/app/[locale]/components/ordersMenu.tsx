@@ -11,6 +11,7 @@ import { OrdersMenuProps } from '../interface/OrdersMenuProps';
 
 
 
+
 const OrdersMenu: React.FC<OrdersMenuProps> = ({
     NewOrders,
     OrderStatusNew,
@@ -27,7 +28,6 @@ const OrdersMenu: React.FC<OrdersMenuProps> = ({
     Product
 }) => {
     const router = useRouter();
-    const storedJwtToken = typeof window !== 'undefined' ? localStorage.getItem("jwtToken") : null;
     const storedOrders = OrdersStore(state => state.orders);
     const updateStoredOrders = OrdersStore(state => state.updateOrders)
     const [newOrder, setNewOrder] = useState<OrderInterface>({
@@ -47,6 +47,7 @@ const OrdersMenu: React.FC<OrdersMenuProps> = ({
         totalPrice: 0
     })
     const [draggedOrder, setDraggedOrder] = useState<OrderInterface | null>(null)
+    const [renderOrderDetail, setRenderOrderDetail] = useState(false)
     
     const createOrder = () => {
         setNewOrder({
@@ -62,12 +63,12 @@ const OrdersMenu: React.FC<OrdersMenuProps> = ({
 
     const fetchOrders = async () => {
         try {
-            const response = await getOrdersAction(storedJwtToken)
+            const response = await getOrdersAction()
             console.log(response)
             if (response == 401) {
                 router.push('/sign_in')
             } else {
-                updateStoredOrders(await response);
+                updateStoredOrders(await response.data);
 
             }
         } catch (error) {
@@ -150,7 +151,8 @@ const OrdersMenu: React.FC<OrdersMenuProps> = ({
                     
                     <div className={`bg-${color}-400 rounded-lg w-full`}>
                         <div className='relative left-2 bg-white grid grid-cols-2 border-2 border-white rounded-lg p-2'
-                            onClick={() => setSelectedOrder(order)}>
+                            onClick={() => {setSelectedOrder(order),
+                            setRenderOrderDetail(true)}}>
                             <p className='font-semibold'>Order ID: {order.id}</p>
                             <p className='font-semibold ml-auto'>{order.totalPrice}</p>
                             <p className='text-sm'>{formatDateToShort(order.creatAt)}</p>
@@ -189,7 +191,7 @@ const OrdersMenu: React.FC<OrdersMenuProps> = ({
                     </div>
                 )}
             </div>
-            <div className='w-3/5 bg-white ml-auto relative'>
+            {renderOrderDetail && <div className='w-3/5 bg-white ml-auto relative'>
                 <div className='divide-black'>
                     <p className="text-black text-lg font-semibold font-['Barlow Semi Condensed'] leading-normal"> Order {selectedOrder.id}</p>
                 </div>
@@ -203,9 +205,9 @@ const OrdersMenu: React.FC<OrdersMenuProps> = ({
                 </div>
                 <div className='grid grid-cols-2 border-1 divide-x-1 divide-black border-black rounded-lg text-center mx-1'>
                     <p className={'p-3' + (Array.isArray(selectedOrder.payment) && selectedOrder.payment[0].paymentStatus === "paid" ? " bg-yellow-300 rounded-l-lg font-semibold" : "")}
-                        >{Paid}</p>
+                    >{Paid}</p>
                     <p className={'p-3' + (Array.isArray(selectedOrder.payment) && selectedOrder.payment[0].paymentStatus === "unpaid" ? " bg-yellow-300 rounded-r-lg font-semibold" : "")}
-                        >{Unpaid}</p>
+                    >{Unpaid}</p>
                 </div>
                 <ul className='absolute bottom-0 w-full '>
                     <div className=' bg-zinc-100 grid grid-cols-4 p-2 font-black'>
@@ -225,16 +227,17 @@ const OrdersMenu: React.FC<OrdersMenuProps> = ({
                             </li>
                         ))}
                     </div>
-                    
+
                     <div className='grid grid-cols-4 p-2'>
                         <p className='font-semibold text-lg '>{Total}</p>
                         <p></p>
                         <p></p>
-                        <p className= "font-semibold text-lg ">{selectedOrder.totalPrice}</p>
+                        <p className="font-semibold text-lg ">{selectedOrder.totalPrice}</p>
                     </div>
 
                 </ul>
-            </div>
+            </div>}
+           
         </>
     );
 

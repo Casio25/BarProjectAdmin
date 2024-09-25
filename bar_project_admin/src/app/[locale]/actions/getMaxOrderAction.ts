@@ -1,11 +1,15 @@
 "use server"
-export const getMaxOrderAction = async (storedJwttoken: string | null, categoryId: number) => {
+
+import { cookies } from "next/headers";
+
+export const getMaxOrderAction = async (categoryId: number) => {
+    const storedJwtToken = cookies().get("jwtToken")?.value || null
     try {
         const response = await fetch(`${process.env.SERVER_URL}/catalog/get_max_order`, {
             cache: 'no-store',
             method: "POST",
             headers: {
-                "Authorization": `Bearer ${storedJwttoken}`,
+                "Authorization": `Bearer ${storedJwtToken}`,
                 "Content-Type": "application/json",
                 "Cache-Control": "no-cache"
             },
@@ -19,7 +23,7 @@ export const getMaxOrderAction = async (storedJwttoken: string | null, categoryI
         }
 
         const json = await response.json();
-        console.log(json);
+        
         return json;
 
     } catch (error) {

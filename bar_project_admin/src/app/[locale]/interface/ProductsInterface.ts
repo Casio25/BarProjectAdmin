@@ -1,3 +1,5 @@
+import { Image } from "exceljs";
+
 export interface Product {
     authorId: number;
     id: number;
@@ -11,6 +13,9 @@ export interface Product {
     orders: OrderOfProduct[];
     newOrder?: number;
 }
+export type ProductsObject = {
+    [id: number]: Product;
+};
 
 export interface Category {
     id: number,

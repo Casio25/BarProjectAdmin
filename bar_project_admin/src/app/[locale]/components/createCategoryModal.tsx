@@ -3,12 +3,12 @@ import { useEffect, useState } from "react";
 import { useRouter } from '@/navigation'
 import { addCategoryAction } from "../actions/addCategoryAction";
 import { ICreateCategory } from "../interface/CategoriesInterface";
+import { cookies } from "next/headers";
 
 export const CreateCategoryModal = ({ modalStatus, toggleModal, fetchCategories, Confirm, Cancel } : { modalStatus: boolean, toggleModal: () => void, fetchCategories: () => void,  Confirm: string, Cancel: string}) => {
 
     const isModalOpen = () => modalStatus;
     const router = useRouter();
-    const storedJwtToken = localStorage.getItem("jwtToken");
     const [category, setCategory] = useState<ICreateCategory>({
         name: ""
     })
@@ -20,17 +20,19 @@ export const CreateCategoryModal = ({ modalStatus, toggleModal, fetchCategories,
 
     const createCategory = async () => {
         try{
-            const response = await addCategoryAction(category, storedJwtToken)
+            const response = await addCategoryAction(category)
             console.log(response)
-            if (response == 401) {
+            if (response.statusCode == 401) {
                 router.push('/sign_in')
-            }else if(response.status == 400){
+            }else if(response.statusCode == 400){
                 setCategoryError("Category with this name already exists")
-            }else if(response.status == 201){
+            }else if(response == 201){
                 setCategoryError(""),
                 fetchCategories();
                 toggleModal()
-                
+                setCategory({
+                    name: ""
+                })
 
             }else{
                 setCategoryError("unknown error")

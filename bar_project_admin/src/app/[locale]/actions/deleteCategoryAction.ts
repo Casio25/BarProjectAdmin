@@ -1,8 +1,10 @@
 "use server"
 
+import { cookies } from "next/headers"
 import { Category, Product, ProductsInterface } from "../interface/ProductsInterface"
 
-export const DeleteCategoryAction = async (category: Category, storedJwtToken: string | null) => {
+export const DeleteCategoryAction = async (category: Category) => {
+    const storedJwtToken = cookies().get("jwtToken")?.value || null
     try {
         const response = await fetch(`${process.env.SERVER_URL}/catalog/delete_category`, {
             cache: "no-store",

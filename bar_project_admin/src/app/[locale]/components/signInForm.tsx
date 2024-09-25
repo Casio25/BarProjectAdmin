@@ -1,4 +1,5 @@
 "use client"
+import { cookies } from 'next/headers'
 import React, { useState, useEffect } from "react";
 import { InputAdornment, IconButton, TextField, Button } from "@mui/material";
 import { Schema, Visibility, VisibilityOff } from "@mui/icons-material";
@@ -27,15 +28,14 @@ export const SignInForm: React.FC<SignInFormProps> = ({
     signinErrorWrongEmail,
     signinErrorWrongPassword,
     or,
+
 }) => {
     type Schema = z.infer<typeof SignInSchema>
     const [formData, setFormData] = useState<Schema>({} as Schema)
     const [emailError, setEmailError] = useState('')
     const [passwordError, setPasswordError] = useState('')
     const [passwordShown, setPasswordShown] = useState(false);
-    const storedJwtToken = LoginStore(state => state.jwtToken);
     const updateEmail = LoginStore(state => state.updateEmail)
-    const updateJwtToken = LoginStore(state => state.updateJwtToken)
     const updateEmailError = LoginStore(state => state.updateEmailError)
     const updatePasswordError = LoginStore(state => state.updatePasswordError)
     const storedEmail = LoginStore(state => state.email)
@@ -91,7 +91,7 @@ export const SignInForm: React.FC<SignInFormProps> = ({
                 setPasswordError("")
                 const response = await signInAction(formData)
                 if (response.error) {
-                    switch (response.error) {
+                    switch (response.message) {
                         case "Wrong password":
                             setPasswordError(signinErrorWrongPassword);
                             break;
@@ -102,10 +102,11 @@ export const SignInForm: React.FC<SignInFormProps> = ({
                             setEmailError(signinError)
                     }
                 } else {
-                    updateJwtToken(response.access_token)
+                    
                     const profileResponse = await profileAction(response.access_token)
+                    console.log ("profileData", profileResponse)
                     if (!profileResponse.isEmailConfirmed) {
-                        console.log(profileResponse)
+                        
                         updateEmail(formData.email);
                         router.push('/confirm_registration');
                     }else{

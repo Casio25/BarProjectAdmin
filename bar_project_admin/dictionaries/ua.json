@@ -124,7 +124,8 @@
         "Product Price": "Ціна",
         "Product Photo": "Фото",
         "Product In Stock": "В наявності",
-        "Product Visibility": "Видимість"
+        "Product Visibility": "Видимість",
+        "Select image to upload": "Виберіть фото для завантаження"
     },
     "OrdersMenu": {
         "New Orders": "Нові замовлення",

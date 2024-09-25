@@ -18,6 +18,6 @@ export interface GetProductsMenuProps {
     ProductPhoto: string,
     ProductPrice: string,
     ProductVisibility: string,
-    ProductInStock: string
-    
+    ProductInStock: string,
+    SelectImageToUpload: string
 }

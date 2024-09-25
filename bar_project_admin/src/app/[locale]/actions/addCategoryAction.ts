@@ -1,8 +1,10 @@
 "use server"
 
+import { cookies } from "next/headers"
 import { ICreateCategory } from "../interface/CategoriesInterface"
 
-export const addCategoryAction = async (categoryName: ICreateCategory, storedJwtToken: string | null) => {
+export const addCategoryAction = async (categoryName: ICreateCategory) => {
+    const storedJwtToken = cookies().get("jwtToken")?.value || null
     try {
         const response = await fetch(`${process.env.SERVER_URL}/catalog/create_category`, {
             cache: 'no-store',
@@ -16,9 +18,12 @@ export const addCategoryAction = async (categoryName: ICreateCategory, storedJwt
         if (response.status === 401) {
             console.error("Unauthorized access: ", response.statusText)
         }
-        console.log("creating category", response)
-        const json = await response.json()
-        return json;
+        if (response.status === 201) {
+            return response.status;
+        } else {
+            const json = await response.json();
+            return json
+        }
 
     } catch (error) {
         console.error("Error getting categories: ", error)

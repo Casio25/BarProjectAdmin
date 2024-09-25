@@ -1,13 +1,15 @@
 "use server"
+import { cookies } from 'next/headers';
 import { ProductsInterface, Product } from './../interface/ProductsInterface';
-export const changeProductAction = async(product: Product | undefined, jwtToken: null | string) => {
+export const changeProductAction = async(product: Product | undefined) => {
+    const storedJwtToken = cookies().get("jwtToken")?.value || null
     try{
         const response = await fetch(`${process.env.SERVER_URL}/catalog/change`, {
             cache: "no-store",
             method: "PATCH",
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": `Bearer ${jwtToken}`
+                "Authorization": `Bearer ${storedJwtToken}`
             },
             body: JSON.stringify(product),
         });

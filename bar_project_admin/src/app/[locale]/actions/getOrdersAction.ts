@@ -1,8 +1,11 @@
 "use server"
 
+import { cookies } from "next/headers";
 
 
-export const getOrdersAction = async (storedJwtToken: string | null) => {
+
+export const getOrdersAction = async () => {
+    const storedJwtToken = cookies().get("jwtToken")?.value || null
     try {
         const response = await fetch(`${process.env.SERVER_URL}/orders/get_orders`, {
             cache: "no-store",

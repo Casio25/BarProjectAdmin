@@ -1,9 +1,11 @@
 "use server"
 
+import { cookies } from "next/headers";
 import { NewProduct } from "../interface/ProductsInterface"
 
 
-export const addProductAction = async (product: NewProduct, storedJwtToken: string | null) => {
+export const addProductAction = async (product: NewProduct) => {
+    const storedJwtToken = cookies().get("jwtToken")?.value || null
     try {
         console.log("product addProductAction", product);
         const response = await fetch(`${process.env.SERVER_URL}/catalog/add_product`, {
@@ -21,10 +23,15 @@ export const addProductAction = async (product: NewProduct, storedJwtToken: stri
         if (response.status === 401) {
             console.error("Unauthorized access: ", response.statusText);
         }
+        if (response.status === 201) {
+            return response.status;
+        } else {
+            const json = await response.json();
+            return json 
+        }
 
-        console.log("creating product", response.status);
-        const json = await response.json();
-        return json;
+        
+        
 
     } catch (error) {
         console.error("Error adding product to category: ", error);

@@ -243,16 +243,13 @@ export const SignUpForm: React.FC<SignUpFormProps> = ({
                 />
                 {
                     inputedPassword ? (
-                        <div>
-                            <div className="items-center">
-                                <div className="flex items-center">
+                        <div className="flex flex-col items-center">
+                                <div className="items-center mt-4">
                                     <PasswordStrengthBar strength={passwordStrengthBar} />
                                 </div>
-
-                            </div>
                             <div>
                                 {passwordStrengthBar < 2 && (
-                                    <div className="bg-yellow-400 rounded-md mt-2">
+                                    <div className="bg-yellow-400 rounded-md mt-2 p-2">
                                         {passwordRecommendation.split('\n').map((line, index) => (
                                             <p key={index} className="mb-1">{line}</p>
                                         ))}

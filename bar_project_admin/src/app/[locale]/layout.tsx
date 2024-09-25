@@ -10,6 +10,7 @@ import { Providers } from './providers'
 import { ChangeLanguage } from './components/changeLanguage'
 import { LoginStore } from './store/LoginStore'
 import { LoginStoreComponent } from './components/LoginStoreComponent'
+import 'react-image-crop/dist/ReactCrop.css'
 
 
 const inter = Montserrat({ subsets: ['latin', 'cyrillic'] })

@@ -1,4 +1,5 @@
 "use client"
+import { cookies } from "next/headers";
 import { useEffect, useState } from "react";
 import { number } from "zod";
 import { changeProductAction } from "../actions/changeProductAction";
@@ -19,7 +20,8 @@ export const EditProductModal = ({ product,
     ProductPhoto,
     ProductPrice,
     ProductVisibility,
-    ProductInStock }:
+    ProductInStock,
+     }:
     { product: Product | undefined,
          modalStatus: boolean, 
          toggleModal: () => void, 
@@ -31,11 +33,11 @@ export const EditProductModal = ({ product,
         ProductPhoto: string,
         ProductPrice: string,
         ProductVisibility: string,
-        ProductInStock: string
+        ProductInStock: string,
+        
 }) => {
 
     const isModalOpen = () => modalStatus;
-    const storedJwtToken = localStorage.getItem("jwtToken");
     const storedProducts = ProductStore(state => state.products);
     const updateStoredProducts = ProductStore(state => state.updateProducts);
     const [categories, setCategories] = useState<CategoriesInterface>([]);
@@ -55,7 +57,7 @@ export const EditProductModal = ({ product,
     });
     const fetchCategories = async () => {
         try {
-            const response = await getCategoriesAction(storedJwtToken)
+            const response = await getCategoriesAction()
             setCategories(await response);
         } catch (error) {
             console.error('Error fetching categories:', error);
@@ -83,7 +85,7 @@ export const EditProductModal = ({ product,
     const handleEdit = async () => {
         console.log("changedProduct before backend edit", changedProduct)
         const maxOrdersPromises = changedProduct.categories.map(category =>
-            getMaxOrderAction(storedJwtToken, category.id)
+            getMaxOrderAction(category.id)
         );
 
         console.log("maxOrdersPromises", maxOrdersPromises);
@@ -116,7 +118,7 @@ export const EditProductModal = ({ product,
 
             await updateStoredProducts(updatedProductsArray);
             // Call changeProductAction for the edited product directly
-            await changeProductAction(changedProduct, storedJwtToken);
+            await changeProductAction(changedProduct);
         } catch (error) {
             console.error("Error:", error);
         }

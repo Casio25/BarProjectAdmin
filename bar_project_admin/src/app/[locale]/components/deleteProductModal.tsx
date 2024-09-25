@@ -1,4 +1,5 @@
 "use client"
+import { cookies } from "next/headers";
 import { changeProductAction } from "../actions/changeProductAction";
 import { DeleteProductAction } from "../actions/deleteProductAction";
 import { Category, OrderOfProduct, Product, ProductsInterface } from "../interface/ProductsInterface";
@@ -8,7 +9,7 @@ import { OrdersIcon } from "./svgs";
 
 export const DeleteProductModal = ({ product, modalStatus, toggleModal, fetchProducts, ConfirmDeleteProduct, Cancel }: { product: Product | undefined, modalStatus: boolean, toggleModal: () => void, fetchProducts: () => void, ConfirmDeleteProduct: string, Cancel: string }) => {
     const isModalOpen = () => modalStatus;
-    const storedJwtToken = localStorage.getItem("jwtToken");
+    
     const storedProducts = ProductStore(state => state.products);
     const updateStoredProducts = ProductStore(state => state.updateProducts)
 
@@ -70,13 +71,13 @@ export const DeleteProductModal = ({ product, modalStatus, toggleModal, fetchPro
         // Update the stored products with the updated array
         await Promise.all(updatedProductsArray.map(async (product) => {
             try {
-                await changeProductAction(product, storedJwtToken);
+                await changeProductAction(product);
                 console.log("Product updated successfully:", product);
             } catch (error) {
                 console.error("Error updating product:", error);
             }
         }));
-        await DeleteProductAction(product, storedJwtToken)
+        await DeleteProductAction(product)
         fetchProducts();
         toggleModal();
     };

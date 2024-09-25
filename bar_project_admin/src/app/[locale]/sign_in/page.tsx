@@ -6,6 +6,7 @@ import { ChangeLanguage } from "../components/changeLanguage";
 
 
 
+
 const SignInPage = () => {
     const t = useTranslations("SignIn")
     return (
@@ -28,6 +29,7 @@ const SignInPage = () => {
                         signinErrorWrongEmail={t("signin error (wrong email)")}
                         signinErrorWrongPassword={t("signin error (wrong password)")}
                         or={t("or")}
+                        
                     />
                 </div>
             </div>
