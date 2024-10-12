@@ -13,7 +13,7 @@ const ConfirmRegistrationPage = () => {
     const r = useTranslations("Resend Email")
   return (
       <div className='flex flex-col bg-violet-900'>
-          <ChangeLanguage />
+          <ChangeLanguage color='white'/>
       <div className="min-h-screen flex flex-col items-center justify-center bg-violet-900">
           <div className='w-full flex flex-col items-center max-w-md p-6 bg-white rounded-lg shadow-lg'>
               <button className="mr-auto border-2 border-violet-500 flex rounded-full active:ring-4 ">

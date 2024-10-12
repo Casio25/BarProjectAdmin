@@ -12,6 +12,8 @@ import { cookies } from "next/headers";
 import { CreateProductModalProps } from "../interface/CreateProductModalProps";
 import ReactCrop, { convertToPixelCrop, makeAspectCrop, ReactCropProps } from "react-image-crop";
 import setCanvasPreview from "./setCanvasPreview"
+import CurrencyInput from "react-currency-input-field"
+import { isNull } from "util";
 
 export const CreateProductModal: React.FC<CreateProductModalProps> = ({
     category,
@@ -66,19 +68,19 @@ export const CreateProductModal: React.FC<CreateProductModalProps> = ({
 
 
     const validate = async () => {
-        
-            setCanvasPreview(
-                imageRef.current,
-                previewCanvasRef.current,
-                convertToPixelCrop(crop, imageRef.current?.width, imageRef.current.height),
-            )
-            const CroppedImageURL = previewCanvasRef.current.toDataURL()
-            setNewProduct((prevState) => ({
-                ...prevState,
-                photo: CroppedImageURL
-            }))
-        
-        
+
+        setCanvasPreview(
+            imageRef.current,
+            previewCanvasRef.current,
+            convertToPixelCrop(crop, imageRef.current?.width, imageRef.current.height),
+        )
+        const CroppedImageURL = previewCanvasRef.current.toDataURL()
+        setNewProduct((prevState) => ({
+            ...prevState,
+            photo: CroppedImageURL
+        }))
+
+
         if (!newProduct.name || !newProduct.description || !newProduct.photo || newProduct.price <= 0 || isNaN(newProduct.price)) {
             setEmptyFieldError("Not all fields are filled correctly");
         } else if (newProduct.categories.length === 0) {
@@ -160,10 +162,10 @@ export const CreateProductModal: React.FC<CreateProductModalProps> = ({
         }
     }
 
-    const onImageLoad = ( e: React.SyntheticEvent<HTMLImageElement, Event>) => {
+    const onImageLoad = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
         const { width, height, naturalWidth, naturalHeight } = e.currentTarget
         const cropWidthInPercent = (MIN_DIMENSION / width) * 100
-        if (naturalHeight < MIN_DIMENSION || naturalWidth < MIN_DIMENSION){
+        if (naturalHeight < MIN_DIMENSION || naturalWidth < MIN_DIMENSION) {
             setEmptyFieldError("Image is too small")
             setNewProduct((prevState) => ({
                 ...prevState,
@@ -172,18 +174,18 @@ export const CreateProductModal: React.FC<CreateProductModalProps> = ({
         }
         const crop = makeAspectCrop(
             {
-            unit: "%",
-            width: cropWidthInPercent,
-        }, MIN_ASPECT,
-        width,
-        height
+                unit: "%",
+                width: cropWidthInPercent,
+            }, MIN_ASPECT,
+            width,
+            height
         )
         setCrop(crop)
     }
 
-    const closeModal = () =>{
+    const closeModal = () => {
         setNewProduct(INITIAL_NEW_PRODUCT_STATE),
-        toggleModal()
+            toggleModal()
     }
     return (
         <>
@@ -211,23 +213,22 @@ export const CreateProductModal: React.FC<CreateProductModalProps> = ({
                                     setEmptyFieldError("")
                                 }} />
                             <p>{ProductPrice}</p>
-                            <input
-                                className='rounded-md my-2 w-20'
-                                type="number"
-                                value={(newProduct.price ?? '').toString()} // Convert number to string and handle undefined case
-                                onKeyPress={(event) => {
-                                    if (!/[0-9]/.test(event.key)) {
-                                        event.preventDefault();
-                                    }
-                                }}
-                                onChange={(e) => {
-                                    const newPrice = parseFloat(e.target.value);
+                            
+                            <CurrencyInput
+                            className="rounded-md"
+                                allowNegativeValue={false}
+                                groupSeparator=" "
+                                maxLength={7}
+                                prefix="$"
+                                placeholder="Please enter a number"
+                                decimalsLimit={2}
+                                onValueChange={(value, name, values) => {
+                                    const newPrice = values?.float
                                     setNewProduct(prevState => ({
-                                        ...prevState,
-                                        price: isNaN(newPrice) ? 0 : newPrice
-                                    }));
-                                    setEmptyFieldError("");
-                                }}
+                                    ...prevState,
+                                    price: newPrice ? 0 : Number(newPrice)
+                                }))
+                            }}
                             />
                             <p>{ProductPhoto}</p>
                             <label htmlFor="photo_of_product" className="p-1 bg-blue-500 active:bg-blue-700 rounded-md">{SelectImageToUpload}</label>
@@ -237,7 +238,7 @@ export const CreateProductModal: React.FC<CreateProductModalProps> = ({
                                 <div className="flex flex-col items-center p-3">
                                     <ReactCrop
                                         crop={crop}
-                                        onChange={(newCrop)=> setCrop(newCrop)}
+                                        onChange={(newCrop) => setCrop(newCrop)}
                                         keepSelection
                                         aspect={MIN_ASPECT}
                                         minWidth={MIN_DIMENSION}>
@@ -246,11 +247,11 @@ export const CreateProductModal: React.FC<CreateProductModalProps> = ({
                                 </div>
 
                             }
-                            {crop && 
-                            <canvas
-                            ref={previewCanvasRef}
-                            className="mt-4 w-20 h-20 object-contain hidden"
-                            />}
+                            {crop &&
+                                <canvas
+                                    ref={previewCanvasRef}
+                                    className="mt-4 w-20 h-20 object-contain hidden"
+                                />}
 
 
 
@@ -261,7 +262,7 @@ export const CreateProductModal: React.FC<CreateProductModalProps> = ({
                                     <li key={category.id}>
                                         <input type="checkbox" className="rounded-sm"
                                             checked={newProduct.categories.some(cat => cat.id === category.id)}
-                                            onClick={() => {
+                                            onChange={() => {
                                                 setNewProduct(prevState => {
 
                                                     const categoryExists = prevState.categories.some(cat => cat.id === category.id);

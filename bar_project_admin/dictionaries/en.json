@@ -115,6 +115,7 @@
         "Confirm Delete Сategory": "Confirm Delete category",
         "Delete Category Warning": "Warning, if there are products that are only connected to this category, they will be deleted",
         "Confirm Edit Product": "Save Changes",
+        "Category Name Placeholder": "category name",
         "Cancel": "Cancel",
         "Product Name": "Name",
         "Product Description": "Description",

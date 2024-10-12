@@ -20,6 +20,8 @@ import autoAnimate from '@formkit/auto-animate'
 import { useAutoAnimate } from '@formkit/auto-animate/react'
 import { DeleteCategoryModal } from './deleteCategoryModal'
 import { GetProductsExel } from './getProductsExel'
+import { handleDragOver, handleDragStart, handleDrop } from './ProductDrag&Drop'
+import CurrencyInput from 'react-currency-input-field'
 
 
 
@@ -39,6 +41,7 @@ export const GetProductsMenu: React.FC<GetProductsMenuProps> = ({
     ConfirmDeleteCategory,
     DeleteCategoryWarning,
     ConfirmEditProduct,
+    CategoryNamePlaceholder,
     Cancel,
     ProductName,
     ProductDescription,
@@ -74,7 +77,7 @@ export const GetProductsMenu: React.FC<GetProductsMenuProps> = ({
             
             const response = await getCategoriesAction()
             // const arrayResponse: Category[] = Object.values(response)
-            console.log(response)
+            
             if (response.statusCode == 401) {
                 router.push('/sign_in')
             } else {
@@ -89,6 +92,7 @@ export const GetProductsMenu: React.FC<GetProductsMenuProps> = ({
         try {
             const response = await getProductsAction()
             // const arrayResponse: Product[] = Object.values(response)
+            console.log('fetchProducts response', response)
             if (response.statusCode == 401) {
                 router.push('/sign_in')
             } else {
@@ -189,141 +193,6 @@ export const GetProductsMenu: React.FC<GetProductsMenuProps> = ({
     const toggleDeleteCategoryModal = () => {
         setDeleteCategoryModalStatus(!deleteCategoryModalStatus)
     }
-
-    // all handle funcitons
-    const handleDragStart = (e: React.DragEvent<HTMLLIElement>, productId: number, productCategories: Category[], categoryId: number, productOrders: OrderOfProduct[]) => {
-        e.dataTransfer.setData('text/plain', JSON.stringify({ productId, productCategories, categoryId, productOrders }));
-    };
-
-    const handleDragOver = (e: React.DragEvent<HTMLLIElement>, targetOrders: OrderOfProduct[], categoryId: number) => {
-        e.preventDefault();
-
-        // Filter targetOrders to only include orders with the same categoryId as the initial productOrders
-        const filteredOrders = targetOrders.filter(order => order.categoryId === categoryId);
-
-        if (filteredOrders.length === 0) {
-            setTargetOrder(undefined); // Handle case where no orders match the categoryId
-            return;
-        }
-
-        // Calculate the total sum of orders
-        const totalOrderSum = filteredOrders.reduce((sum, order) => sum + order.order, 0);
-
-        // Calculate the average order value
-        const targetOrder = totalOrderSum / filteredOrders.length;
-        console.log("target order", targetOrder);
-
-        setTargetOrder(targetOrder);
-    };
-
-
-    const handleDrop = async (e: React.DragEvent<HTMLLIElement>, categoryId: number) => {
-        e.preventDefault();
-        const data = JSON.parse(e.dataTransfer.getData('text/plain'));
-        const { productId, productCategories, productOrders }: { productId: number, productCategories: Category[], productOrders: OrderOfProduct[] } = data;
-
-        const draggedProduct = storedProducts.find(product =>
-            product.id === productId &&
-            product.categories.some(category => productCategories.some(selectedCategory => selectedCategory.id === category.id))
-        );
-
-        if (targetOrder === undefined) {
-            console.log("Target order is undefined");
-            return;
-        }
-
-        // Find the targetProduct with the same categoryId as the function parameter
-        const targetProduct = storedProducts.find(product => {
-            const hasSameCategory = product.categories.some(selectedProductCategory => selectedProductCategory.id === categoryId);
-            const hasSameOrder = product.orders.some(order => order.categoryId === categoryId && order.order === targetOrder);
-            return hasSameCategory && hasSameOrder;
-        });
-
-        if (!draggedProduct || !targetProduct) {
-            console.log("Product not found or category doesn't match the current category");
-            return;
-        }
-
-        const productsInBetween = storedProducts.filter(product =>
-            product.categories.some(cat => cat.id === categoryId) &&
-            product.orders.some(order =>
-                order.order > Math.min(draggedProduct?.orders.find(o => o.categoryId === categoryId)?.order!, targetOrder) &&
-                order.order < Math.max(draggedProduct?.orders.find(o => o.categoryId === categoryId)?.order!, targetOrder)
-            )
-        );
-        console.log("products in between", productsInBetween);
-
-        const hasSameCategory = draggedProduct.orders.some(order => targetProduct.orders.some(targetOrder => order.categoryId === targetOrder.categoryId));
-        if (!hasSameCategory) {
-            console.log("Products don't have the same categoryId in their orders");
-            return;
-        }
-        if (draggedProduct === targetProduct) {
-            return;
-        }
-
-        // Determine the direction of adjustment based on the relative sizes of dragged and target products
-        const adjustment = draggedProduct.orders.find(o => o.categoryId === categoryId)?.order! > targetOrder ? 1 : -1;
-
-        // Adjust the order of products in between
-        productsInBetween.forEach(product => {
-            product.orders.forEach(order => {
-                if (order.categoryId === categoryId && order.order !== draggedProduct.orders.find(o => o.categoryId === categoryId)?.order!) {
-                    order.order += adjustment;
-                }
-            });
-        });
-
-        console.log("Adjusted products in between:", productsInBetween);
-
-        // Update the order of the dragged product
-        draggedProduct.orders = draggedProduct.orders.map(order => order.categoryId === categoryId ? { ...order, order: targetOrder } : order);
-
-        // Update the order of the target product
-        targetProduct.orders = targetProduct.orders.map(order => {
-            if (order.categoryId === categoryId) {
-                const newOrder = order.order + (adjustment === 1 ? 1 : -1); // Add 1 if adjustment is positive
-                return { ...order, order: newOrder };
-            } else {
-                return order;
-            }
-        });
-
-        // Update the orders of the products between dragged and target
-        const updatedProductsArray = storedProducts.map(product => {
-            if (
-                product.id !== draggedProduct.id &&
-                product.id !== targetProduct.id &&
-                product.categories.some(cat => cat.id === categoryId)
-            ) {
-                product.orders.forEach(order => {
-                    if (order.categoryId === categoryId && order.order > draggedProduct.orders.find(o => o.categoryId === categoryId)?.order! && order.order < targetOrder + 1) {
-                        order.order--;
-                    } else if (order.categoryId === categoryId && order.order < draggedProduct.orders.find(o => o.categoryId === categoryId)?.order! && order.order > targetOrder) {
-                        order.order++;
-                    }
-                });
-            }
-            return product;
-        });
-
-        updateStoredProducts(updatedProductsArray);
-        storedProducts.map(async product => {
-            await changeProductAction(product)
-        })
-    };
-
-
-
-
-
-
-
-
-
-
-
-
     return (
         <>
             <div className='flex-1 w- mx-5'>
@@ -394,9 +263,9 @@ export const GetProductsMenu: React.FC<GetProductsMenuProps> = ({
                                                     .map(product => (
                                                         <li ref={parent} key={product.id}
                                                             draggable="true"
-                                                            onDragStart={(e) => handleDragStart(e, product.id, product.categories, category.id, product.orders)}
-                                                            onDragOver={(e) => handleDragOver(e, product.orders, category.id)}
-                                                            onDrop={(e) => handleDrop(e, category.id)}
+                                                            onDragStart={(e) => handleDragStart(e, product.id, product.categories, category.id, product.orders, setTargetOrder)}
+                                                            onDragOver={(e) => handleDragOver(e, product.orders, category.id, setTargetOrder)}
+                                                            onDrop={(e) => handleDrop(e, category.id, targetOrder, storedProducts, updateStoredProducts )}
                                                         >
                                                             <hr className="h-px bg-gray-200 border-0 dark:bg-gray-700" />
                                                             <div  className='flex'>
@@ -414,12 +283,18 @@ export const GetProductsMenu: React.FC<GetProductsMenuProps> = ({
                                                                     <p className='text-xs text-gray-400'>{product.description}</p>
                                                                 </div>
 
-                                                                <div className="my-auto ml-auto w-20  h-8 px-3 py-2 rounded border border-neutral-300">
-                                                                    <p className="text-justify text-black text-sm font-medium font-['Work Sans'] leading-none">{product.price}</p>
-                                                                </div>
-                                                                {/* {product.orders.map(order => (
-                                                                    <li key={order.id}>{order.order}</li>
-                                                                ))} */}
+                                                                
+                                                                    <CurrencyInput className="my-auto ml-auto w-40  h-8 px-3 py-2 rounded border border-neutral-300"
+                                                                        groupSeparator=" "
+                                                                        maxLength={7}
+                                                                        prefix="$ "
+                                                                    value={product.price}/>
+                                                                
+                                                                <ul ref={parent}>
+                                                                    {product.orders.map(order => (
+                                                                        <li key={order.id}>{order.order}</li>
+                                                                    ))}
+                                                                </ul>
                                                                 <div className='ml-auto my-auto active:bg-gray-300 rounded-md' onClick={() => toggleOptions(product.id, "product")}>
                                                                     <ThreeDots />
                                                                 </div>
@@ -448,7 +323,7 @@ export const GetProductsMenu: React.FC<GetProductsMenuProps> = ({
                 )}
                 <DeleteProductModal product={deleteProductModal} modalStatus={deleteModalStatus} toggleModal={toggleDeleteModal} fetchProducts={fetchProducts} ConfirmDeleteProduct={ConfirmDeleteProduct} Cancel={Cancel} />
                 <EditProductModal product={editProductModal} modalStatus={editModalStatus} toggleModal={toggleEditModal} ConfirmEditProduct={ConfirmEditProduct} Cancel={Cancel} CategoriesDropdown={CategoriesDropdown} ProductName={ProductName} ProductDescription={ProductDescription} ProductPhoto={ProductPhoto} ProductPrice={ProductPrice} ProductInStock={ProductInStock} ProductVisibility={ProductVisibility}  />
-                <CreateCategoryModal modalStatus={createCategoryModalStatus} toggleModal={toggleCreateCategoryModal} fetchCategories={fetchCategories} Confirm={Confirm} Cancel={Cancel}  />
+                <CreateCategoryModal modalStatus={createCategoryModalStatus} toggleModal={toggleCreateCategoryModal} fetchCategories={fetchCategories} CategoryNamePlaceholder={CategoryNamePlaceholder} Confirm={Confirm} Cancel={Cancel}  />
                 <DeleteCategoryModal modalStatus={deleteCategoryModalStatus} toggleModal={toggleDeleteCategoryModal} category={deleteCategoryModal} fetchProducts={fetchProducts} fetchCategories={fetchCategories} ConfirmDeleteCategory={ConfirmDeleteCategory} DeleteCategoryWarning={DeleteCategoryWarning} Cancel={Cancel}/>
                 <CreateProductModal category={categoryOptions} modalStatus={createProductModalStatus} toggleModal={toggleCreateProductModal} fetchProducts={fetchProducts} ConfirmCreateProduct={CreateProduct} Cancel={Cancel} CategoriesDropdown={CategoriesDropdown} ProductName={ProductName} ProductDescription={ProductDescription} ProductPhoto={ProductPhoto} ProductPrice={ProductPrice} ProductInStock={ProductInStock} ProductVisibility={ProductVisibility} SelectImageToUpload={SelectImageToUpload}/>
             </div>

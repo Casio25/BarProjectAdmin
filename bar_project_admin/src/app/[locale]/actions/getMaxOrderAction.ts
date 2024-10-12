@@ -23,7 +23,7 @@ export const getMaxOrderAction = async (categoryId: number) => {
         }
 
         const json = await response.json();
-        
+        console.log('max order json response', json)
         return json;
 
     } catch (error) {

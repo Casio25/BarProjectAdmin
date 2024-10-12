@@ -11,7 +11,7 @@ const SignInPage = () => {
     const t = useTranslations("SignIn")
     return (
         <div className='flex flex-col bg-violet-900'>
-            <ChangeLanguage />
+            <ChangeLanguage color="white" />
             <div className="min-h-screen flex flex-col items-center justify-center bg-violet-900">
                 <div className='w-full flex flex-col items-center max-w-md p-6 bg-white rounded-xl shadow-xl'>
 

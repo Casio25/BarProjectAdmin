@@ -1,8 +1,10 @@
-const setCanvasPreview = (
+import { setCanvasPreviewProps } from "../interface/setCanvasPreviewProps";
+
+const setCanvasPreview: React.FC<setCanvasPreviewProps> = ({
     image, // HTMLImageElement
     canvas, // HTMLCanvasElement
-    crop // PixelCrop
-) => {
+    crop
+}) => {
     const ctx = canvas.getContext("2d");
     if (!ctx) {
         throw new Error("No 2d context");

@@ -6,10 +6,9 @@ import { LoginStore } from "../store/LoginStore"
 export const UnSignInComponent = () => {
 
     return (
-        <>
+        
         <div>
                 <button onClick={()=> {cookies().set("jwtToken", "", {secure: true})}}>LOg out</button>
         </div>
-        </>
     )
 }

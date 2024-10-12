@@ -33,6 +33,7 @@ const ProductsPage = () => {
                     ConfirmDeleteCategory={p("Confirm Delete Category")}
                     DeleteCategoryWarning={p("Delete Category Warning")}
                     ConfirmEditProduct = {p("Confirm Edit Product")}
+                    CategoryNamePlaceholder={p("Category Name Placeholder")}
                     Cancel={p("Cancel")}
                     ProductName={p("Product Name")}
                     ProductDescription={p("Product Description")}

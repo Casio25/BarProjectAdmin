@@ -12,6 +12,7 @@ export interface GetProductsMenuProps {
     ConfirmDeleteCategory: string,
     DeleteCategoryWarning: string,
     ConfirmEditProduct: string,
+    CategoryNamePlaceholder: string,
     Cancel: string,
     ProductName: string,
     ProductDescription: string,

@@ -51,6 +51,7 @@ export const SignInForm: React.FC<SignInFormProps> = ({
     const validateData = async (e: Schema) => {
         try {
             const result = SignInSchema.safeParse(formData)
+            
             if (!result.success) {
                 const validationError = result.error.format()
                 validationError.password !== undefined
@@ -90,6 +91,7 @@ export const SignInForm: React.FC<SignInFormProps> = ({
                 setEmailError("")
                 setPasswordError("")
                 const response = await signInAction(formData)
+                console.log("response", response)
                 if (response.error) {
                     switch (response.message) {
                         case "Wrong password":

@@ -17,8 +17,8 @@ const SettingsPage = () => {
                 FAQ={t("FAQ")}
                 Settings={t("Settings")}
                 Feedback={t("Feedback")} />
-            <ChangeLanguage/>
-            <UnSignInComponent/>
+            <ChangeLanguage color='blue'/>
+            {/* <UnSignInComponent/> */}
         </div>
     )
 }

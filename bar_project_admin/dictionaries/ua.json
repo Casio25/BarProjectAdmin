@@ -118,6 +118,7 @@
         "Confirm Delete Category": "Видалити категорію",
         "Delete Category Warning": "Увага, якщо у вас є продукти, які лише під'єднанні до цієї категорії, вони будуть видалені",
         "Confirm Edit Product": "Підтвердити зміни",
+        "Category Name Placeholder": "назва категорії",
         "Cancel": "Скасувати",
         "Product Name": "Назва",
         "Product Description": "Опис",
