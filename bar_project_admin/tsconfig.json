@@ -40,7 +40,7 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     "src/app/[locale]/components/sideNavBar.tsx"
-  ],
+, "src/app/[locale]/components/setCanvasPreview.js"  ],
   "exclude": [
     "node_modules"
   ]

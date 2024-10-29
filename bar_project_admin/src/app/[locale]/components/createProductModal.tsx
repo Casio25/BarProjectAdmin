@@ -10,7 +10,7 @@ import { Visibility } from "@mui/icons-material";
 import { getMaxOrderAction } from "../actions/getMaxOrderAction";
 import { cookies } from "next/headers";
 import { CreateProductModalProps } from "../interface/CreateProductModalProps";
-import ReactCrop, { convertToPixelCrop, makeAspectCrop, ReactCropProps } from "react-image-crop";
+import {ReactCrop,  convertToPixelCrop, makeAspectCrop, ReactCropProps } from "react-image-crop";
 import setCanvasPreview from "./setCanvasPreview"
 import CurrencyInput from "react-currency-input-field"
 import { isNull } from "util";
@@ -56,6 +56,7 @@ export const CreateProductModal: React.FC<CreateProductModalProps> = ({
     const [crop, setCrop] = useState<any>()
     const imageRef = useRef(null)
     const previewCanvasRef = useRef(null)
+    const [imagePreview, setImagePreview] = useState<string>("")
 
     const fetchCategories = async () => {
         try {
@@ -66,22 +67,53 @@ export const CreateProductModal: React.FC<CreateProductModalProps> = ({
         }
     };
 
+    // base64 to image
+    // function dataURLtoFile(dataurl: string, filename: string) {
+    //     var arr = dataurl.split(','),
+    //         mime = arr[0].match(/:(.*?);/)[1],
+    //         bstr = atob(arr[arr.length - 1]),
+    //         n = bstr.length,
+    //         u8arr = new Uint8Array(n);
+    //     while (n--) {
+    //         u8arr[n] = bstr.charCodeAt(n);
+    //     }
+    //     return new File([u8arr], filename, { type: mime });
+    // }
+
+    function getFormData(object: any) {
+        const formData = new FormData();
+        Object.keys(object).forEach(key => formData.append(key, object[key]));
+        return formData;
+    }
+    
+
 
     const validate = async () => {
 
         setCanvasPreview(
             imageRef.current,
             previewCanvasRef.current,
-            convertToPixelCrop(crop, imageRef.current?.width, imageRef.current.height),
+            convertToPixelCrop(crop, imageRef.current.width, imageRef.current.height),
         )
         const CroppedImageURL = previewCanvasRef.current.toDataURL()
+        // setNewProduct((prevState) => ({
+        //     ...prevState,
+        //     photo:dataURLtoFile(CroppedImageURL, `${newProduct.name}.png`)
+        // })),
         setNewProduct((prevState) => ({
             ...prevState,
             photo: CroppedImageURL
         }))
+        setImagePreview(CroppedImageURL)
+       
+
+        
+
+
 
 
         if (!newProduct.name || !newProduct.description || !newProduct.photo || newProduct.price <= 0 || isNaN(newProduct.price)) {
+            console.log("newProduct", newProduct)
             setEmptyFieldError("Not all fields are filled correctly");
         } else if (newProduct.categories.length === 0) {
             setEmptyFieldError("Choose at least one category")
@@ -103,7 +135,10 @@ export const CreateProductModal: React.FC<CreateProductModalProps> = ({
                     categoryId: newProduct.categories[index].id
                 }));
 
-                console.log("new product", newProduct);
+                const formData = getFormData(newProduct)
+
+                
+                
 
                 // Proceed with adding the product
                 const response = await addProductAction(newProduct);
@@ -131,6 +166,12 @@ export const CreateProductModal: React.FC<CreateProductModalProps> = ({
             }
         }
     };
+    // Use an effect to monitor changes to newProduct and log photo
+    useEffect(() => {
+        if (newProduct.photo) {
+            console.log("Updated image as file:", newProduct);
+        }
+    }, [newProduct.photo]);
 
     useEffect(() => {
         fetchCategories();
@@ -152,13 +193,17 @@ export const CreateProductModal: React.FC<CreateProductModalProps> = ({
         const file = e.target.files ? e.target.files[0] : null;
         if (file) {
             const reader = new FileReader();
+            
             reader.onloadend = () => {
-                setNewProduct((prevState) => ({
+                const base64String = (reader.result as string).replace(/^data:image\/\w+;base64,/, '');
+                setNewProduct ((prevState) => ({
                     ...prevState,
                     photo: reader.result as string
-                }));
+                }))
+            setImagePreview(reader.result as string);
             };
             reader.readAsDataURL(file)
+            console.log("file result: ", newProduct.photo)
         }
     }
 
@@ -174,7 +219,7 @@ export const CreateProductModal: React.FC<CreateProductModalProps> = ({
         }
         const crop = makeAspectCrop(
             {
-                unit: "%",
+                unit: "px",
                 width: cropWidthInPercent,
             }, MIN_ASPECT,
             width,
@@ -223,10 +268,11 @@ export const CreateProductModal: React.FC<CreateProductModalProps> = ({
                                 placeholder="Please enter a number"
                                 decimalsLimit={2}
                                 onValueChange={(value, name, values) => {
+                                    console.log("priceValues", values)
                                     const newPrice = values?.float
                                     setNewProduct(prevState => ({
                                     ...prevState,
-                                    price: newPrice ? 0 : Number(newPrice)
+                                        price: newPrice ? Number(newPrice) : 0 
                                 }))
                             }}
                             />

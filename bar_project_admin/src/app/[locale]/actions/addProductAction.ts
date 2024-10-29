@@ -5,9 +5,14 @@ import { NewProduct } from "../interface/ProductsInterface"
 
 
 export const addProductAction = async (product: NewProduct) => {
+  
+
+   
+
+    
     const storedJwtToken = cookies().get("jwtToken")?.value || null
+    
     try {
-        console.log("product addProductAction", product);
         const response = await fetch(`${process.env.SERVER_URL}/catalog/add_product`, {
             cache: 'no-store',
             method: "POST",
