@@ -7,10 +7,10 @@ import { ProductStore } from "../store/ProductStore";
 import { addProductAction } from "../actions/addProductAction";
 import { useRouter } from '@/navigation'
 import { Visibility } from "@mui/icons-material";
-import { getMaxOrderAction } from "../actions/getMaxOrderAction";
+
 import { cookies } from "next/headers";
 import { CreateProductModalProps } from "../interface/CreateProductModalProps";
-import ReactCrop, { convertToPixelCrop, makeAspectCrop, ReactCropProps } from "react-image-crop";
+import {ReactCrop,  convertToPixelCrop, makeAspectCrop, ReactCropProps } from "react-image-crop";
 import setCanvasPreview from "./setCanvasPreview"
 import CurrencyInput from "react-currency-input-field"
 import { isNull } from "util";
@@ -46,7 +46,6 @@ export const CreateProductModal: React.FC<CreateProductModalProps> = ({
         inStock: true,
     }
 
-
     const [categories, setCategories] = useState<CategoriesInterface>([]);
     const router = useRouter();
     const [newProduct, setNewProduct] = useState<NewProduct>(INITIAL_NEW_PRODUCT_STATE);
@@ -56,6 +55,19 @@ export const CreateProductModal: React.FC<CreateProductModalProps> = ({
     const [crop, setCrop] = useState<any>()
     const imageRef = useRef(null)
     const previewCanvasRef = useRef(null)
+    const [imagePreview, setImagePreview] = useState<string>("")
+
+    //maxRows limiter
+    const maxRows = 5
+    const rowCount = newProduct.description.split("\n").length
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+        const rowCount = newProduct.description.split("\n").length;
+
+        // Prevent Enter key from adding a new line if maxRows is reached
+        if (e.key !== "Backspace" && rowCount >= maxRows) {
+            e.preventDefault();
+        }
+    };
 
     const fetchCategories = async () => {
         try {
@@ -66,45 +78,62 @@ export const CreateProductModal: React.FC<CreateProductModalProps> = ({
         }
     };
 
+    // base64 to image
+    // function dataURLtoFile(dataurl: string, filename: string) {
+    //     var arr = dataurl.split(','),
+    //         mime = arr[0].match(/:(.*?);/)[1],
+    //         bstr = atob(arr[arr.length - 1]),
+    //         n = bstr.length,
+    //         u8arr = new Uint8Array(n);
+    //     while (n--) {
+    //         u8arr[n] = bstr.charCodeAt(n);
+    //     }
+    //     return new File([u8arr], filename, { type: mime });
+    // }
+
+    function getFormData(object: any) {
+        const formData = new FormData();
+        Object.keys(object).forEach(key => formData.append(key, object[key]));
+        return formData;
+    }
+    
+
 
     const validate = async () => {
+        if (imageRef.current){
+            setCanvasPreview(
+                imageRef.current,
+                previewCanvasRef.current,
+                convertToPixelCrop(crop, imageRef.current.width, imageRef.current.height),
+            )
+            const CroppedImageURL = previewCanvasRef.current.toDataURL()
+            // setNewProduct((prevState) => ({
+            //     ...prevState,
+            //     photo:dataURLtoFile(CroppedImageURL, `${newProduct.name}.png`)
+            // })),
 
-        setCanvasPreview(
-            imageRef.current,
-            previewCanvasRef.current,
-            convertToPixelCrop(crop, imageRef.current?.width, imageRef.current.height),
-        )
-        const CroppedImageURL = previewCanvasRef.current.toDataURL()
-        setNewProduct((prevState) => ({
-            ...prevState,
-            photo: CroppedImageURL
-        }))
+            setNewProduct((prevState) => ({
+                ...prevState,
+                photo: CroppedImageURL
+            }))
+            setImagePreview(CroppedImageURL)
+        }
+        
+       
+
+        
+
+
 
 
         if (!newProduct.name || !newProduct.description || !newProduct.photo || newProduct.price <= 0 || isNaN(newProduct.price)) {
+            console.log("newProduct", newProduct)
             setEmptyFieldError("Not all fields are filled correctly");
         } else if (newProduct.categories.length === 0) {
             setEmptyFieldError("Choose at least one category")
         } else {
-            const maxOrdersPromises = newProduct.categories.map(category =>
-                getMaxOrderAction(category.id)
-            );
-
-            console.log("maxOrdersPromises", maxOrdersPromises);
-
+           
             try {
-                // Wait for all max order promises to resolve
-                const maxOrders = await Promise.all(maxOrdersPromises);
-                console.log("all max orders", maxOrders);
-
-                // Update the orders in the newProduct object
-                newProduct.orders = maxOrders.map((order, index) => ({
-                    order,
-                    categoryId: newProduct.categories[index].id
-                }));
-
-                console.log("new product", newProduct);
-
                 // Proceed with adding the product
                 const response = await addProductAction(newProduct);
                 if (response.statusCode == 401) {
@@ -131,6 +160,12 @@ export const CreateProductModal: React.FC<CreateProductModalProps> = ({
             }
         }
     };
+    // Use an effect to monitor changes to newProduct and log photo
+    useEffect(() => {
+        if (newProduct.photo) {
+            console.log("Updated image as file:", newProduct);
+        }
+    }, [newProduct.photo]);
 
     useEffect(() => {
         fetchCategories();
@@ -152,13 +187,17 @@ export const CreateProductModal: React.FC<CreateProductModalProps> = ({
         const file = e.target.files ? e.target.files[0] : null;
         if (file) {
             const reader = new FileReader();
+            
             reader.onloadend = () => {
-                setNewProduct((prevState) => ({
+                const base64String = (reader.result as string).replace(/^data:image\/\w+;base64,/, '');
+                setNewProduct ((prevState) => ({
                     ...prevState,
                     photo: reader.result as string
-                }));
+                }))
+            setImagePreview(reader.result as string);
             };
             reader.readAsDataURL(file)
+            console.log("file result: ", newProduct.photo)
         }
     }
 
@@ -174,7 +213,7 @@ export const CreateProductModal: React.FC<CreateProductModalProps> = ({
         }
         const crop = makeAspectCrop(
             {
-                unit: "%",
+                unit: "px",
                 width: cropWidthInPercent,
             }, MIN_ASPECT,
             width,
@@ -192,10 +231,11 @@ export const CreateProductModal: React.FC<CreateProductModalProps> = ({
             {isModalOpen() && (
                 <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full flex items-center justify-center">
                     <div className="p-8 border w-96 shadow-lg rounded-md bg-white">
-
-                        <div>
-                            <p>{ProductName}</p>
-                            <input className="rounded-md" type="text" value={newProduct.name}
+                        <div className="space-y-4">
+                            <input className="rounded-md w-full 
+                            placeholder:font-semibold placeholder:text-center
+                            focus:placeholder:" type="text" value={newProduct.name}
+                            placeholder={ProductName}
                                 onChange={(e) => {
                                     setNewProduct(prevState => ({
                                         ...prevState,
@@ -203,35 +243,39 @@ export const CreateProductModal: React.FC<CreateProductModalProps> = ({
                                     }))
                                     setEmptyFieldError("")
                                 }} />
-                            <p className="text-sm">{ProductDescription}</p>
-                            <textarea maxLength={100} className="resize-none rounded-md h-full min-h-[130px] w-full" value={newProduct.description}
+                            <textarea maxLength={100} className="resize-none rounded-md h-full min-h-[170px] w-full 
+                                placeholder:font-semibold placeholder:text-center" 
+                                placeholder={ProductDescription}
+                                value={newProduct.description}
                                 onChange={(e) => {
+                                    
                                     setNewProduct(prevState => ({
                                         ...prevState,
                                         description: e.target.value
                                     }))
                                     setEmptyFieldError("")
-                                }} />
-                            <p>{ProductPrice}</p>
-                            
+
+                                }} 
+                                onKeyDown={handleKeyDown}/>
                             <CurrencyInput
-                            className="rounded-md"
+                            className="rounded-md w-full placeholder:font-semibold placeholder:text-center"
                                 allowNegativeValue={false}
                                 groupSeparator=" "
                                 maxLength={7}
                                 prefix="$"
-                                placeholder="Please enter a number"
+                                placeholder={ProductPrice}
                                 decimalsLimit={2}
                                 onValueChange={(value, name, values) => {
+                                    console.log("priceValues", values)
                                     const newPrice = values?.float
                                     setNewProduct(prevState => ({
                                     ...prevState,
-                                    price: newPrice ? 0 : Number(newPrice)
+                                        price: newPrice ? Number(newPrice) : 0 
                                 }))
                             }}
                             />
-                            <p>{ProductPhoto}</p>
-                            <label htmlFor="photo_of_product" className="p-1 bg-blue-500 active:bg-blue-700 rounded-md">{SelectImageToUpload}</label>
+
+                            <label htmlFor="photo_of_product" className=" bg-blue-500 hover:bg-blue-600 active:bg-blue-700 rounded-full text-white font-semibold h-12 flex items-center justify-center">{SelectImageToUpload}</label>
                             <input className="rounded-md hidden" id="photo_of_product" type="file" accept="image/*"
                                 onChange={handleFileChange} />
                             {newProduct.photo &&
@@ -257,10 +301,10 @@ export const CreateProductModal: React.FC<CreateProductModalProps> = ({
 
 
 
-                            <ul className="py-2 text-sm text-gray-700 dark:text-gray-200" >
+                            <ul className="py-2 space-y-2 text-sm text-gray-700 dark:text-gray-200" >
                                 {categories.map(category => (
                                     <li key={category.id}>
-                                        <input type="checkbox" className="rounded-sm"
+                                        <input type="checkbox" className="m-2 appearance-none w-5 h-5 border rounded-full border-blue-500 cursor-pointer checked:bg-blue-700"
                                             checked={newProduct.categories.some(cat => cat.id === category.id)}
                                             onChange={() => {
                                                 setNewProduct(prevState => {
@@ -285,38 +329,42 @@ export const CreateProductModal: React.FC<CreateProductModalProps> = ({
                                     </li>
                                 ))}
                             </ul>
-
-                            <label>
-                                <input
-                                    type="checkbox"
-                                    className="rounded-sm"
-                                    checked={newProduct.visibility}
-                                    onChange={() => setNewProduct(prevState => ({
-                                        ...prevState,
-                                        visibility: !newProduct.visibility
-                                    }))}
-                                />
-                                {ProductVisibility}
-                            </label>
-                            <label>
-                                <input
-                                    type="checkbox"
-                                    className="rounded-sm"
-                                    checked={newProduct.inStock}
-                                    onChange={() => setNewProduct(prevState => ({
-                                        ...prevState,
-                                        inStock: !newProduct.inStock
-                                    }))}
-                                />
-                                {ProductInStock}
-                            </label>
+                            <div className="flex justify-between">
+                                <label className="inline-flex items-center cursor-pointer">
+                                    <input
+                                        type="checkbox"
+                                        className="sr-only peer"
+                                        checked={newProduct.visibility}
+                                        onChange={() => setNewProduct(prevState => ({
+                                            ...prevState,
+                                            visibility: !newProduct.visibility
+                                        }))}
+                                    />
+                                    <div className="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+                                    <span>{ProductVisibility}</span>
+                                    
+                                </label>
+                                <label className="inline-flex items-center cursor-pointer">
+                                    <input
+                                        type="checkbox"
+                                        className="sr-only peer"
+                                        checked={newProduct.inStock}
+                                        onChange={() => setNewProduct(prevState => ({
+                                            ...prevState,
+                                            inStock: !newProduct.inStock
+                                        }))}
+                                    />
+                                    <div className="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+                                    <span>{ProductInStock}</span>
+                                </label>
+                            </div>
                         </div>
                         <p className="mt-4 text-red-600" >{emptyFiledError}</p>
-                        <div className="flex py-2">
-                            <button className='rounded-md p-1 mr-2 font-semibold shadow-sm bg-amber-300 active:bg-amber-500' onClick={() => {
+                        <div className="flex py-2 justify-between">
+                            <button className='rounded-md p-1 font-semibold shadow-sm bg-amber-300 active:bg-amber-500' onClick={() => {
                                 validate()
                             }}>{ConfirmCreateProduct}</button>
-                            <button className='rounded-md p-1 ml-2 font-semibold shadow-sm bg-blue-500 active:bg-blue-700' onClick={closeModal}>{Cancel}</button>
+                            <button className='rounded-md p-1 font-semibold shadow-sm bg-blue-500 active:bg-blue-700' onClick={closeModal}>{Cancel}</button>
                         </div>
                     </div>
                 </div>

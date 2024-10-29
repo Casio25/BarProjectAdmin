@@ -5,6 +5,7 @@ import { Link, useRouter, usePathname } from "@/navigation";
 import { PromotionIcon, HomeIcon, MoneyIcon, SettingsIcon, ATBIcon, FAQIcon, FeedbackIcon, OrdersIcon, ProductsIcon } from "./svgs";
 import { SideNavBarProps } from "../interface/SideNavBarInterface";
 import { useAutoAnimate } from '@formkit/auto-animate/react'
+import { sideNavBarStore } from "../store/sideNavBarStore";
 
 
 
@@ -24,29 +25,30 @@ const SideNavBar :React.FC<SideNavBarProps> = ({
 
   const isActive = (path: string) => pathname.includes(path);
   const isActiveHome = (path: string) => pathname === path;
-  const [isOpen, setIsOpen] = useState(false);
+  const sideNavBarState = sideNavBarStore(state => state.open)
+  const setSideNavBarState = sideNavBarStore(state => state.toggleOpen)
   const genericHamburgerLine = `h-1 w-6 my-1 rounded-full bg-black transition ease transform duration-300`;
   
   
   return(
-    <div  className={`flex flex-col flex-${isOpen ? '4' : '2'} h-screen bg-white drop-shadow-md transition-all duration-300 ease-in-out`}>
+    <div  className={`flex flex-col flex-${sideNavBarState ? '4' : '2'} h-screen bg-white drop-shadow-md transition-all duration-300 ease-in-out`}>
       
       <button
         className="flex mx-5 mt-5 flex-col h-12 w-6  justify-center items-center group"
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={() => setSideNavBarState(!sideNavBarState)}
       >
         <div
-          className={`${genericHamburgerLine} ${isOpen
+          className={`${genericHamburgerLine} ${sideNavBarState
               ? "rotate-45 translate-y-3 opacity-50 group-hover:opacity-100"
               : "opacity-50 group-hover:opacity-100"
             }`}
         />
         <div
-          className={`${genericHamburgerLine} ${isOpen ? "opacity-0" : "opacity-50 group-hover:opacity-100"
+          className={`${genericHamburgerLine} ${sideNavBarState ? "opacity-0" : "opacity-50 group-hover:opacity-100"
             }`}
         />
         <div
-          className={`${genericHamburgerLine} ${isOpen
+          className={`${genericHamburgerLine} ${sideNavBarState
               ? "-rotate-45 -translate-y-3 opacity-50 group-hover:opacity-100"
               : "opacity-50 group-hover:opacity-100"
             }`}
@@ -55,54 +57,54 @@ const SideNavBar :React.FC<SideNavBarProps> = ({
       
       <ul className="text-lg flex-col font-semibold overflow-hidden">
         <Link  href="/promotions">
-            <li className={`flex mx-5 px-2 ${isOpen ? "w-10" : "w-60"} h-12 pt-2 rounded-lg ${isActive("/promotions") ? "bg-zinc-100" : "bg-white"} `}>
+            <li className={`flex mx-5 px-2 ${sideNavBarState ? "w-10" : "w-60"} h-12 pt-2 rounded-lg ${isActive("/promotions") ? "bg-zinc-100" : "bg-white"} `}>
             <PromotionIcon/>
-            {isOpen ? <></> : <p className="ml-2 ">{Promotions}</p>}
+            {sideNavBarState ? <></> : <p className="ml-2 ">{Promotions}</p>}
           </li>
           
         </Link>
         <Link href="/orders">
-            <li className={`flex mx-5 px-2 ${isOpen ? "w-10" : "w-60"} h-12 pt-2 rounded-lg ${isActive("/orders") ? "bg-zinc-100" : "bg-white"} `}>
+            <li className={`flex mx-5 px-2 ${sideNavBarState ? "w-10" : "w-60"} h-12 pt-2 rounded-lg ${isActive("/orders") ? "bg-zinc-100" : "bg-white"} `}>
             <OrdersIcon />
-            {isOpen ? <></> : <p className="ml-2">{Orders}</p>}
+            {sideNavBarState ? <></> : <p className="ml-2">{Orders}</p>}
           </li>
         </Link>
         <Link href="/">
-            <li className={`flex mx-5 px-2 ${isOpen ? "w-10" : "w-60"} h-12 pt-2 rounded-lg ${isActiveHome("/") ? "bg-zinc-100" : "bg-white"} `}>
+            <li className={`flex mx-5 px-2 ${sideNavBarState ? "w-10" : "w-60"} h-12 pt-2 rounded-lg ${isActiveHome("/") ? "bg-zinc-100" : "bg-white"} `}>
             <HomeIcon/>
-            {isOpen ? <></> : <p className="ml-2">{Home}</p>}
+            {sideNavBarState ? <></> : <p className="ml-2">{Home}</p>}
           </li>
         </Link>
         <Link href="/payment_details">
-            <li className={`flex mx-5 px-2 ${isOpen ? "w-10" : "w-60"} h-12 pt-2 rounded-lg ${isActive("/payment_details") ? "bg-zinc-100" : "bg-white"} `}>
+            <li className={`flex mx-5 px-2 ${sideNavBarState ? "w-10" : "w-60"} h-12 pt-2 rounded-lg ${isActive("/payment_details") ? "bg-zinc-100" : "bg-white"} `}>
             <MoneyIcon/>
-            {isOpen ? <></> :<p className="ml-2">{PaymentDetails}</p>}
+            {sideNavBarState ? <></> :<p className="ml-2">{PaymentDetails}</p>}
           </li>
         </Link>
         <Link href="/products">
-            <li className={`flex mx-5 px-2 ${isOpen ? "w-10" : "w-60"} h-12 pt-2 rounded-lg ${isActive("/products") ? "bg-zinc-100" : "bg-white"} `}>
+            <li className={`flex mx-5 px-2 ${sideNavBarState ? "w-10" : "w-60"} h-12 pt-2 rounded-lg ${isActive("/products") ? "bg-zinc-100" : "bg-white"} `}>
             <ProductsIcon />
-            {isOpen ? <></> : <p ref={parent} className="ml-2">{Products}</p>}
+            {sideNavBarState ? <></> : <p ref={parent} className="ml-2">{Products}</p>}
           </li>
         </Link>
       </ul>
       <ul className="text-lg flex-col mt-auto font-semibold">
         <Link href="/faq">
-            <li className={`flex mx-5 px-2 ${isOpen ? "w-10" : "w-60"} h-12 pt-2 rounded-lg ${isActive("/faq") ? "bg-zinc-100" : "bg-white"} `}>
+            <li className={`flex mx-5 px-2 ${sideNavBarState ? "w-10" : "w-60"} h-12 pt-2 rounded-lg ${isActive("/faq") ? "bg-zinc-100" : "bg-white"} `}>
             <FAQIcon />
-            {isOpen ? <></> : <p className="ml-2">{FAQ}</p>}
+            {sideNavBarState ? <></> : <p className="ml-2">{FAQ}</p>}
           </li>
         </Link>
         <Link href="/settings">
-            <li className={`flex mx-5 px-2 ${isOpen ? "w-10" : "w-60"} h-12 pt-2 rounded-lg ${isActive("/settings") ? "bg-zinc-100" : "bg-white"} `}>
+            <li className={`flex mx-5 px-2 ${sideNavBarState ? "w-10" : "w-60"} h-12 pt-2 rounded-lg ${isActive("/settings") ? "bg-zinc-100" : "bg-white"} `}>
             <SettingsIcon />
-            {isOpen ? <></> : <p className="ml-2">{Settings}</p>}
+            {sideNavBarState ? <></> : <p className="ml-2">{Settings}</p>}
           </li>
         </Link>
         <Link href="/feedback">
-            <li className={`flex mx-5 px-2 ${isOpen ? "w-10" : "w-60 "} h-12 pt-2 rounded-lg ${isActive("/feedback") ? "bg-zinc-100" : "bg-white"} `}>
+            <li className={`flex mx-5 px-2 ${sideNavBarState ? "w-10" : "w-60 "} h-12 pt-2 rounded-lg ${isActive("/feedback") ? "bg-zinc-100" : "bg-white"} `}>
             <FeedbackIcon />
-            {isOpen ? <></> :  <p className="ml-2"  >{Feedback}</p>}
+            {sideNavBarState ? <></> :  <p className="ml-2"  >{Feedback}</p>}
           </li>
         </Link>
       </ul>

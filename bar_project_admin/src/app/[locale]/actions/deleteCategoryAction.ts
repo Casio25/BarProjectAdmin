@@ -6,7 +6,7 @@ import { Category, Product, ProductsInterface } from "../interface/ProductsInter
 export const DeleteCategoryAction = async (category: Category) => {
     const storedJwtToken = cookies().get("jwtToken")?.value || null
     try {
-        const response = await fetch(`${process.env.SERVER_URL}/catalog/delete_category`, {
+        const response = await fetch(`${process.env.SERVER_URL}/category/delete_category`, {
             cache: "no-store",
             method: "DELETE",
             headers: {

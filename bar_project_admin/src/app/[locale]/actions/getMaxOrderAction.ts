@@ -5,7 +5,7 @@ import { cookies } from "next/headers";
 export const getMaxOrderAction = async (categoryId: number) => {
     const storedJwtToken = cookies().get("jwtToken")?.value || null
     try {
-        const response = await fetch(`${process.env.SERVER_URL}/catalog/get_max_order`, {
+        const response = await fetch(`${process.env.SERVER_URL}/category/get_max_order`, {
             cache: 'no-store',
             method: "POST",
             headers: {

@@ -11,7 +11,7 @@ export const getProductsAction = async () => {
         // Build query parameters from productInfo if it's not null
         // const queryParams = productInfo ? new URLSearchParams(productInfo as any).toString() : '';
         // const url = `http://localhost:4000/catalog${queryParams ? `?${queryParams}` : ''}`;
-        const url = `${process.env.SERVER_URL}/catalog/get_products`
+        const url = `${process.env.SERVER_URL}/product/get_products`
         const response = await fetch(url, {
             cache: "no-store",
             method: "GET",

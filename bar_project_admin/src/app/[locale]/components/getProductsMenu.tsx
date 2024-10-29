@@ -282,8 +282,6 @@ export const GetProductsMenu: React.FC<GetProductsMenuProps> = ({
                                                                 <div className='my-auto px-5 flex-grow'>
                                                                     <p className='text-xs text-gray-400'>{product.description}</p>
                                                                 </div>
-
-                                                                
                                                                     <CurrencyInput className="my-auto ml-auto w-40  h-8 px-3 py-2 rounded border border-neutral-300"
                                                                         groupSeparator=" "
                                                                         maxLength={7}

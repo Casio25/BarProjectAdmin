@@ -6,7 +6,7 @@ import { Product, ProductsInterface } from "../interface/ProductsInterface"
 export const DeleteProductAction = async(product: Product) => {
     const storedJwtToken = cookies().get("jwtToken")?.value || null
     try{
-        const response = await fetch(`${process.env.SERVER_URL}/catalog/delete`, {
+        const response = await fetch(`${process.env.SERVER_URL}/product/${product.id}`, {
             cache: "no-store",
             method: "DELETE",
             headers: {
@@ -14,7 +14,7 @@ export const DeleteProductAction = async(product: Product) => {
                 "Access-Control-Allow-Origin": "*",
                 "Authorization": `Bearer ${storedJwtToken}`
             },
-            body: JSON.stringify(product)
+            
         })
         console.log(response)
         const json = await response.json();

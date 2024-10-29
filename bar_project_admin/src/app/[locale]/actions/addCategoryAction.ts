@@ -6,7 +6,7 @@ import { ICreateCategory } from "../interface/CategoriesInterface"
 export const addCategoryAction = async (categoryName: ICreateCategory) => {
     const storedJwtToken = cookies().get("jwtToken")?.value || null
     try {
-        const response = await fetch(`${process.env.SERVER_URL}/catalog/create_category`, {
+        const response = await fetch(`${process.env.SERVER_URL}/category/create_category`, {
             cache: 'no-store',
             method: "POST",
             headers: {

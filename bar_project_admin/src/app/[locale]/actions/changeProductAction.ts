@@ -4,7 +4,7 @@ import { ProductsInterface, Product } from './../interface/ProductsInterface';
 export const changeProductAction = async(product: Product | undefined) => {
     const storedJwtToken = cookies().get("jwtToken")?.value || null
     try{
-        const response = await fetch(`${process.env.SERVER_URL}/catalog/change`, {
+        const response = await fetch(`${process.env.SERVER_URL}/product/update`, {
             cache: "no-store",
             method: "PATCH",
             headers: {
