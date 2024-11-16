@@ -55,19 +55,6 @@ export const CreateProductModal: React.FC<CreateProductModalProps> = ({
     const [crop, setCrop] = useState<any>()
     const imageRef = useRef(null)
     const previewCanvasRef = useRef(null)
-    const [imagePreview, setImagePreview] = useState<string>("")
-
-    //maxRows limiter
-    const maxRows = 5
-    const rowCount = newProduct.description.split("\n").length
-    const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
-        const rowCount = newProduct.description.split("\n").length;
-
-        // Prevent Enter key from adding a new line if maxRows is reached
-        if (e.key !== "Backspace" && rowCount >= maxRows) {
-            e.preventDefault();
-        }
-    };
 
     const fetchCategories = async () => {
         try {
@@ -100,30 +87,17 @@ export const CreateProductModal: React.FC<CreateProductModalProps> = ({
 
 
     const validate = async () => {
-        if (imageRef.current){
-            setCanvasPreview(
-                imageRef.current,
-                previewCanvasRef.current,
-                convertToPixelCrop(crop, imageRef.current.width, imageRef.current.height),
-            )
-            const CroppedImageURL = previewCanvasRef.current.toDataURL()
-            // setNewProduct((prevState) => ({
-            //     ...prevState,
-            //     photo:dataURLtoFile(CroppedImageURL, `${newProduct.name}.png`)
-            // })),
 
-            setNewProduct((prevState) => ({
-                ...prevState,
-                photo: CroppedImageURL
-            }))
-            setImagePreview(CroppedImageURL)
-        }
-        
-       
-
-        
-
-
+        setCanvasPreview(
+            imageRef.current,
+            previewCanvasRef.current,
+            convertToPixelCrop(crop, imageRef.current?.width, imageRef.current.height),
+        )
+        const CroppedImageURL = previewCanvasRef.current.toDataURL()
+        setNewProduct((prevState) => ({
+            ...prevState,
+            photo: CroppedImageURL
+        }))
 
 
         if (!newProduct.name || !newProduct.description || !newProduct.photo || newProduct.price <= 0 || isNaN(newProduct.price)) {
@@ -132,8 +106,25 @@ export const CreateProductModal: React.FC<CreateProductModalProps> = ({
         } else if (newProduct.categories.length === 0) {
             setEmptyFieldError("Choose at least one category")
         } else {
-           
+            const maxOrdersPromises = newProduct.categories.map(category =>
+                getMaxOrderAction(category.id)
+            );
+
+            console.log("maxOrdersPromises", maxOrdersPromises);
+
             try {
+                // Wait for all max order promises to resolve
+                const maxOrders = await Promise.all(maxOrdersPromises);
+                console.log("all max orders", maxOrders);
+
+                // Update the orders in the newProduct object
+                newProduct.orders = maxOrders.map((order, index) => ({
+                    order,
+                    categoryId: newProduct.categories[index].id
+                }));
+
+                console.log("new product", newProduct);
+
                 // Proceed with adding the product
                 const response = await addProductAction(newProduct);
                 if (response.statusCode == 401) {

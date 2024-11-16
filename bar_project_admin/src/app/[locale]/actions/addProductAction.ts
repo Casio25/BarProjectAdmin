@@ -13,7 +13,11 @@ export const addProductAction = async (product: NewProduct) => {
     const storedJwtToken = cookies().get("jwtToken")?.value || null
     
     try {
+<<<<<<< HEAD
         const response = await fetch(`${process.env.SERVER_URL}/product/create`, {
+=======
+        const response = await fetch(`${process.env.SERVER_URL}/catalog/add_product`, {
+>>>>>>> cf8446d08828c022820c34be335c384d1fa3b288
             cache: 'no-store',
             method: "POST",
             headers: {
