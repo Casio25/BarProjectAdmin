@@ -10,7 +10,7 @@ import { Visibility } from "@mui/icons-material";
 
 import { cookies } from "next/headers";
 import { CreateProductModalProps } from "../interface/CreateProductModalProps";
-import {ReactCrop,  convertToPixelCrop, makeAspectCrop, ReactCropProps } from "react-image-crop";
+import { ReactCrop, convertToPixelCrop, makeAspectCrop, ReactCropProps } from "react-image-crop";
 import setCanvasPreview from "./setCanvasPreview"
 import CurrencyInput from "react-currency-input-field"
 import { isNull } from "util";
@@ -53,8 +53,21 @@ export const CreateProductModal: React.FC<CreateProductModalProps> = ({
     const isModalOpen = () => modalStatus;
     const storedProducts = ProductStore(state => state.products);
     const [crop, setCrop] = useState<any>()
-    const imageRef = useRef(null)
-    const previewCanvasRef = useRef(null)
+    const imageRef = useRef<HTMLImageElement | null>(null)
+    const previewCanvasRef = useRef<HTMLCanvasElement | null>(null);
+    const [imagePreview, setImagePreview] = useState<string>("")
+
+    //maxRows limiter
+    const maxRows = 5
+    const rowCount = newProduct.description.split("\n").length
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+        const rowCount = newProduct.description.split("\n").length;
+
+        // Prevent Enter key from adding a new line if maxRows is reached
+        if (e.key !== "Backspace" && rowCount >= maxRows) {
+            e.preventDefault();
+        }
+    };
 
     const fetchCategories = async () => {
         try {
@@ -83,21 +96,36 @@ export const CreateProductModal: React.FC<CreateProductModalProps> = ({
         Object.keys(object).forEach(key => formData.append(key, object[key]));
         return formData;
     }
-    
+
 
 
     const validate = async () => {
+        if (imageRef.current &&
+            previewCanvasRef.current
+        ) {
+            setCanvasPreview(
+                imageRef.current,
+                previewCanvasRef.current,
+                convertToPixelCrop(crop, imageRef.current.width, imageRef.current.height),
+            )
+            const CroppedImageURL = previewCanvasRef.current.toDataURL()
+            // setNewProduct((prevState) => ({
+            //     ...prevState,
+            //     photo:dataURLtoFile(CroppedImageURL, `${newProduct.name}.png`)
+            // })),
 
-        setCanvasPreview(
-            imageRef.current,
-            previewCanvasRef.current,
-            convertToPixelCrop(crop, imageRef.current?.width, imageRef.current.height),
-        )
-        const CroppedImageURL = previewCanvasRef.current.toDataURL()
-        setNewProduct((prevState) => ({
-            ...prevState,
-            photo: CroppedImageURL
-        }))
+            setNewProduct((prevState) => ({
+                ...prevState,
+                photo: CroppedImageURL
+            }))
+            setImagePreview(CroppedImageURL)
+        }
+
+
+
+
+
+
 
 
         if (!newProduct.name || !newProduct.description || !newProduct.photo || newProduct.price <= 0 || isNaN(newProduct.price)) {
@@ -106,25 +134,8 @@ export const CreateProductModal: React.FC<CreateProductModalProps> = ({
         } else if (newProduct.categories.length === 0) {
             setEmptyFieldError("Choose at least one category")
         } else {
-            const maxOrdersPromises = newProduct.categories.map(category =>
-                getMaxOrderAction(category.id)
-            );
-
-            console.log("maxOrdersPromises", maxOrdersPromises);
 
             try {
-                // Wait for all max order promises to resolve
-                const maxOrders = await Promise.all(maxOrdersPromises);
-                console.log("all max orders", maxOrders);
-
-                // Update the orders in the newProduct object
-                newProduct.orders = maxOrders.map((order, index) => ({
-                    order,
-                    categoryId: newProduct.categories[index].id
-                }));
-
-                console.log("new product", newProduct);
-
                 // Proceed with adding the product
                 const response = await addProductAction(newProduct);
                 if (response.statusCode == 401) {
@@ -178,14 +189,14 @@ export const CreateProductModal: React.FC<CreateProductModalProps> = ({
         const file = e.target.files ? e.target.files[0] : null;
         if (file) {
             const reader = new FileReader();
-            
+
             reader.onloadend = () => {
                 const base64String = (reader.result as string).replace(/^data:image\/\w+;base64,/, '');
-                setNewProduct ((prevState) => ({
+                setNewProduct((prevState) => ({
                     ...prevState,
                     photo: reader.result as string
                 }))
-            setImagePreview(reader.result as string);
+                setImagePreview(reader.result as string);
             };
             reader.readAsDataURL(file)
             console.log("file result: ", newProduct.photo)
@@ -226,7 +237,7 @@ export const CreateProductModal: React.FC<CreateProductModalProps> = ({
                             <input className="rounded-md w-full 
                             placeholder:font-semibold placeholder:text-center
                             focus:placeholder:" type="text" value={newProduct.name}
-                            placeholder={ProductName}
+                                placeholder={ProductName}
                                 onChange={(e) => {
                                     setNewProduct(prevState => ({
                                         ...prevState,
@@ -235,21 +246,21 @@ export const CreateProductModal: React.FC<CreateProductModalProps> = ({
                                     setEmptyFieldError("")
                                 }} />
                             <textarea maxLength={100} className="resize-none rounded-md h-full min-h-[170px] w-full 
-                                placeholder:font-semibold placeholder:text-center" 
+                                placeholder:font-semibold placeholder:text-center"
                                 placeholder={ProductDescription}
                                 value={newProduct.description}
                                 onChange={(e) => {
-                                    
+
                                     setNewProduct(prevState => ({
                                         ...prevState,
                                         description: e.target.value
                                     }))
                                     setEmptyFieldError("")
 
-                                }} 
-                                onKeyDown={handleKeyDown}/>
+                                }}
+                                onKeyDown={handleKeyDown} />
                             <CurrencyInput
-                            className="rounded-md w-full placeholder:font-semibold placeholder:text-center"
+                                className="rounded-md w-full placeholder:font-semibold placeholder:text-center"
                                 allowNegativeValue={false}
                                 groupSeparator=" "
                                 maxLength={7}
@@ -260,10 +271,10 @@ export const CreateProductModal: React.FC<CreateProductModalProps> = ({
                                     console.log("priceValues", values)
                                     const newPrice = values?.float
                                     setNewProduct(prevState => ({
-                                    ...prevState,
-                                        price: newPrice ? Number(newPrice) : 0 
-                                }))
-                            }}
+                                        ...prevState,
+                                        price: newPrice ? Number(newPrice) : 0
+                                    }))
+                                }}
                             />
 
                             <label htmlFor="photo_of_product" className=" bg-blue-500 hover:bg-blue-600 active:bg-blue-700 rounded-full text-white font-semibold h-12 flex items-center justify-center">{SelectImageToUpload}</label>
@@ -333,7 +344,7 @@ export const CreateProductModal: React.FC<CreateProductModalProps> = ({
                                     />
                                     <div className="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
                                     <span>{ProductVisibility}</span>
-                                    
+
                                 </label>
                                 <label className="inline-flex items-center cursor-pointer">
                                     <input
