@@ -7,7 +7,7 @@ import { cookies } from "next/headers";
 export const getOrdersAction = async () => {
     const storedJwtToken = cookies().get("jwtToken")?.value || null
     try {
-        const response = await fetch(`${process.env.SERVER_URL}/orders/get_orders`, {
+        const response = await fetch(`${process.env.SERVER_URL}/orders`, {
             cache: "no-store",
             method: "GET",
             headers: {

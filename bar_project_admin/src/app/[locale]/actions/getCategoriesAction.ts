@@ -6,7 +6,7 @@ export const getCategoriesAction = async() => {
     const storedJwtToken = cookies().get("jwtToken")?.value || null
     
     try{
-        const response = await fetch(`${process.env.SERVER_URL}/category/get_categories`,{
+        const response = await fetch(`${process.env.SERVER_URL}/category`,{
             cache: 'no-store',
             method: "GET",
             headers: {

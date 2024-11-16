@@ -118,7 +118,6 @@ export const CreateProductModal: React.FC<CreateProductModalProps> = ({
                 ...prevState,
                 photo: CroppedImageURL
             }))
-            setImagePreview(CroppedImageURL)
         }
 
 
@@ -288,7 +287,7 @@ export const CreateProductModal: React.FC<CreateProductModalProps> = ({
                                         keepSelection
                                         aspect={MIN_ASPECT}
                                         minWidth={MIN_DIMENSION}>
-                                        <img className="overflow-hidden rounded-md h-full" src={newProduct.photo} ref={imageRef} onLoad={onImageLoad} />
+                                        <img className="overflow-hidden rounded-md h-full" src={imagePreview} ref={imageRef} onLoad={onImageLoad} />
                                     </ReactCrop>
                                 </div>
 
