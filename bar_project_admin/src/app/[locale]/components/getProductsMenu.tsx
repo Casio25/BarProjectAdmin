@@ -22,6 +22,8 @@ import { DeleteCategoryModal } from './deleteCategoryModal'
 import { GetProductsExel } from './getProductsExel'
 import { handleDragOver, handleDragStart, handleDrop } from './ProductDrag&Drop'
 import CurrencyInput from 'react-currency-input-field'
+import { getVenueAction } from '../actions/getVenueInfo'
+import { VenueStore } from '../store/venueStore'
 
 
 
@@ -54,6 +56,8 @@ export const GetProductsMenu: React.FC<GetProductsMenuProps> = ({
     const router = useRouter();
     const storedProducts = ProductStore(state => state.products);
     const updateStoredProducts = ProductStore(state => state.updateProducts)
+    const storedVenue = VenueStore(state => state.venues)
+    const updateStortedVenue = VenueStore(state => state.updateVenues)
     const [categories, setCategories] = useState<CategoriesInterface>([]);
     const [expandedCategories, setExpandedCategories] = useState<{ [key: number]: boolean }>({});
     const [categoryOptions, setCategoryOptions] = useState<number | undefined>(undefined);
@@ -102,11 +106,31 @@ export const GetProductsMenu: React.FC<GetProductsMenuProps> = ({
             console.error('Error fetching categories:', error);
         }
     };
+
+    const fetchVenue = async () => {
+        try{
+            const response = await getVenueAction()
+            console.log("fetched venue info", response)
+            if (response === 404){
+                
+                router.push('/create_venue')
+            }else{
+                updateStortedVenue(response.data)
+            }
+        } catch (error){
+            console.error(
+                "Error getting venue data", error
+            )
+        }
+    }
+
     useEffect(() => {
+        fetchVenue();
 
         fetchCategories();
 
         fetchProducts();
+
     }, []);
 
     //changing spesific property of specific product

@@ -139,6 +139,12 @@
         "Q-ty": "Q-ty",
         "Price": "Price",
         "Product": "Product"
+     },
+     "CreateVenue": {
+        "NoVenueMessage": "Looks like you don't have any venues yet",
+        "VenueNamePalceholder": "Venue Name",
+        "Create": "Create",
+        "Cancel": "Cancel"
      }
 
 

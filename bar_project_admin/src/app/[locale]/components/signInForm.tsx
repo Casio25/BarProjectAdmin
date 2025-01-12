@@ -12,6 +12,8 @@ import { signInAction } from "../actions/signinAction";
 import { z } from "zod"
 import { Link, useRouter } from "@/navigation";
 import { profileAction } from "../actions/profile";
+import { getVenueAction } from '../actions/getVenueInfo';
+import { VenueStore } from '../store/venueStore';
 
 
 export const SignInForm: React.FC<SignInFormProps> = ({
@@ -40,6 +42,7 @@ export const SignInForm: React.FC<SignInFormProps> = ({
     const updatePasswordError = LoginStore(state => state.updatePasswordError)
     const storedEmail = LoginStore(state => state.email)
     const storedEmailError = LoginStore(state => state.emailError)
+    const updateVenue = VenueStore(state => state.updateVenues)
 
     const router = useRouter()
 
@@ -108,11 +111,21 @@ export const SignInForm: React.FC<SignInFormProps> = ({
                     const profileResponse = await profileAction(response.access_token)
                     console.log ("profileData", profileResponse)
                     if (!profileResponse.isEmailConfirmed) {
-                        
                         updateEmail(formData.email);
                         router.push('/confirm_registration');
                     }else{
-                        router.push("/")
+                        const response: number | Array<any> = await getVenueAction();
+                        console.log("venueResponse", response)
+                        if (response === 404){
+                            router.push('/create_venue');
+                        }else{
+                            if (Array.isArray(response)) {
+                                updateVenue(response);
+                            } else {
+                                console.error("Unexpected response type:", response);
+                            }
+                            router.push("/")
+                        }
                     }
                 }
 

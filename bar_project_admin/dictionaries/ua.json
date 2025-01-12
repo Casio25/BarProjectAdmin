@@ -142,5 +142,11 @@
         "Q-ty": "К-ть",
         "Price": "Ціна",
         "Product": "Продукт"
+    },
+    "CreateVenue": {
+        "NoVenueMessage": "Схоже у вас ще немає закладу",
+        "VenueNamePalceholder": "Назва закладу",
+        "Create": "Створити",
+        "Cancel": "Скасувати"
     }
 }
