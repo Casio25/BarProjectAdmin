@@ -3,7 +3,7 @@ import { LoginStore } from '../store/LoginStore'
 import { ProductStore } from '../store/ProductStore'
 import React, { useRef, useState } from 'react'
 import { getProductsAction } from '../actions/getProductsAction'
-import { useRouter } from '@/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { useEffect } from 'react';
 import { CategoriesInterface } from '../interface/CategoriesInterface'
 import { DragAndDrop, ThreeDots, ArrowDownCategory, ArrowUpCategory } from './svgs'
@@ -24,6 +24,7 @@ import { handleDragOver, handleDragStart, handleDrop } from './ProductDrag&Drop'
 import CurrencyInput from 'react-currency-input-field'
 import { getVenueAction } from '../actions/getVenueInfo'
 import { VenueStore } from '../store/venueStore'
+
 
 
 
@@ -58,6 +59,7 @@ export const GetProductsMenu: React.FC<GetProductsMenuProps> = ({
     const updateStoredProducts = ProductStore(state => state.updateProducts)
     const storedVenue = VenueStore(state => state.venues)
     const updateStortedVenue = VenueStore(state => state.updateVenues)
+    const activeVenue = VenueStore(state => state.activeVenue);
     const [categories, setCategories] = useState<CategoriesInterface>([]);
     const [expandedCategories, setExpandedCategories] = useState<{ [key: number]: boolean }>({});
     const [categoryOptions, setCategoryOptions] = useState<number | undefined>(undefined);
@@ -71,6 +73,8 @@ export const GetProductsMenu: React.FC<GetProductsMenuProps> = ({
     const [createProductModalStatus, setCreateProductModalStatus] = useState<boolean>(false)
     const [deleteCategoryModalStatus, setDeleteCategoryModalStatus] = useState<boolean>(false)
     const [deleteCategoryModal, setDeleteCategoryModal] = useState<Category>()
+    const searchParams = useSearchParams()
+    const [activeVenueId, setActiveVenueId] = useState<number>()
     
 
     // autoAnimate functionalirty
@@ -123,6 +127,11 @@ export const GetProductsMenu: React.FC<GetProductsMenuProps> = ({
             )
         }
     }
+    const checkVenue = () => {
+        if (!activeVenue) {
+            router.push('/sign_in');
+        }
+    }
 
     useEffect(() => {
         fetchVenue();
@@ -131,8 +140,18 @@ export const GetProductsMenu: React.FC<GetProductsMenuProps> = ({
 
         fetchProducts();
 
+        checkVenue();
+
     }, []);
 
+    useEffect(() => {
+        const venueId = searchParams.get('venueId');
+        if (venueId){
+            setActiveVenueId(Number(venueId))
+        }else{
+            router.push('../../sign_in')
+        }
+    }, [searchParams])
     //changing spesific property of specific product
 
     
@@ -196,7 +215,7 @@ export const GetProductsMenu: React.FC<GetProductsMenuProps> = ({
         }
         return false;
     };
-    //modal funcitons
+
     const toggleDeleteModal = () => {
         setDeleteModalStatus(!deleteModalStatus)
     }
@@ -220,6 +239,21 @@ export const GetProductsMenu: React.FC<GetProductsMenuProps> = ({
     return (
         <>
             <div className='flex-1 w- mx-5'>
+                <div className='mt-5'>
+                    <div id='dropdownVenues' className='z-10 bg-white rounded-md shadow-lg dark:bg-gray-700'>
+                        {Array.isArray(storedVenue) && (
+                            <ul ref={parent}>
+                            {storedVenue.map((venue) => (
+                                <li ref={parent} key={venue.id}>
+                                    <p className='text-sm font-semibold'>{venue.name}</p>
+                                    <p className='text-sm font-semibold'>{activeVenueId}</p>
+                                    <p className='text-sm font-semibold'>{venue.id}</p>
+                                </li>
+                            ))}
+                            </ul>
+                        )}
+                    </div>
+                </div>
                 <div className='mt-5'>
                     <GetProductsExel/>
                     <button className='rounded-md p-2 font-semibold shadow-sm bg-amber-300 active:bg-amber-500'

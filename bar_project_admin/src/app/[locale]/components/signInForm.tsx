@@ -1,5 +1,5 @@
 "use client"
-import { cookies } from 'next/headers'
+
 import React, { useState, useEffect } from "react";
 import { InputAdornment, IconButton, TextField, Button } from "@mui/material";
 import { Schema, Visibility, VisibilityOff } from "@mui/icons-material";
@@ -43,10 +43,12 @@ export const SignInForm: React.FC<SignInFormProps> = ({
     const storedEmail = LoginStore(state => state.email)
     const storedEmailError = LoginStore(state => state.emailError)
     const updateVenue = VenueStore(state => state.updateVenues)
+    const updateActiveVenue = VenueStore(state => state.updateActiveVenue)
+    const activeVenue = VenueStore(state => state.activeVenue)
 
     const router = useRouter()
 
-
+    const englishAlphabetAndWhiteSpace = /^[a-zA-Z\s]*$/
     const togglePassword = () => {
         setPasswordShown(!passwordShown);
     };
@@ -121,10 +123,13 @@ export const SignInForm: React.FC<SignInFormProps> = ({
                         }else{
                             if (Array.isArray(response)) {
                                 updateVenue(response);
+                                updateActiveVenue(response[0])
+                                
+                                router.push(`/venue/${response[0].id}/main`)
+                                
                             } else {
                                 console.error("Unexpected response type:", response);
                             }
-                            router.push("/")
                         }
                     }
                 }
@@ -158,6 +163,11 @@ export const SignInForm: React.FC<SignInFormProps> = ({
                     placeholder={passwordPlaceholder}
                     onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                     type={passwordShown ? "text" : "password"}
+                    onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                            validateData(formData)
+                        }
+                    }}
                     InputProps={{
                         endAdornment: (
                             <InputAdornment position="end">

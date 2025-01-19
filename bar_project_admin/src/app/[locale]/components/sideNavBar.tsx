@@ -6,6 +6,7 @@ import { PromotionIcon, HomeIcon, MoneyIcon, SettingsIcon, ATBIcon, FAQIcon, Fee
 import { SideNavBarProps } from "../interface/SideNavBarInterface";
 import { useAutoAnimate } from '@formkit/auto-animate/react'
 import { sideNavBarStore } from "../store/sideNavBarStore";
+import { VenueStore } from "../store/venueStore";
 
 
 
@@ -28,6 +29,8 @@ const SideNavBar :React.FC<SideNavBarProps> = ({
   const sideNavBarState = sideNavBarStore(state => state.open)
   const setSideNavBarState = sideNavBarStore(state => state.toggleOpen)
   const genericHamburgerLine = `h-1 w-6 my-1 rounded-full bg-black transition ease transform duration-300`;
+  const activeVenue = VenueStore(state => state.activeVenue)
+  console.log(activeVenue)
   
   
   return(
@@ -56,32 +59,32 @@ const SideNavBar :React.FC<SideNavBarProps> = ({
       </button>
       
       <ul className="text-lg flex-col font-semibold overflow-hidden">
-        <Link  href="/promotions">
+        <Link href={`/venue/${activeVenue?.id}/promotions`}>
             <li className={`flex mx-5 px-2 ${sideNavBarState ? "w-10" : "w-60"} h-12 pt-2 rounded-lg ${isActive("/promotions") ? "bg-zinc-100" : "bg-white"} `}>
             <PromotionIcon/>
             {sideNavBarState ? <></> : <p className="ml-2 ">{Promotions}</p>}
           </li>
           
         </Link>
-        <Link href="/orders">
+        <Link href={`/venue/${activeVenue?.id}/orders`}>
             <li className={`flex mx-5 px-2 ${sideNavBarState ? "w-10" : "w-60"} h-12 pt-2 rounded-lg ${isActive("/orders") ? "bg-zinc-100" : "bg-white"} `}>
             <OrdersIcon />
             {sideNavBarState ? <></> : <p className="ml-2">{Orders}</p>}
           </li>
         </Link>
-        <Link href="/">
+        <Link href={`/venue/${activeVenue?.id}/main`}>
             <li className={`flex mx-5 px-2 ${sideNavBarState ? "w-10" : "w-60"} h-12 pt-2 rounded-lg ${isActiveHome("/") ? "bg-zinc-100" : "bg-white"} `}>
             <HomeIcon/>
             {sideNavBarState ? <></> : <p className="ml-2">{Home}</p>}
           </li>
         </Link>
-        <Link href="/payment_details">
+        <Link href='/payment_details'>
             <li className={`flex mx-5 px-2 ${sideNavBarState ? "w-10" : "w-60"} h-12 pt-2 rounded-lg ${isActive("/payment_details") ? "bg-zinc-100" : "bg-white"} `}>
             <MoneyIcon/>
             {sideNavBarState ? <></> :<p className="ml-2">{PaymentDetails}</p>}
           </li>
         </Link>
-        <Link href="/products">
+        <Link href={`/venue/${activeVenue?.id}/products`}>
             <li className={`flex mx-5 px-2 ${sideNavBarState ? "w-10" : "w-60"} h-12 pt-2 rounded-lg ${isActive("/products") ? "bg-zinc-100" : "bg-white"} `}>
             <ProductsIcon />
             {sideNavBarState ? <></> : <p ref={parent} className="ml-2">{Products}</p>}

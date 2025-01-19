@@ -1,9 +1,11 @@
 import { useTranslations } from 'next-intl';
 import SideNavBar from './components/sideNavBar';
+import { VenueStore } from './store/venueStore';
 
 export default function Home() {
   const h = useTranslations('Home');
   const t = useTranslations("SideNavBar")
+
   return (
     <div className='flex'>
       <SideNavBar

@@ -1,5 +1,5 @@
 export interface IVenue {
-    id: number;
+    id: number | undefined
     name: string
 }
 
