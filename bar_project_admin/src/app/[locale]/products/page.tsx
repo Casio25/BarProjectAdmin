@@ -1,3 +1,4 @@
+"use client"
 import React, { useState, createContext } from 'react'
 import SideNavBar from '../components/sideNavBar'
 import { GetProductsMenu } from '../components/getProductsMenu';

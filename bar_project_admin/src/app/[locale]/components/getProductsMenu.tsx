@@ -144,14 +144,14 @@ export const GetProductsMenu: React.FC<GetProductsMenuProps> = ({
 
     }, []);
 
-    useEffect(() => {
-        const venueId = searchParams.get('venueId');
-        if (venueId){
-            setActiveVenueId(Number(venueId))
-        }else{
-            router.push('../../sign_in')
-        }
-    }, [searchParams])
+    // useEffect(() => {
+    //     const venueId = searchParams.get('venueId');
+    //     if (venueId){
+    //         setActiveVenueId(Number(venueId))
+    //     }else{
+    //         router.push('../../sign_in')
+    //     }
+    // }, [searchParams])
     //changing spesific property of specific product
 
     
