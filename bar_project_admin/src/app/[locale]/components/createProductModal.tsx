@@ -7,7 +7,7 @@ import { ProductStore } from "../store/ProductStore";
 import { addProductAction } from "../actions/addProductAction";
 import { useRouter } from '@/navigation'
 import { Visibility } from "@mui/icons-material";
-import {ModalContext} from "../products/page"
+import { ModalContext } from '../context/ModalContext';
 
 import { cookies } from "next/headers";
 import { CreateProductModalProps } from "../interface/CreateProductModalProps";

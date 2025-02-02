@@ -3,8 +3,9 @@ import React, { useState, createContext } from 'react'
 import SideNavBar from '../components/sideNavBar'
 import { GetProductsMenu } from '../components/getProductsMenu';
 import { useTranslations } from 'next-intl';
+import { ModalContext } from '../context/ModalContext';
 
-export const ModalContext = createContext<string>("");
+
 const ProductsPage = () => {
     const t = useTranslations("SideNavBar")
     const p = useTranslations("ProductsMenu")
