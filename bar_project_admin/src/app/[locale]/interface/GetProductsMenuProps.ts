@@ -20,5 +20,4 @@ export interface GetProductsMenuProps {
     ProductPrice: string,
     ProductVisibility: string,
     ProductInStock: string,
-    SelectImageToUpload: string
 }

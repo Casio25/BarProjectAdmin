@@ -52,7 +52,7 @@ export const GetProductsMenu: React.FC<GetProductsMenuProps> = ({
     ProductPrice,
     ProductVisibility,
     ProductInStock,
-    SelectImageToUpload
+
 }) => {
     const router = useRouter();
     const storedProducts = ProductStore(state => state.products);
@@ -381,7 +381,7 @@ export const GetProductsMenu: React.FC<GetProductsMenuProps> = ({
                 <EditProductModal product={editProductModal} modalStatus={editModalStatus} toggleModal={toggleEditModal} ConfirmEditProduct={ConfirmEditProduct} Cancel={Cancel} CategoriesDropdown={CategoriesDropdown} ProductName={ProductName} ProductDescription={ProductDescription} ProductPhoto={ProductPhoto} ProductPrice={ProductPrice} ProductInStock={ProductInStock} ProductVisibility={ProductVisibility}  />
                 <CreateCategoryModal modalStatus={createCategoryModalStatus} toggleModal={toggleCreateCategoryModal} fetchCategories={fetchCategories} CategoryNamePlaceholder={CategoryNamePlaceholder} Confirm={Confirm} Cancel={Cancel}  />
                 <DeleteCategoryModal modalStatus={deleteCategoryModalStatus} toggleModal={toggleDeleteCategoryModal} category={deleteCategoryModal} fetchProducts={fetchProducts} fetchCategories={fetchCategories} ConfirmDeleteCategory={ConfirmDeleteCategory} DeleteCategoryWarning={DeleteCategoryWarning} Cancel={Cancel}/>
-                <CreateProductModal category={categoryOptions} modalStatus={createProductModalStatus} toggleModal={toggleCreateProductModal} fetchProducts={fetchProducts} ConfirmCreateProduct={CreateProduct} Cancel={Cancel} CategoriesDropdown={CategoriesDropdown} ProductName={ProductName} ProductDescription={ProductDescription} ProductPhoto={ProductPhoto} ProductPrice={ProductPrice} ProductInStock={ProductInStock} ProductVisibility={ProductVisibility} SelectImageToUpload={SelectImageToUpload}/>
+                <CreateProductModal category={categoryOptions} modalStatus={createProductModalStatus} toggleModal={toggleCreateProductModal} fetchProducts={fetchProducts} ConfirmCreateProduct={CreateProduct} Cancel={Cancel} CategoriesDropdown={CategoriesDropdown} ProductName={ProductName} ProductDescription={ProductDescription} ProductPhoto={ProductPhoto} ProductPrice={ProductPrice} ProductInStock={ProductInStock} ProductVisibility={ProductVisibility}/>
             </div>
             
             

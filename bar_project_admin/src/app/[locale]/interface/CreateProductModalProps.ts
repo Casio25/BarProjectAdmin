@@ -12,5 +12,5 @@ export interface CreateProductModalProps {
     ProductPrice: string,
     ProductVisibility: string,
     ProductInStock: string,
-    SelectImageToUpload: string
+
 }

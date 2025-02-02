@@ -1,14 +1,16 @@
-import React, { useState } from 'react'
+import React, { useState, createContext } from 'react'
 import SideNavBar from '../components/sideNavBar'
 import { GetProductsMenu } from '../components/getProductsMenu';
 import { useTranslations } from 'next-intl';
 
+export const ModalContext = createContext<string>("");
 const ProductsPage = () => {
     const t = useTranslations("SideNavBar")
     const p = useTranslations("ProductsMenu")
-    
+
     
     return (
+        <ModalContext.Provider value={p("Select image to upload")}>
         <div className='flex w-full min-h-screen bg-zinc-100'>
             <SideNavBar
                 Promotions={t("Promotions")}
@@ -41,9 +43,10 @@ const ProductsPage = () => {
                     ProductPhoto={p("Product Photo")}
                     ProductInStock={p("Product In Stock")}
                     ProductVisibility={p("Product Visibility")}
-                    SelectImageToUpload={p("Select image to upload")}
+
                      />
         </div>
+        </ModalContext.Provider>
     )
 }
 export default ProductsPage

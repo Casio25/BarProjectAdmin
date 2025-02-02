@@ -1,5 +1,5 @@
 "use client"
-import React, { useEffect, useState, HTMLInputTypeAttribute, ChangeEvent, useRef } from "react";
+import React, { useEffect, useState, HTMLInputTypeAttribute, ChangeEvent, useRef, useContext } from "react";
 import { getCategoriesAction } from "../actions/getCategoriesAction";
 import { CategoriesInterface } from "../interface/CategoriesInterface";
 import { NewProduct } from "../interface/ProductsInterface";
@@ -7,6 +7,7 @@ import { ProductStore } from "../store/ProductStore";
 import { addProductAction } from "../actions/addProductAction";
 import { useRouter } from '@/navigation'
 import { Visibility } from "@mui/icons-material";
+import {ModalContext} from "../products/page"
 
 import { cookies } from "next/headers";
 import { CreateProductModalProps } from "../interface/CreateProductModalProps";
@@ -14,6 +15,7 @@ import { ReactCrop, convertToPixelCrop, makeAspectCrop, ReactCropProps } from "r
 import setCanvasPreview from "./setCanvasPreview"
 import CurrencyInput from "react-currency-input-field"
 import { isNull } from "util";
+
 
 export const CreateProductModal: React.FC<CreateProductModalProps> = ({
     category,
@@ -29,7 +31,7 @@ export const CreateProductModal: React.FC<CreateProductModalProps> = ({
     ProductPrice,
     ProductVisibility,
     ProductInStock,
-    SelectImageToUpload,
+
 }
 ) => {
 
@@ -56,6 +58,7 @@ export const CreateProductModal: React.FC<CreateProductModalProps> = ({
     const imageRef = useRef<HTMLImageElement | null>(null)
     const previewCanvasRef = useRef<HTMLCanvasElement | null>(null);
     const [imagePreview, setImagePreview] = useState<string>("")
+    const SelectImageToUpload = useContext(ModalContext)
 
     //maxRows limiter
     const maxRows = 5
@@ -341,7 +344,10 @@ export const CreateProductModal: React.FC<CreateProductModalProps> = ({
                                             visibility: !newProduct.visibility
                                         }))}
                                     />
-                                    <div className="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+                                    <div className="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4
+                                    peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full
+                                    peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white
+                                    after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
                                     <span>{ProductVisibility}</span>
 
                                 </label>
@@ -355,7 +361,10 @@ export const CreateProductModal: React.FC<CreateProductModalProps> = ({
                                             inStock: !newProduct.inStock
                                         }))}
                                     />
-                                    <div className="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+                                    <div className="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 
+                                    peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full 
+                                    peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white 
+                                    after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
                                     <span>{ProductInStock}</span>
                                 </label>
                             </div>
